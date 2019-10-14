@@ -1,7 +1,7 @@
 {
   "name": "quizzer-server",
   "version": "0.1.0",
-  "description": "The backend for the Quizzer app",
+  "description": "The back-end for the Quizzer app",
   "scripts": {
     "start": "node ./index.js",
     "dev": "nodemon ./index.js",
