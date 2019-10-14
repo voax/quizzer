@@ -17,10 +17,10 @@ mongoose.connect(`mongodb://127.0.0.1:27017/${DATABASE_NAME}`, {
 });
 const connection = mongoose.connection;
 
-connection.once('open', function() {
+connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
 });
 
-app.listen(PORT, function() {
-  console.log('Server is running on Port: ' + PORT);
+app.listen(PORT, () => {
+  console.log(`Server is running on Port: ${PORT}`);
 });
