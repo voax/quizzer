@@ -1,12 +1,25 @@
 {
   "name": "quizzer-server",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "The backend for the Quizzer app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "New Fragment <contact@newfragment.com>",
+  "contributors": [
+    {
+      "name": "Ivo Breukers",
+      "email": "ivo@newfragment.com"
+    },
+    {
+      "name": "Oktay Dinler",
+      "email": "oktay@newfragment.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
+    "directory": "server/"
+  },
+  "license": "MIT"
 }
