@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 
-require('../model/question');
+require('../../models');
 
 const { MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
 const seedQuestion = require('./question');

@@ -5,10 +5,10 @@ const router = express.Router();
 const Question = mongoose.model('Question');
 
 router.use('/', (req, res, next) => {
-  req.mongoQueryAggregate = {};
+  req.mongoQueryAggregate = { $match: {} };
 
   if (req.language.length > 0) {
-    req.mongoQueryAggregate['$match'] = { language: req.language[0].code };
+    req.mongoQueryAggregate.$match = { language: req.language[0].code };
   }
 
   next();

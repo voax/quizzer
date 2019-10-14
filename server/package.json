@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./index.js",
     "dev": "nodemon ./index.js",
-    "seed": "node seed"
+    "seed": "node ./cmd/seed"
   },
   "author": "New Fragment <contact@newfragment.com>",
   "contributors": [

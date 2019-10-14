@@ -5,10 +5,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const languageParser = require('accept-language-parser');
 
-require('./model');
-const categoriesRouter = require('./routes/categories');
-const questionsRouter = require('./routes/questions');
-
 const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
 const app = express();
 
@@ -20,8 +16,8 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/categories', categoriesRouter);
-app.use('/questions', questionsRouter);
+require('./models');
+require('./routes')(app);
 
 mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${DB_NAME}`, {
   useNewUrlParser: true,
