@@ -1,0 +1,53 @@
+{
+  "name": "quizzer-client",
+  "version": "0.1.0",
+  "description": "The front-end for the Quizzer app",
+  "author": "New Fragment <contact@newfragment.com>",
+  "contributors": [
+    {
+      "name": "Ivo Breukers",
+      "email": "ivo@newfragment.com"
+    },
+    {
+      "name": "Oktay Dinler",
+      "email": "oktay@newfragment.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
+    "directory": "client"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "immer": "^4.0.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-redux": "^7.1.1",
+    "react-scripts": "3.2.0",
+    "redux": "^4.0.4",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
