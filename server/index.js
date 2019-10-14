@@ -5,11 +5,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const languageParser = require('accept-language-parser');
 
-const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
-const app = express();
-require('./model/question');
+require('./model');
 const categoriesRouter = require('./routes/categories');
 const questionsRouter = require('./routes/questions');
+
+const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
+const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
