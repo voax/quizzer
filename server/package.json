@@ -2,11 +2,12 @@
   "name": "quizzer-server",
   "version": "0.1.0",
   "description": "The back-end for the Quizzer app",
-  "scripts": {
-    "start": "node ./index.js",
-    "dev": "nodemon ./index.js",
-    "seed": "node ./cmd/seed"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
+    "directory": "server"
   },
+  "license": "MIT",
   "author": "New Fragment <contact@newfragment.com>",
   "contributors": [
     {
@@ -18,12 +19,11 @@
       "email": "oktay@newfragment.com"
     }
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
-    "directory": "server"
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "seed": "node ./cmd/seed",
+    "start": "node ./index.js"
   },
-  "license": "MIT",
   "dependencies": {
     "accept-language-parser": "^1.5.0",
     "body-parser": "^1.19.0",
