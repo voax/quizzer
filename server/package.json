@@ -19,7 +19,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
-    "directory": "server/"
+    "directory": "server"
   },
   "license": "MIT"
 }
