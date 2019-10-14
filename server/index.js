@@ -1,17 +1,16 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
-const PORT = 4000;
-const DATABASE_NAME = 'quizzer';
-
 const app = express();
+const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-mongoose.connect(`mongodb://127.0.0.1:27017/${DATABASE_NAME}`, {
+mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${DB_NAME}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -21,6 +20,6 @@ connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running on Port: ${PORT}`);
+app.listen(EXPRESS_PORT, () => {
+  console.log(`Server is running on Port: ${EXPRESS_PORT}`);
 });
