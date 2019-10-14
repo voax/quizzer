@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "The backend for the Quizzer app",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "seed": "node seed"
   },
   "author": "New Fragment <contact@newfragment.com>",
   "contributors": [
