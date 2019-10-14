@@ -3,20 +3,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const languageParser = require('accept-language-parser');
 
-const app = express();
 const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
+const app = express();
+require('./model/question');
+const categoriesRouter = require('./routes/categories');
+const questionsRouter = require('./routes/questions');
 
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use('/', (req, res, next) => {
+  req.language = languageParser.parse(req.header('Accept-Language'));
+  next();
+});
+
+app.use('/categories', categoriesRouter);
+app.use('/questions', questionsRouter);
 
 mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${DB_NAME}`, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-const connection = mongoose.connection;
 
-connection.once('open', () => {
+mongoose.connection.once('open', () => {
   console.log('MongoDB database connection established successfully');
 });
 
