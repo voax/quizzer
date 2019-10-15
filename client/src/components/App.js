@@ -1,7 +1,8 @@
 import React from 'react';
+import Scoreboard from './Scoreboard';
 
 const App = () => {
-  return <div></div>;
+  return <Scoreboard />;
 };
 
 export default App;
