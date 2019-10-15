@@ -3,21 +3,25 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const languageParser = require('accept-language-parser');
+const simpleErrorHandler = require('./middleware/error-handler');
+const useAcceptLanguage = require('./middleware/accept-language');
 
 const { EXPRESS_PORT, MONGODB_HOST, MONGODB_PORT, DB_NAME } = process.env;
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
-
-app.use('/', (req, res, next) => {
-  req.language = languageParser.parse(req.header('Accept-Language'));
-  next();
-});
+app.use(useAcceptLanguage());
 
 require('./models');
 require('./routes')(app);
+
+app.use(
+  simpleErrorHandler({
+    defaultStatusCode: 500,
+    defaultMessage: 'Something went wrong...',
+  })
+);
 
 mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${DB_NAME}`, {
   useNewUrlParser: true,
