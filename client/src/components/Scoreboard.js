@@ -4,18 +4,20 @@ import { fetchQuestions } from '../actions';
 import ScoreboardItem from './ScoreboardItem';
 
 const Scoreboard = () => {
-  const scoreboard = useSelector(state =>
-    state.scoreboard.map(({ team, score }) => (
-      <ScoreboardItem key={team} team={team} score={score} />
-    ))
-  );
+  const scoreboard = useSelector(state => state.scoreboard);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchQuestions());
   }, []);
 
-  return <>{scoreboard}</>;
+  return (
+    <>
+      {scoreboard.map(({ team, score }) => (
+        <ScoreboardItem key={team} team={team} score={score} />
+      ))}
+    </>
+  );
 };
 
 export default Scoreboard;

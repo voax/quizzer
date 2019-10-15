@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "immer": "^4.0.1",
+    "node-sass": "^4.12.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-redux": "^7.1.1",

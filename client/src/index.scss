@@ -1,0 +1,112 @@
+$dark: #222831;
+$grey: #393e46;
+$orange: #b55400;
+$light: #eeeeee;
+
+html,
+body,
+#root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: $dark;
+  color: $light;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+button {
+  background: transparent;
+  color: $light;
+  border: 2px solid $light;
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 3px;
+  transition: all ease 0.2s;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 14px;
+  &:hover {
+    background: $light;
+    color: $dark;
+  }
+  &:focus {
+    border-color: $orange;
+    color: $dark;
+    outline: none;
+  }
+  .orange {
+    color: $orange;
+    border-color: $orange;
+  }
+  .orange:hover {
+    background: $orange;
+  }
+}
+
+.label-input {
+  margin: 15px auto;
+  width: 234px;
+  text-align: left;
+}
+
+label {
+  font-size: 14px;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding-bottom: 5px;
+}
+
+input {
+  display: block;
+  border-radius: 3px;
+  border: 2px solid $light;
+  padding: 10px 15px;
+  font-size: 14px;
+  transition: all ease 0.2s;
+  text-transform: uppercase;
+  width: 200px;
+  margin-top: 5px;
+  &:focus {
+    border-color: $orange;
+    outline: none;
+  }
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 50px);
+  height: calc(100% - 50px);
+  max-width: 450px;
+  padding: 25px;
+  margin: auto;
+  text-align: center;
+
+  h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    margin-top: 0;
+  }
+
+  button {
+    margin-top: 15px;
+  }
+}
+
+.loader span {
+  display: block;
+  font-size: 1.1em;
+  margin-bottom: 25px;
+}
