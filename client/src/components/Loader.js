@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Loader = ({ text, color = '#eee', size = 60 }) => (
+const Loader = ({ text, color = '#eee', size = 75 }) => (
   <div className="loader">
     <span>{text}</span>
     <svg
@@ -10,7 +10,7 @@ const Loader = ({ text, color = '#eee', size = 60 }) => (
       viewBox="0 0 44 44"
       stroke={color}
     >
-      <g fill="none" fill-rule="evenodd" stroke-width="2">
+      <g fill="none" fillRule="evenodd" strokeWidth="2">
         <circle cx="22" cy="22" r="15.1196">
           <animate
             attributeName="r"
