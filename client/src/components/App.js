@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { showValidation, hideValidation } from '../actions';
+import { showValidation, hideValidation, wsConnect } from '../actions';
 import Logo from './Logo';
 import Loader from './Loader';
 import Input from './Input';
@@ -16,8 +16,9 @@ const App = () => {
     if (!roomCodeValid || !teamValid) {
       return dispatch(showValidation());
     }
+    dispatch(wsConnect());
     dispatch(hideValidation());
-    alert('test');
+    // alert('test');
   };
 
   return (
@@ -36,12 +37,12 @@ const App = () => {
             maxLength="4"
             errorMessage="The room code must have 4 characters."
           />
-          <Input 
-            reducer="teamApp" 
-            item="team" 
-            placeholder="Enter team name" 
-            maxLength="16" 
-            errorMessage="The team name is incorrect (min: 1, max: 16)." 
+          <Input
+            reducer="teamApp"
+            item="team"
+            placeholder="Enter team name"
+            maxLength="16"
+            errorMessage="The team name is incorrect (min: 1, max: 16)."
           />
           <Button text="Play!" onClick={handleClick} />
         </>
