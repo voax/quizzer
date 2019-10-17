@@ -1,52 +1,54 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { showValidation, hideValidation } from '../actions';
+import { showPopUp } from '../actions';
+import PopUp from './PopUp';
 import Logo from './Logo';
 import Loader from './Loader';
 import Input from './Input';
 import Button from './Button';
 
 const App = () => {
+  const popUpActive = useSelector(state => state.teamApp.popUp.active);
   const isLoading = useSelector(state => state.teamApp.isLoading);
   const roomCodeValid = useSelector(state => state.teamApp.roomCode.valid);
   const teamValid = useSelector(state => state.teamApp.team.valid);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    if (!roomCodeValid || !teamValid) {
-      return dispatch(showValidation());
-    }
-    dispatch(hideValidation());
-    alert('test');
+    dispatch(showPopUp('ERROR', 'Room code is invalid.'));
   };
 
   return (
-    <div className="container">
-      <Logo />
-      {isLoading ? (
-        <Loader text="Waiting for the Quizz Master to start the game..." />
-      ) : (
-        <>
-          <Input
-            reducer="teamApp"
-            item="roomCode"
-            placeholder="Enter room code"
-            textTransform="uppercase"
-            minLength="4"
-            maxLength="4"
-            errorMessage="The room code must have 4 characters."
-          />
-          <Input 
-            reducer="teamApp" 
-            item="team" 
-            placeholder="Enter team name" 
-            maxLength="16" 
-            errorMessage="The team name is incorrect (min: 1, max: 16)." 
-          />
-          <Button text="Play!" onClick={handleClick} />
-        </>
-      )}
-    </div>
+    <>
+      <div className="container">
+        <Logo />
+        {isLoading ? (
+          <Loader text="Waiting for the Quizz Master to start the game..." />
+        ) : (
+          <>
+            <Input
+              reducer="teamApp"
+              item="roomCode"
+              labelText="Room code"
+              placeholder="Enter 4-letter code"
+              textTransform="uppercase"
+              minLength="4"
+              maxLength="4"
+            />
+            <Input
+              reducer="teamApp"
+              item="team"
+              labelText="Team name"
+              placeholder="Enter your team name"
+              maxLength="12"
+              showCounter
+            />
+            <Button text="Play!" onClick={handleClick} disabled={!roomCodeValid || !teamValid} />
+          </>
+        )}
+      </div>
+      {popUpActive && <PopUp />}
+    </>
   );
 };
 
