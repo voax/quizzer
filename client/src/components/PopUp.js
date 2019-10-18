@@ -18,7 +18,9 @@ const PopUp = () => {
       <div className="popup">
         <span className="title">{title}</span>
         <span className="message">{message}</span>
-        <Button type="small" text={button} onClick={handleClick} />
+        <Button type="small" onClick={handleClick}>
+          {button}
+        </Button>
       </div>
     </div>
   );

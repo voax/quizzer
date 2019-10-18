@@ -5,12 +5,13 @@ import TeamHome from './TeamHome';
 import TeamRoom from './TeamRoom';
 import Logo from './Logo';
 import Loader from './Loader';
+import Container from './Container';
 
 const TeamRoot = () => {
   const isLoading = useSelector(state => state.teamApp.isLoading);
 
   return (
-    <div className="container">
+    <Container>
       <Logo />
       {isLoading ? (
         <Loader text="Waiting for the Quizz Master to start the game..." />
@@ -24,7 +25,7 @@ const TeamRoot = () => {
           </Route>
         </Switch>
       )}
-    </div>
+    </Container>
   );
 };
 
