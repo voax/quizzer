@@ -12,16 +12,14 @@ const socketReducer = produce(
         if (draft.webSocket) {
           return;
         }
-        const client = new Client(WS_URL);
-        client.joinOrCreate('quiz');
-        draft.webSocket = client;
+        draft.client = new Client(WS_URL);
         return;
       default:
         return;
     }
   },
   {
-    webSocket: null,
+    client: null,
   }
 );
 
