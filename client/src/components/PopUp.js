@@ -4,9 +4,9 @@ import { hidePopUpAction } from '../reducers/pop-up';
 import Button from './Button';
 
 const PopUp = () => {
-  const title = useSelector(state => state.teamApp.popUp.title);
-  const message = useSelector(state => state.teamApp.popUp.message);
-  const button = useSelector(state => state.teamApp.popUp.button);
+  const title = useSelector(state => state.popUp.title);
+  const message = useSelector(state => state.popUp.message);
+  const button = useSelector(state => state.popUp.button);
   const dispatch = useDispatch();
 
   const handleClick = () => {

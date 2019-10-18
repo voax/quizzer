@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { showPopUpAction } from '../reducers/pop-up';
+import Loader from './Loader';
 import Input from './Input';
 import Button from './Button';
 
 const TeamHome = () => {
+  const isLoading = useSelector(state => state.loader.active);
   const roomCodeValid = useSelector(state => state.teamApp.roomCode.valid);
   const teamValid = useSelector(state => state.teamApp.team.valid);
   const dispatch = useDispatch();
@@ -13,7 +15,9 @@ const TeamHome = () => {
     dispatch(showPopUpAction('ERROR', 'Room code is invalid.'));
   };
 
-  return (
+  return isLoading ? (
+    <Loader />
+  ) : (
     <>
       <Input
         reducer="teamApp"
