@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { hidePopUp } from '../actions';
+import { hidePopUpAction } from '../reducers/pop-up';
 import Button from './Button';
 
 const PopUp = () => {
@@ -10,7 +10,7 @@ const PopUp = () => {
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(hidePopUp());
+    dispatch(hidePopUpAction());
   };
 
   return (

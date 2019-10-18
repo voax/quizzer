@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { textInputHandler } from '../actions';
+import { textInputHandlerAction } from '../reducers/team-app';
 
 const Input = ({
   reducer,
@@ -16,7 +16,7 @@ const Input = ({
   const dispatch = useDispatch();
 
   const handleChange = () => ({ target: { value } }) => {
-    dispatch(textInputHandler(item, value, minLength, maxLength));
+    dispatch(textInputHandlerAction(item, value, minLength, maxLength));
   };
 
   return (
@@ -33,8 +33,8 @@ const Input = ({
         placeholder={placeholder}
         value={value}
         onChange={handleChange()}
-        minlength={minLength}
-        maxlength={maxLength}
+        minLength={minLength}
+        maxLength={maxLength}
       />
     </>
   );
