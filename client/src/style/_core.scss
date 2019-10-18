@@ -1,18 +1,3 @@
-@font-face {
-  font-family: 'BadaBoom BB';
-  src: url('./fonts/BadaBoomBB.woff2') format('woff2'),
-    url('./fonts/BadaBoomBB.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-$dark: #222831;
-$grey: #393e46;
-$orange: #b55400;
-$light: #eeeeee;
-$errorColor: #fa8072;
-$errorBorder: #c21807;
-
 html,
 body,
 #root {
@@ -51,15 +36,6 @@ code {
   font-size: 6.5em;
   margin-bottom: 25px;
   margin-top: 0;
-}
-
-.loader {
-  span {
-    display: block;
-    font-size: 1.5em;
-    margin-bottom: 25px;
-    font-weight: 600;
-  }
 }
 
 label {
@@ -165,48 +141,5 @@ button {
 
   &.small {
     max-width: 8rem;
-  }
-}
-
-.overlay {
-  position: fixed;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  transition: opacity 500ms;
-
-  .popup {
-    box-sizing: border-box;
-    padding: 2em;
-    background: $light;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 20rem;
-    position: relative;
-    text-align: center;
-
-    span.title,
-    span.message {
-      display: block;
-      color: $dark;
-      font-weight: 600;
-    }
-
-    span.title {
-      font-size: 2em;
-      padding-bottom: 15px;
-      text-transform: uppercase;
-    }
-
-    span.message {
-      font-size: 1.2em;
-      padding-bottom: 25px;
-    }
   }
 }
