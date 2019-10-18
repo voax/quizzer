@@ -12,6 +12,7 @@ const blackListedRoomCodes = {
   COCK: true,
   COON: true,
   CRAP: true,
+  CUCK: true,
   CUNT: true,
   DAMN: true,
   DARN: true,
