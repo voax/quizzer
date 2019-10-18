@@ -36,7 +36,9 @@ const TeamHome = () => {
         maxLength="12"
         showCounter
       />
-      <Button text="Play!" onClick={handleClick} disabled={!roomCodeValid || !teamValid} />
+      <Button onClick={handleClick} disabled={!roomCodeValid || !teamValid}>
+        Play!
+      </Button>
     </>
   );
 };

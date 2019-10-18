@@ -3,10 +3,11 @@ import { Route, Switch } from 'react-router-dom';
 import TeamHome from './TeamHome';
 import TeamRoom from './TeamRoom';
 import Logo from './Logo';
+import Container from './Container';
 
 const TeamRoot = () => {
   return (
-    <div className="container">
+    <Container>
       <Logo />
       <Switch>
         <Route exact path="/room">
@@ -16,7 +17,7 @@ const TeamRoot = () => {
           <TeamHome />
         </Route>
       </Switch>
-    </div>
+    </Container>
   );
 };
 
