@@ -23,7 +23,7 @@ const TeamRoom = () => {
 
   return isLoading || !open ? (
     <>
-      <Loader /> {open && <Button text="Change answer" onClick={handleChangeAnswer} />}
+      <Loader /> {open && <Button onClick={handleChangeAnswer}>Change answer</Button>}
     </>
   ) : (
     <div className="team-room">
@@ -31,7 +31,7 @@ const TeamRoom = () => {
       <span className="category">{category}</span>
       <span className="question">{question}</span>
       <Input reducer="teamApp" item="guess" placeholder="Your answer" maxLength="60" />
-      <Button onClick={handleSubmit} />
+      <Button onClick={handleSubmit}>Submit!</Button>
     </div>
   );
 };
