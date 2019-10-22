@@ -29,25 +29,42 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 3. Communitation protocols
 
-- **Wesocket**
-  - **Team App**
-    - WS_TEAM_APPROVED
-    - WS_SELECTING_CATEGORIES
-    - WS_SELECTING_QUESTION
-    - WS_QUESTION_STARTED
-    - WS_QUESTION_CLOSED
-    - WS_ROUND_ENDED
-    - WS_ROOM_CLOSED
-  - **Quizz Master App**
-    - WS_ROOM_CREATED
-    - WS_TEAM_APPLIED
-    - WS_GUESS_SUBMITTED
-    - WS_ROOM_DESTROYED
-  - **Scoreboard App**
-    - WS_QUESTION_STARTED
-    - WS_GUESS_SUBMITTED
-    - WS_QUESTION_ENDED_AND_APPROVED
-- **Rest-endpoints**
+### 3.1 Wesocket
+
+- **Team App**
+  - WS_TEAM_APPROVED
+  - WS_SELECTING_CATEGORIES
+  - WS_SELECTING_QUESTION
+  - WS_QUESTION_STARTED
+  - WS_QUESTION_CLOSED
+  - WS_ROUND_ENDED
+  - WS_ROOM_CLOSED
+- **Quizz Master App**
+  - WS_ROOM_CREATED
+  - WS_TEAM_APPLIED
+  - WS_GUESS_SUBMITTED
+  - WS_ROOM_DESTROYED
+- **Scoreboard App**
+  - WS_QUESTION_STARTED
+  - WS_GUESS_SUBMITTED
+  - WS_QUESTION_ENDED_AND_APPROVED
+
+### 3.2 Rest-endpoints
+
+| Method | Url                                        |
+| ------ | ------------------------------------------ |
+| GET    | /categories/                               |
+| GET    | /categories/:categoryID/questions          |
+| POST   | /rooms                                     |
+| GET    | /rooms/:roomID                             |
+| PATCH  | /rooms/:roomID                             |
+| DELETE | /rooms/:roomID                             |
+| POST   | /rooms/:roomID/applications                |
+| DELETE | /rooms/:roomID/applications/:applicationId |
+| POST   | /rooms/:roomID/teams                       |
+| PATCH  | /rooms/:roomID/teams/:teamID               |
+| POST   | /rooms/:roomID/categories                  |
+| DELETE | /rooms/:roomID/categories/:categoryID      |
 
 ## 4. Data-schema
 
@@ -98,8 +115,10 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 6. Server-structuur
 
-- Subrouters?
 - Middleware
+  - useAcceptLanguageHeader
+  - catchErrors
+  - simpleRouteErrorHandler
 - Mongoose
   - validatie methodes
   - model methodes
