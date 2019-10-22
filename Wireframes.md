@@ -12,20 +12,50 @@
 
 # 1 Quizz Master
 
-[][qmhome]
-[][qmteams]
-[][qmcategories1]
-[][qmcategories2]
-[][qmquestions]
-[][qmguesses]
-[][qmguesses2]
+## 1.1
 
-# Team
+![][qmhome]
 
-[][teamjoinroom]
-[][teamanswerquestion]
+## 1.2
 
-# Scoreboard
+![][qmteams]
 
-[][scoreboardquestionongoing]
-[][scoreboardquestionended]
+## 1.3
+
+![][qmcategories1]
+
+## 1.4
+
+![][qmcategories2]
+
+## 1.5
+
+![][qmquestions]
+
+## 1.6
+
+![][qmguesses]
+
+## 1.7
+
+![][qmguesses2]
+
+# 2 Team
+
+## 2.1
+
+![][teamjoinroom]
+
+## 2.2
+
+![][teamanswerquestion]
+
+# 3 Scoreboard
+
+## 3.1
+
+![][scoreboardquestionongoing]
+
+## 3.2
+
+![][scoreboardquestionended]
