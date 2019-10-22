@@ -6,8 +6,8 @@ The final assignment for the course DWA in the first semester of 2019.
 
 ## Contents
 
-1. [Wireframes](#2-Wireframes)
 1. [Introduction](#1-Introduction)
+2. [Wireframes](#2-Wireframes)
 
 ---
 
