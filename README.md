@@ -11,9 +11,11 @@ The final assignment for the course DWA in the first semester of 2019.
   - [1 Introduction](#1-introduction)
   - [2 Wireframes / resources / system reactions](#2-wireframes--resources--system-reactions)
   - [3. Communitation protocols](#3-communitation-protocols)
-  - [4. Data-schema](#4-data-schema)
+    - [3.1 Wesocket](#31-wesocket)
+    - [3.2 Rest Endpoints](#32-rest-endpoints)
+  - [4. Data Schema](#4-data-schema)
   - [5. Clientside State](#5-clientside-state)
-  - [6. Server-structuur](#6-server-structuur)
+  - [6. Server Structure](#6-server-structure)
 
 ---
 
@@ -49,7 +51,7 @@ Click [here](./Wireframes.md) for our wireframes.
   - WS_GUESS_SUBMITTED
   - WS_QUESTION_ENDED_AND_APPROVED
 
-### 3.2 Rest-endpoints
+### 3.2 Rest Endpoints
 
 | Method | Url                                        |
 | ------ | ------------------------------------------ |
@@ -66,11 +68,30 @@ Click [here](./Wireframes.md) for our wireframes.
 | POST   | /rooms/:roomID/categories                  |
 | DELETE | /rooms/:roomID/categories/:categoryID      |
 
-## 4. Data-schema
+## 4. Data Schema
 
 - Mongoose Schema
-  - Embedding
-  - Linking
+  - **Room**
+    - code: String
+    - host: String
+    - round: Number
+    - roundStarted: Boolean
+    - questionNo: Number
+    - askedQuestions: [Question]
+    - currentQuestion: Question
+    - questionClosed: Boolean
+    - teams: [Team]
+  - **Question**
+    - question: String
+    - answer: String
+    - category: String
+    - language: String
+  - **Team**
+    - name: String
+    - roundPoints: String
+    - roundScore: Number
+    - guess: String
+    - guessCorrect: Boolean
 
 ## 5. Clientside State
 
@@ -98,7 +119,7 @@ Click [here](./Wireframes.md) for our wireframes.
     - categories: array
     - selectedCategories: array
     - questions: array
-    - questionsAskes
+    - questionsAsked: array
     - currentQuestion: object
     - round: number
     - question: number
@@ -113,7 +134,7 @@ Click [here](./Wireframes.md) for our wireframes.
       - category: string
     - teams: array
 
-## 6. Server-structuur
+## 6. Server Structure
 
 - Middleware
   - useAcceptLanguageHeader
