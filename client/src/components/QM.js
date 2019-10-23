@@ -15,10 +15,10 @@ const QM = () => {
       <Route path="/master/teams">
         <QMTeams />
       </Route>
-      <Route path="/master/round/:roundNo/categories">
+      <Route path="/master/categories">
         <QMCategories />
       </Route>
-      <Route path="/master/round/:roundNo/question/:questionNo">
+      <Route path="/master/questions">
         <QMQuestions />
       </Route>
     </Switch>

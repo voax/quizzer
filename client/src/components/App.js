@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PopUp from './PopUp';
-import TeamRoot from './TeamRoot';
+import Team from './Team';
 import QM from './QM';
-import ScoreboardRoot from './ScoreboardRoot';
+import Scoreboard from './Scoreboard';
 
 const App = () => {
   const popUpActive = useSelector(state => state.popUp.active);
@@ -16,10 +16,10 @@ const App = () => {
           <QM />
         </Route>
         <Route path="/scoreboard">
-          <ScoreboardRoot />
+          <Scoreboard />
         </Route>
         <Route path="/">
-          <TeamRoot />
+          <Team />
         </Route>
       </Switch>
       {popUpActive && <PopUp />}

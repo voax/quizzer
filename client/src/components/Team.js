@@ -5,7 +5,7 @@ import TeamRoom from './TeamRoom';
 import Logo from './Logo';
 import Container from './Container';
 
-const TeamRoot = () => {
+const Team = () => {
   return (
     <Container>
       <Logo />
@@ -21,4 +21,4 @@ const TeamRoot = () => {
   );
 };
 
-export default TeamRoot;
+export default Team;

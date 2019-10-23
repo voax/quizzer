@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import ScoreboardHome from './ScoreboardHome';
 import ScoreboardLogin from './ScoreboardLogin';
 
-const ScoreboardRoot = () => {
+const Scoreboard = () => {
   return (
     <Switch>
       <Route
@@ -17,4 +17,4 @@ const ScoreboardRoot = () => {
   );
 };
 
-export default ScoreboardRoot;
+export default Scoreboard;
