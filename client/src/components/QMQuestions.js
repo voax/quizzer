@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-const MasterRoundQuestion = ({
+const QMQuestions = ({
   match: {
     params: { roundNo, questionNo },
   },
@@ -13,4 +13,4 @@ const MasterRoundQuestion = ({
   );
 };
 
-export default withRouter(MasterRoundQuestion);
+export default withRouter(QMQuestions);

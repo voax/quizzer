@@ -5,7 +5,7 @@ import Button from './Button';
 import Container from './Container';
 import Loader from './Loader';
 
-const MasterHome = () => {
+const QMHome = () => {
   return (
     <Container>
       <Logo />
@@ -15,4 +15,4 @@ const MasterHome = () => {
   );
 };
 
-export default MasterHome;
+export default QMHome;

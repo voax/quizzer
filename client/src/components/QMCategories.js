@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 
-const MasterSelectCategories = ({
+const QMCategories = ({
   match: {
     params: { roundNo },
   },
@@ -9,4 +9,4 @@ const MasterSelectCategories = ({
   return <div>Select categories for round {roundNo}</div>;
 };
 
-export default withRouter(MasterSelectCategories);
+export default withRouter(QMCategories);

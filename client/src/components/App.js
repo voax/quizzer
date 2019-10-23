@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PopUp from './PopUp';
 import TeamRoot from './TeamRoot';
-import MasterHome from './MasterRoot';
+import QM from './QM';
 import ScoreboardRoot from './ScoreboardRoot';
 
 const App = () => {
@@ -13,7 +13,7 @@ const App = () => {
     <Router>
       <Switch>
         <Route path="/master">
-          <MasterHome />
+          <QM />
         </Route>
         <Route path="/scoreboard">
           <ScoreboardRoot />
