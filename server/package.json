@@ -25,10 +25,8 @@
     "start": "node ./index.js"
   },
   "dependencies": {
-    "@colyseus/schema": "^0.4.61",
     "accept-language-parser": "^1.5.0",
     "body-parser": "^1.19.0",
-    "colyseus": "^0.11.16",
     "connect-mongo": "^3.0.0",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",

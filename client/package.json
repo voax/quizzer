@@ -41,7 +41,6 @@
     "extends": "react-app"
   },
   "dependencies": {
-    "colyseus.js": "^0.11.3",
     "immer": "^4.0.1",
     "node-sass": "^4.12.0",
     "react": "^16.10.2",
