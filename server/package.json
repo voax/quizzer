@@ -20,9 +20,9 @@
     }
   ],
   "scripts": {
-    "dev": "nodemon ./index.js",
-    "seed": "node ./cmd/seed",
-    "start": "node ./index.js"
+    "dev": "nodemon ./src/index.js",
+    "seed": "node ./src/cmd/seed",
+    "start": "node ./src/index.js"
   },
   "dependencies": {
     "accept-language-parser": "^1.5.0",
