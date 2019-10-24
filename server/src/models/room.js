@@ -25,6 +25,7 @@ const Room = new mongoose.Schema({
     default: false,
   },
   teams: [Team],
+  applications: [Team],
   askedQuestions: [Question],
   currentQuestion: Question,
   questionClosed: {

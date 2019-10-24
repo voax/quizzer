@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const Team = new mongoose.Schema({
+  sessionID: {
+    type: String,
+    required: true,
+  },
   name: {
     type: String,
     required: true,
