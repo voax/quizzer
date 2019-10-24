@@ -9,13 +9,13 @@ import Loader from './Loader';
 
 const QMHome = () => {
   const isLoading = useSelector(state => state.loader.active);
-  const roomCode = useSelector(state => state.quizzMasterApp.roomCode);
+  const websocketConnected = useSelector(state => state.websocket.connected);
   const dispatch = useDispatch();
   const handleClick = () => {
     dispatch(createRoom());
   };
 
-  return roomCode ? (
+  return websocketConnected ? (
     <Redirect to="/master/teams" />
   ) : (
     <Container>
