@@ -6,8 +6,8 @@ const { generateRoomCode } = require('../rooms/code');
 
 //#region rooms
 router.post('/', async (req, res) => {
-  if (req.session.room) {
-    return res.status(400).json({ message: 'Room already created!' });
+  if (req.session.room && !req.session.room.ended) {
+    await Room.deleteOne({ _id: req.session.room._id });
   }
   req.session.role = 'qm';
 
