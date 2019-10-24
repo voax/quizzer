@@ -147,3 +147,33 @@ button {
     }
   }
 }
+
+.item-list {
+  padding: 0;
+  height: 100%;
+
+  h2 {
+    margin: 0;
+  }
+
+  .content {
+    height: 100%;
+    border: 0.125rem solid $light;
+    background-color: $grey;
+
+    ul {
+      padding: 0;
+      margin: 0;
+
+      li {
+        list-style: none;
+        margin: 0;
+        padding: 1rem;
+
+        &.selected {
+          background-color: $orange;
+        }
+      }
+    }
+  }
+}
