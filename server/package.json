@@ -1,0 +1,40 @@
+{
+  "name": "quizzer-server",
+  "version": "0.1.0",
+  "description": "The back-end for the Quizzer app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HANICA-DWA/sep2019-quizz-oktay-ivo",
+    "directory": "server"
+  },
+  "license": "MIT",
+  "author": "New Fragment <contact@newfragment.com>",
+  "contributors": [
+    {
+      "name": "Ivo Breukers",
+      "email": "ivo@newfragment.com"
+    },
+    {
+      "name": "Oktay Dinler",
+      "email": "oktay@newfragment.com"
+    }
+  ],
+  "scripts": {
+    "dev": "nodemon ./src/index.js",
+    "seed": "node ./src/cmd/seed",
+    "start": "node ./src/index.js"
+  },
+  "dependencies": {
+    "accept-language-parser": "^1.5.0",
+    "body-parser": "^1.19.0",
+    "connect-mongo": "^3.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "mongoose": "^5.7.5"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.3"
+  }
+}
