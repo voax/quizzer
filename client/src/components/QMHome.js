@@ -4,8 +4,9 @@ import { Redirect } from 'react-router-dom';
 import { createRoom } from '../reducers/quizz-master-app';
 import Logo from './Logo';
 import Button from './Button';
-import Container from './Container';
 import Loader from './Loader';
+
+import { Container, Row, Col } from 'react-grid-system';
 
 const QMHome = () => {
   const isLoading = useSelector(state => state.loader.active);
@@ -18,9 +19,13 @@ const QMHome = () => {
   return websocketConnected ? (
     <Redirect to="/master/teams" />
   ) : (
-    <Container>
-      <Logo />
-      {isLoading ? <Loader /> : <Button onClick={handleClick}>Host a game</Button>}
+    <Container className="full-screen center">
+      <Row className="focus-center">
+        <Col>
+          <Logo />
+          {isLoading ? <Loader /> : <Button onClick={handleClick}>Host a game</Button>}
+        </Col>
+      </Row>
     </Container>
   );
 };

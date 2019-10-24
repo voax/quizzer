@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
+
 import Loader from './Loader';
 import Input from './Input';
 import Button from './Button';
@@ -26,13 +27,13 @@ const TeamRoom = () => {
       <Loader /> {open && <Button onClick={handleChangeAnswer}>Change answer</Button>}
     </>
   ) : (
-    <div className="team-room">
+    <>
       <span className="question-number">{`Question ${questionNo}`}</span>
       <span className="category">{category}</span>
       <span className="question">{question}</span>
       <Input reducer="teamApp" item="guess" placeholder="Your answer" maxLength="60" />
       <Button onClick={handleSubmit}>Submit!</Button>
-    </div>
+    </>
   );
 };
 
