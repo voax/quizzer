@@ -6,7 +6,7 @@ const { generateRoomCode } = require('../rooms/code');
 
 //#region rooms
 router.post('/', async (req, res) => {
-  if (!req.session.room || (await Room.exists({ code: req.session.room.code }))) {
+  if (req.session.room) {
     return res.status(400).json({ message: 'Room already created!' });
   }
   req.session.role = 'qm';
@@ -16,7 +16,9 @@ router.post('/', async (req, res) => {
   await newlyCreatedRoom.save();
   req.session.room = newlyCreatedRoom;
 
-  res.json({ roomCode: code });
+  req.session.save(() => {
+    res.json({ roomCode: code });
+  });
 });
 
 router.get('/:roomID', (req, res) => {

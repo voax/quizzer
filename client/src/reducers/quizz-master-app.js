@@ -3,7 +3,7 @@ import { setLoaderAction, stopLoaderAction } from './loader';
 import { showPopUpAction } from './pop-up';
 import { wsConnect } from './websocket';
 
-const API_URL = 'http://localhost:4000/';
+const API_URL = 'http://localhost:4000';
 
 const checkFetchError = async response => {
   const json = await response.json();
@@ -22,8 +22,10 @@ export const createRoom = () => async dispatch => {
 
     const response = await fetch(`${API_URL}/rooms`, {
       method: 'post',
+      credentials: 'include',
+      mode: 'cors',
     });
-    const { roomCode } = checkFetchError(response);
+    const { roomCode } = await checkFetchError(response);
 
     dispatch(wsConnect());
     dispatch(setRoomCode(roomCode));
