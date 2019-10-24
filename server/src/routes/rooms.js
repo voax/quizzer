@@ -7,6 +7,14 @@ const catchErrors = require('../middleware/catch-errors');
 const { SCOREBOARD, TEAM, QM } = require('./roles');
 const { generateRoomCode } = require('../rooms/code');
 
+const verifyQuizzMaster = (req, res, next) => {
+  if (req.sessionID !== req.room.host) {
+    return res.status(400).json({ message: 'You are not allowed to perform this action.' });
+  }
+
+  next();
+};
+
 //#region rooms
 router.post(
   '/',
@@ -46,7 +54,7 @@ router.get('/:roomID', (req, res) => {
   res.send('Not implemented yet!');
 });
 
-router.patch('/:roomID', (req, res) => {
+router.patch('/:roomID', verifyQuizzMaster, (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
@@ -89,11 +97,8 @@ router.post(
 
 router.delete(
   '/:roomID/applications/:applicationID',
+  verifyQuizzMaster,
   catchErrors(async (req, res) => {
-    if (req.sessionID !== req.room.host) {
-      return res.status(400).json({ message: 'You are not allowed to perform this action.' });
-    }
-
     const applicationDocument = req.room.applications.id(req.params.applicationID);
 
     if (!applicationDocument) {
@@ -111,11 +116,8 @@ router.delete(
 //#region teams
 router.post(
   '/:roomID/teams',
+  verifyQuizzMaster,
   catchErrors(async (req, res) => {
-    if (req.sessionID !== req.room.host) {
-      return res.status(400).json({ message: 'You are not allowed to perform this action.' });
-    }
-
     const applicationDocument = req.room.applications.id(req.body.applicationID);
 
     if (!applicationDocument) {
