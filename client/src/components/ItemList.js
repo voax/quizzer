@@ -25,6 +25,10 @@ const ItemList = ({ items, show, selectable, reducer, dispatchAs }) => {
     if (!selectable) {
       return;
     }
+
+    if (selected && item.id === selected.id) {
+      return dispatch(handleItemListChange(dispatchAs, null));
+    }
     dispatch(handleItemListChange(dispatchAs, item));
   };
 

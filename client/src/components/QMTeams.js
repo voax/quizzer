@@ -5,7 +5,11 @@ import { Container, Row, Col } from 'react-grid-system';
 import Button from './Button';
 import ItemList, { StaticItemList } from './ItemList';
 import ItemListHeader from './ItemListHeader';
-import { approveSelectedApplication } from '../reducers/quizz-master-app';
+import {
+  approveSelectedApplication,
+  rejectSelectedApplication,
+} from '../reducers/quizz-master-app';
+import Logo from './Logo';
 
 const QMTeams = () => {
   const dispatch = useDispatch();
@@ -14,6 +18,11 @@ const QMTeams = () => {
   const approvedTeamApplications = useSelector(
     state => state.quizzMasterApp.approvedTeamApplications
   );
+  const selectedTeamApplication = useSelector(
+    state => state.quizzMasterApp.selectedTeamApplication
+  );
+
+  const actionButtonsDisabled = !teamApplications.length || !selectedTeamApplication;
 
   return (
     <Container className="top-anxiety">
@@ -26,7 +35,9 @@ const QMTeams = () => {
         <Col>
           <ItemListHeader>Applied Teams</ItemListHeader>
         </Col>
-        <Col xs={3} />
+        <Col xs={3}>
+          <Logo fontSize="4em" center />
+        </Col>
         <Col>
           <ItemListHeader>Approved Teams</ItemListHeader>
         </Col>
@@ -41,9 +52,19 @@ const QMTeams = () => {
             dispatchAs="APPLIED"
           />
         </Col>
-        <Col xs={3}>
-          <Button onClick={() => dispatch(approveSelectedApplication())}>Aprrove team</Button>
-          <Button>Reject team</Button>
+        <Col xs={3} className="button-stack">
+          <Button
+            disabled={actionButtonsDisabled}
+            onClick={() => dispatch(approveSelectedApplication())}
+          >
+            Approve team
+          </Button>
+          <Button
+            disabled={actionButtonsDisabled}
+            onClick={() => dispatch(rejectSelectedApplication())}
+          >
+            Reject team
+          </Button>
         </Col>
         <Col>
           <StaticItemList items={approvedTeamApplications} show="name" />

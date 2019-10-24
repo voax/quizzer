@@ -45,6 +45,10 @@ export const approveSelectedApplication = () => ({
   type: `APPROVE_TEAM_APPLICATION`,
 });
 
+export const rejectSelectedApplication = () => ({
+  type: `REJECT_TEAM_APPLICATION`,
+});
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -62,6 +66,12 @@ const quizzMasterApp = produce(
           return team.id !== draft.selectedTeamApplication.id;
         });
         draft.approvedTeamApplications.push(draft.selectedTeamApplication);
+        draft.selectedTeamApplication = null;
+        return;
+      case 'REJECT_TEAM_APPLICATION':
+        draft.teamApplications = draft.teamApplications.filter(team => {
+          return team.id !== draft.selectedTeamApplication.id;
+        });
         draft.selectedTeamApplication = null;
         return;
       default:
