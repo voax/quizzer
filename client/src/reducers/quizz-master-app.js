@@ -36,6 +36,15 @@ export const createRoom = () => async dispatch => {
   }
 };
 
+export const handleItemListChange = (name, value) => ({
+  type: `ITEM_LIST_CHANGED_${name}`,
+  value,
+});
+
+export const approveSelectedApplication = () => ({
+  type: `APPROVE_TEAM_APPLICATION`,
+});
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -45,12 +54,38 @@ const quizzMasterApp = produce(
       case 'CLEAR_ROOM_CODE':
         draft.roomCode = null;
         return;
+      case 'ITEM_LIST_CHANGED_APPLIED':
+        draft.selectedTeamApplication = action.value;
+        return;
+      case 'APPROVE_TEAM_APPLICATION':
+        draft.teamApplications = draft.teamApplications.filter(team => {
+          return team.id !== draft.selectedTeamApplication.id;
+        });
+        draft.approvedTeamApplications.push(draft.selectedTeamApplication);
+        draft.selectedTeamApplication = null;
+        return;
       default:
         return;
     }
   },
   {
     roomCode: null,
+    selectedTeamApplication: null,
+    teamApplications: [
+      {
+        id: 1,
+        name: 'Team 1',
+      },
+      {
+        id: 2,
+        name: 'Team 2',
+      },
+      {
+        id: 3,
+        name: 'Team 3',
+      },
+    ],
+    approvedTeamApplications: [],
   }
 );
 
