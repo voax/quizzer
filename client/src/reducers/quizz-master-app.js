@@ -28,7 +28,6 @@ export const createRoom = () => async dispatch => {
     dispatch(wsConnect());
     dispatch(setRoomCode(roomCode));
     dispatch(stopLoaderAction());
-    // history.push('/master/teams'); // does not work.
   } catch (error) {
     dispatch(stopLoaderAction());
     dispatch(showPopUpAction('ERROR', error.message));
@@ -39,10 +38,10 @@ const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
       case 'SET_ROOM_CODE':
-        draft.room = action.roomCode;
+        draft.roomCode = action.roomCode;
         return;
       case 'CLEAR_ROOM_CODE':
-        draft.room = null;
+        draft.roomCode = null;
         return;
       default:
         return;

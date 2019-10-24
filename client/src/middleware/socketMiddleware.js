@@ -34,10 +34,7 @@ const socketMiddleware = () => {
           socket.close();
         }
 
-        // connect to the remote host
         socket = new WebSocket(WS_HOST);
-
-        // websocket handlers
         socket.onmessage = onMessage(store);
         socket.onclose = onClose(store);
         socket.onopen = onOpen(store);
@@ -50,10 +47,6 @@ const socketMiddleware = () => {
         socket = null;
         console.log('websocket closed');
         break;
-      // case 'NEW_MESSAGE':
-      //   console.log('sending a message', action.msg);
-      //   socket.send(JSON.stringify({ command: 'NEW_MESSAGE', message: action.msg }));
-      //   break;
       default:
         console.log('the next action:', action);
         return next(action);
