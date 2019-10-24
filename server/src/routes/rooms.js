@@ -50,6 +50,11 @@ router.use(
 
 router.get('/:roomID', (req, res) => {
   // if client hasn't a session yet, a session will be created with the scoreboard role.
+  if (!req.sessionID) {
+    req.session.role = SCOREBOARD;
+    req.session.roomID = req.params.roomID;
+  }
+
   // @TODO
   res.send('Not implemented yet!');
 });
@@ -82,6 +87,7 @@ router.post(
 
     req.session.role = TEAM;
     req.session.name = name;
+    req.session.roomID = req.params.roomID;
 
     const newApplication = new Team({ sessionID: req.sessionID, name });
     await newApplication.save();
