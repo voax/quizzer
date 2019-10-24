@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+const Room = mongoose.model('Room');
 const blackListedRoomCodes = require('./blacklisted');
 
 const rooms = {};
@@ -23,7 +25,15 @@ const removeRoomCode = code => {
   delete rooms[code];
 };
 
+const initRoomCodes = async () => {
+  const rooms = await Room.find({ ended: false });
+  rooms.forEach(({ code }) => {
+    rooms[code] = true;
+  });
+};
+
 module.exports = {
   generateRoomCode,
   removeRoomCode,
+  initRoomCodes,
 };

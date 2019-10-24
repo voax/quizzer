@@ -5,9 +5,17 @@ const Team = new mongoose.Schema({
     type: String,
     required: true,
   },
-  score: {
+  roundPoints: {
+    type: String,
+  },
+  roundScore: {
     type: Number,
-    required: true,
+  },
+  guess: {
+    type: String,
+  },
+  guessCorrect: {
+    type: Boolean,
   },
 });
 
