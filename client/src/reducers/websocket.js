@@ -3,6 +3,7 @@ import produce from 'immer';
 // actions are handled by socketMiddleware
 export const wsConnect = () => ({ type: 'WS_CONNECT' });
 export const wsDisconnect = () => ({ type: 'WS_DISCONNECT' });
+export const wsPing = command => ({ type: 'WS_PING', command });
 // end of socketMiddleware actions
 
 export const wsConnected = () => ({ type: 'WS_CONNECTED' });

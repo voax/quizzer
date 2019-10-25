@@ -47,6 +47,9 @@ const socketMiddleware = () => {
         socket = null;
         console.log('websocket closed');
         break;
+      case 'WS_PING':
+        socket.send(JSON.stringify({ command: action.command }));
+        break;
       default:
         console.log('the next action:', action);
         return next(action);
