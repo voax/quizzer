@@ -1,12 +1,19 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import QMHome from './QMHome';
 import QMTeams from './QMTeams';
 import QMCategories from './QMCategories';
 import QMQuestions from './QMQuestions';
 
-const QM = () => {
+const QM = ({ location: { pathname } }) => {
+  const connected = useSelector(state => state.websocket.connected);
+
+  if (pathname !== '/master' && !connected) {
+    return <Redirect to="/master" />;
+  }
+
   return (
     <Switch>
       <Route exact path="/master">
@@ -25,4 +32,4 @@ const QM = () => {
   );
 };
 
-export default QM;
+export default withRouter(QM);
