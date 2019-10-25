@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
 const Room = mongoose.model('Room');
+const sockets = require('./wss-clients');
 
 module.exports = wss => {
-  const sockets = new Map();
-
   wss.on('connection', (socket, request) => {
     const { id, roomID } = request.session;
     console.log('New connection!', id);
