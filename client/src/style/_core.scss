@@ -185,3 +185,12 @@ button {
     margin-bottom: 0;
   }
 }
+
+.center-stick-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  $m: 15px;
+  margin-left: $m;
+  width: calc(100% - #{$m * 2});
+}

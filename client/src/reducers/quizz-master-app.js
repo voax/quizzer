@@ -49,6 +49,10 @@ export const rejectSelectedApplication = () => ({
   type: `REJECT_TEAM_APPLICATION`,
 });
 
+export const confirmTeamsAndContinue = () => ({
+  type: 'CONFIRM_TEAMS_APPROVED',
+});
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -74,6 +78,9 @@ const quizzMasterApp = produce(
         });
         draft.selectedTeamApplication = null;
         return;
+      case 'CONFIRM_TEAMS_APPROVED':
+        draft.teamsConfirmed = true;
+        return;
       default:
         return;
     }
@@ -94,8 +101,25 @@ const quizzMasterApp = produce(
         id: 3,
         name: 'Team 3',
       },
+      {
+        id: 4,
+        name: 'Team 4',
+      },
+      {
+        id: 5,
+        name: 'Team 5',
+      },
+      {
+        id: 6,
+        name: 'Team 6',
+      },
+      {
+        id: 7,
+        name: 'Team 7',
+      },
     ],
     approvedTeamApplications: [],
+    teamsConfirmed: false,
   }
 );
 

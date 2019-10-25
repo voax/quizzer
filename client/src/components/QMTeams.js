@@ -8,6 +8,7 @@ import ItemListHeader from './ItemListHeader';
 import {
   approveSelectedApplication,
   rejectSelectedApplication,
+  confirmTeamsAndContinue,
 } from '../reducers/quizz-master-app';
 import Logo from './Logo';
 
@@ -21,8 +22,11 @@ const QMTeams = () => {
   const selectedTeamApplication = useSelector(
     state => state.quizzMasterApp.selectedTeamApplication
   );
+  const teamsConfirmed = useSelector(state => state.quizzMasterApp.teamsConfirmed);
 
-  const actionButtonsDisabled = !teamApplications.length || !selectedTeamApplication;
+  const actionButtonsDisabled =
+    !teamApplications.length || !selectedTeamApplication || teamsConfirmed;
+  const middleWidth = 3;
 
   return (
     <Container className="top-anxiety">
@@ -35,14 +39,14 @@ const QMTeams = () => {
         <Col>
           <ItemListHeader>Applied Teams</ItemListHeader>
         </Col>
-        <Col xs={3}>
+        <Col xs={middleWidth}>
           <Logo fontSize="4em" center />
         </Col>
         <Col>
           <ItemListHeader>Approved Teams</ItemListHeader>
         </Col>
       </Row>
-      <Row>
+      <Row style={{ minHeight: '230px' }}>
         <Col>
           <ItemList
             items={teamApplications}
@@ -52,9 +56,9 @@ const QMTeams = () => {
             dispatchAs="APPLIED"
           />
         </Col>
-        <Col xs={3} className="button-stack">
+        <Col xs={middleWidth} className="button-stack">
           <Button
-            disabled={actionButtonsDisabled}
+            disabled={actionButtonsDisabled || approvedTeamApplications.length >= 6}
             onClick={() => dispatch(approveSelectedApplication())}
           >
             Approve team
@@ -64,6 +68,17 @@ const QMTeams = () => {
             onClick={() => dispatch(rejectSelectedApplication())}
           >
             Reject team
+          </Button>
+          <Button
+            disabled={
+              approvedTeamApplications.length < 2 ||
+              approveSelectedApplication.length >= 6 ||
+              teamsConfirmed
+            }
+            onClick={() => dispatch(confirmTeamsAndContinue())}
+            className="center-stick-bottom"
+          >
+            Next
           </Button>
         </Col>
         <Col>
