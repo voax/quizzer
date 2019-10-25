@@ -128,6 +128,10 @@ router.post(
   '/:roomCode/teams',
   verifyQuizzMaster,
   catchErrors(async (req, res) => {
+    if (req.room.teams.length >= 6) {
+      return res.status(400).json({ message: 'Maximum number of teams reached.' });
+    }
+
     const applicationDocument = req.room.applications.id(req.body.applicationID);
 
     if (!applicationDocument) {
