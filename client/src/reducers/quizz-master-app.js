@@ -61,33 +61,54 @@ export const handleItemListChange = (name, value) => ({
   value,
 });
 
-const approveTeamApplication = () => ({
+const approveTeamApplication = selectedTeamApplication => ({
   type: `APPROVE_TEAM_APPLICATION`,
+  selectedTeamApplication,
 });
 
-export const approveSelectedApplication = () => async dispatch => {
+export const approveSelectedApplication = (selectedTeamApplication, roomCode) => async dispatch => {
   try {
-    // dispatch(setLoaderAction('Creating a room...'));
+    const bodyObject = { applicationID: selectedTeamApplication.id };
 
-    // const response = await fetch(`${API_URL}/rooms`, {
-    //   method: 'post',
-    //   credentials: 'include',
-    //   mode: 'cors',
-    // });
-    // const { roomCode } = await checkFetchError(response);
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/teams`, {
+      method: 'post',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObject),
+    });
+    await checkFetchError(response);
 
-    // dispatch(wsConnect());
-    dispatch(approveTeamApplication());
-    // dispatch(stopLoaderAction());
+    dispatch(approveTeamApplication(selectedTeamApplication));
   } catch (error) {
-    // dispatch(stopLoaderAction());
     dispatch(showPopUpAction('ERROR', error.message));
   }
 };
 
-export const rejectSelectedApplication = () => ({
+export const rejectTeamApplication = selectedTeamApplication => ({
   type: `REJECT_TEAM_APPLICATION`,
+  selectedTeamApplication,
 });
+
+export const rejectSelectedApplication = (selectedTeamApplication, roomCode) => async dispatch => {
+  try {
+    const response = await fetch(
+      `${API_URL}/rooms/${roomCode}/applications/${selectedTeamApplication.id}`,
+      {
+        method: 'delete',
+        credentials: 'include',
+        mode: 'cors',
+      }
+    );
+    await checkFetchError(response);
+
+    dispatch(rejectTeamApplication(selectedTeamApplication));
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  }
+};
 
 export const confirmTeamsAndContinue = () => ({
   type: 'CONFIRM_TEAMS_APPROVED',
@@ -110,14 +131,14 @@ const quizzMasterApp = produce(
         return;
       case 'APPROVE_TEAM_APPLICATION':
         draft.teamApplications = draft.teamApplications.filter(team => {
-          return team.id !== draft.selectedTeamApplication.id;
+          return team.id !== action.selectedTeamApplication.id;
         });
-        draft.approvedTeamApplications.push(draft.selectedTeamApplication);
+        draft.approvedTeamApplications.push(action.selectedTeamApplication);
         draft.selectedTeamApplication = null;
         return;
       case 'REJECT_TEAM_APPLICATION':
         draft.teamApplications = draft.teamApplications.filter(team => {
-          return team.id !== draft.selectedTeamApplication.id;
+          return team.id !== action.selectedTeamApplication.id;
         });
         draft.selectedTeamApplication = null;
         return;

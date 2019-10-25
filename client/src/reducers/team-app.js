@@ -13,13 +13,14 @@ const checkFetchError = async response => {
   return Promise.reject(new Error(json.message));
 };
 
-export const textInputHandlerAction = (name, value, minLength, maxLength) => {
+export const textInputHandlerAction = (name, value, minLength, maxLength, uppercase) => {
   return {
     type: 'TEXT_INPUT_HANDLER',
     name,
     value,
     minLength,
     maxLength,
+    uppercase,
   };
 };
 
@@ -57,7 +58,13 @@ const teamAppReducer = produce(
         } else {
           draft[action.name].valid = true;
         }
+
+        if (action.uppercase) {
+          draft[action.name].value = action.value.toUpperCase();
+          return;
+        }
         draft[action.name].value = action.value;
+
         return;
       default:
         return;

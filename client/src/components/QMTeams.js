@@ -37,17 +37,26 @@ const QMTeams = () => {
 
   return (
     <Container className="top-anxiety">
-      <Row>
-        <Col>
-          Room code: <b>{code}</b>
-        </Col>
-      </Row>
+      <Logo center />
       <Row>
         <Col>
           <ItemListHeader>Applied Teams</ItemListHeader>
         </Col>
         <Col xs={middleWidth}>
-          <Logo fontSize="4em" center />
+          <ItemListHeader
+            style={{
+              textAlign: 'center',
+              fontSize: '1.2em',
+              fontWeight: '200',
+              position: 'absolute',
+              bottom: 0,
+              left: '50%',
+              transform: 'translate(-50%)',
+              width: '100%',
+            }}
+          >
+            Room code: <b>{code}</b>
+          </ItemListHeader>
         </Col>
         <Col>
           <ItemListHeader>Approved Teams</ItemListHeader>
@@ -66,13 +75,13 @@ const QMTeams = () => {
         <Col xs={middleWidth} className="button-stack">
           <Button
             disabled={actionButtonsDisabled || approvedTeamApplications.length >= 6}
-            onClick={() => dispatch(approveSelectedApplication())}
+            onClick={() => dispatch(approveSelectedApplication(selectedTeamApplication, code))}
           >
             Approve team
           </Button>
           <Button
             disabled={actionButtonsDisabled}
-            onClick={() => dispatch(rejectSelectedApplication())}
+            onClick={() => dispatch(rejectSelectedApplication(selectedTeamApplication, code))}
           >
             Reject team
           </Button>

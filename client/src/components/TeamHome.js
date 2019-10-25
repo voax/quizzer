@@ -30,7 +30,7 @@ const TeamHome = () => {
         item="roomCode"
         labelText="Room code"
         placeholder="Enter 4-letter code"
-        textTransform="uppercase"
+        uppercase
         minLength="4"
         maxLength="4"
       />

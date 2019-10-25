@@ -6,7 +6,7 @@ const Input = ({
   reducer,
   item,
   labelText = false,
-  textTransform = 'none',
+  uppercase = false,
   placeholder,
   minLength = 1,
   maxLength = 24,
@@ -16,7 +16,7 @@ const Input = ({
   const dispatch = useDispatch();
 
   const handleChange = () => ({ target: { value } }) => {
-    dispatch(textInputHandlerAction(item, value, minLength, maxLength));
+    dispatch(textInputHandlerAction(item, value, minLength, maxLength, uppercase));
   };
 
   return (
@@ -29,7 +29,7 @@ const Input = ({
       )}
       <input
         id={item}
-        style={{ textTransform }}
+        style={{ textTransform: uppercase ? 'uppercase' : null }}
         placeholder={placeholder}
         value={value}
         onChange={handleChange()}
