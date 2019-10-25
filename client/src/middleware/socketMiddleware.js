@@ -1,5 +1,6 @@
 import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
+import { fetchTeamApplications } from '../reducers/quizz-master-app';
 
 const WS_HOST = 'ws://localhost:4000/';
 
@@ -20,8 +21,8 @@ const socketMiddleware = () => {
   const onMessage = store => ({ data }) => {
     switch (data) {
       case 'TEAM_APPLIED':
-        // store.dispatch(fetchTeams());
-        console.log('a new team applied, fetch!');
+        const state = store.getState();
+        store.dispatch(fetchTeamApplications(state.quizzMasterApp.roomCode));
         break;
       case 'ROOM_CLOSED':
         store.dispatch(showPopUpAction('😔', 'Room has been closed'));

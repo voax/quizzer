@@ -36,14 +36,54 @@ export const createRoom = () => async dispatch => {
   }
 };
 
+export const addTeamApplications = applications => ({
+  type: 'ADD_TEAM_APPLICATIONS',
+  applications,
+});
+
+export const fetchTeamApplications = roomCode => async dispatch => {
+  try {
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/applications`, {
+      method: 'get',
+      credentials: 'include',
+      mode: 'cors',
+    });
+    const data = await checkFetchError(response);
+
+    dispatch(addTeamApplications(JSON.parse(data)));
+  } catch (error) {
+    console.error(error.message);
+  }
+};
+
 export const handleItemListChange = (name, value) => ({
   type: `ITEM_LIST_CHANGED_${name}`,
   value,
 });
 
-export const approveSelectedApplication = () => ({
+const approveTeamApplication = () => ({
   type: `APPROVE_TEAM_APPLICATION`,
 });
+
+export const approveSelectedApplication = () => async dispatch => {
+  try {
+    // dispatch(setLoaderAction('Creating a room...'));
+
+    // const response = await fetch(`${API_URL}/rooms`, {
+    //   method: 'post',
+    //   credentials: 'include',
+    //   mode: 'cors',
+    // });
+    // const { roomCode } = await checkFetchError(response);
+
+    // dispatch(wsConnect());
+    dispatch(approveTeamApplication());
+    // dispatch(stopLoaderAction());
+  } catch (error) {
+    // dispatch(stopLoaderAction());
+    dispatch(showPopUpAction('ERROR', error.message));
+  }
+};
 
 export const rejectSelectedApplication = () => ({
   type: `REJECT_TEAM_APPLICATION`,
@@ -64,6 +104,9 @@ const quizzMasterApp = produce(
         return;
       case 'ITEM_LIST_CHANGED_APPLIED':
         draft.selectedTeamApplication = action.value;
+        return;
+      case 'ADD_TEAM_APPLICATIONS':
+        draft.teamApplications = action.applications;
         return;
       case 'APPROVE_TEAM_APPLICATION':
         draft.teamApplications = draft.teamApplications.filter(team => {
@@ -88,36 +131,7 @@ const quizzMasterApp = produce(
   {
     roomCode: null,
     selectedTeamApplication: null,
-    teamApplications: [
-      {
-        id: 1,
-        name: 'Team 1',
-      },
-      {
-        id: 2,
-        name: 'Team 2',
-      },
-      {
-        id: 3,
-        name: 'Team 3',
-      },
-      {
-        id: 4,
-        name: 'Team 4',
-      },
-      {
-        id: 5,
-        name: 'Team 5',
-      },
-      {
-        id: 6,
-        name: 'Team 6',
-      },
-      {
-        id: 7,
-        name: 'Team 7',
-      },
-    ],
+    teamApplications: [],
     approvedTeamApplications: [],
     teamsConfirmed: false,
   }

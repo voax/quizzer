@@ -71,6 +71,11 @@ router.delete('/:roomCode', (req, res) => {
 //#endregion
 
 //#region applications
+router.get('/:roomCode/applications', verifyQuizzMaster, (req, res) => {
+  const applications = req.room.applications.map(({ _id, name }) => ({ id: _id, name }));
+  res.json(JSON.stringify(applications));
+});
+
 router.post(
   '/:roomCode/applications',
   catchErrors(async (req, res) => {
