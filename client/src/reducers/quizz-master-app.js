@@ -137,6 +137,10 @@ export const selectCategory = () => ({
   type: 'APPROVE_SELECTD_CATEGORY',
 });
 
+export const confirmCategoriesAndContinue = () => ({
+  type: 'CONFIRM_CATEGORIES_SELECTED',
+});
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -182,21 +186,29 @@ const quizzMasterApp = produce(
         draft.categories = draft.categories.filter(({ id }) => id !== draft.selectedCategory.id);
         draft.selectedCategory = null;
         return;
+      case 'CONFIRM_CATEGORIES_SELECTED':
+        draft.categoriesConfirmed = true;
+        return;
       default:
         return;
     }
   },
   {
     roomCode: null,
+
     selectedTeamApplication: null,
     teamApplications: [],
     approvedTeamApplications: [],
+    teamsConfirmed: false,
+
     selectedCategory: null,
     categories: [],
     selectedCategories: [],
-    teamsConfirmed: false,
+    categoriesConfirmed: false,
+
     questions: [],
     questionsAsked: [],
+
     currentQuestion: null,
     round: 1,
     question: 1,
