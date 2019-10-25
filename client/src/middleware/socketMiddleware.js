@@ -1,26 +1,31 @@
-import { wsConnected, wsDisconnected } from '../reducers/websocket';
+import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
+import { showPopUpAction } from '../reducers/pop-up';
 
 const WS_HOST = 'ws://localhost:4000/';
 
 const socketMiddleware = () => {
   let socket = null;
 
-  const onOpen = store => () => {
+  const onOpen = (store, ping) => () => {
     store.dispatch(wsConnected());
+    if (ping) {
+      store.dispatch(wsPing(ping));
+    }
   };
 
   const onClose = store => () => {
     store.dispatch(wsDisconnected());
   };
 
-  const onMessage = store => event => {
-    const payload = JSON.parse(event.data);
-    console.log('receiving server message');
-
-    switch (payload.type) {
-      // case 'ROOM_CREATED':
-      //   store.dispatch(wsRoomCreated());
-      //   break;
+  const onMessage = store => ({ data }) => {
+    switch (data) {
+      case 'TEAM_APPLIED':
+        // store.dispatch(fetchTeams());
+        console.log('a new team applied, fetch!');
+        break;
+      case 'ROOM_CLOSED':
+        store.dispatch(showPopUpAction('😔', 'Room has been closed'));
+        break;
       default:
         break;
     }
@@ -33,12 +38,10 @@ const socketMiddleware = () => {
         if (socket !== null) {
           socket.close();
         }
-
         socket = new WebSocket(WS_HOST);
         socket.onmessage = onMessage(store);
         socket.onclose = onClose(store);
-        socket.onopen = onOpen(store);
-
+        socket.onopen = onOpen(store, action.ping);
         break;
       case 'WS_DISCONNECT':
         if (socket !== null) {
@@ -51,7 +54,6 @@ const socketMiddleware = () => {
         socket.send(JSON.stringify({ command: action.command }));
         break;
       default:
-        console.log('the next action:', action);
         return next(action);
     }
   };

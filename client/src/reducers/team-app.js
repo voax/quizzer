@@ -40,7 +40,7 @@ export const applyTeam = (roomCode, name) => async dispatch => {
     });
     await checkFetchError(response);
 
-    dispatch(wsConnect());
+    dispatch(wsConnect('TEAM_APPLIED'));
     dispatch(stopLoaderAction());
   } catch (error) {
     dispatch(stopLoaderAction());

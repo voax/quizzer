@@ -36,9 +36,9 @@ router.post(
 );
 
 router.use(
-  '/:roomID',
+  '/:roomCode',
   catchErrors(async (req, res, next) => {
-    req.room = await Room.findOne({ code: req.params.roomID, ended: false });
+    req.room = await Room.findOne({ code: req.params.roomCode, ended: false });
 
     if (!req.room) {
       return res.status(404).json({ message: 'Invalid room code.' });
@@ -48,23 +48,23 @@ router.use(
   })
 );
 
-router.get('/:roomID', (req, res) => {
+router.get('/:roomCode', (req, res) => {
   // if client hasn't a session yet, a session will be created with the scoreboard role.
   if (!req.sessionID) {
     req.session.role = SCOREBOARD;
-    req.session.roomID = req.params.roomID;
+    req.session.roomID = req.room._id;
   }
 
   // @TODO
   res.send('Not implemented yet!');
 });
 
-router.patch('/:roomID', verifyQuizzMaster, (req, res) => {
+router.patch('/:roomCode', verifyQuizzMaster, (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
 
-router.delete('/:roomID', (req, res) => {
+router.delete('/:roomCode', (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
@@ -72,7 +72,7 @@ router.delete('/:roomID', (req, res) => {
 
 //#region applications
 router.post(
-  '/:roomID/applications',
+  '/:roomCode/applications',
   catchErrors(async (req, res) => {
     const { name } = req.body;
     const { roomClosed, teams, applications } = req.room;
@@ -91,7 +91,7 @@ router.post(
 
     req.session.role = TEAM;
     req.session.name = name;
-    req.session.roomID = req.params.roomID;
+    req.session.roomID = req.room._id;
 
     const newApplication = new Team({ sessionID: req.sessionID, name });
     await newApplication.save();
@@ -106,7 +106,7 @@ router.post(
 );
 
 router.delete(
-  '/:roomID/applications/:applicationID',
+  '/:roomCode/applications/:applicationID',
   verifyQuizzMaster,
   catchErrors(async (req, res) => {
     const applicationDocument = req.room.applications.id(req.params.applicationID);
@@ -125,7 +125,7 @@ router.delete(
 
 //#region teams
 router.post(
-  '/:roomID/teams',
+  '/:roomCode/teams',
   verifyQuizzMaster,
   catchErrors(async (req, res) => {
     const applicationDocument = req.room.applications.id(req.body.applicationID);
@@ -144,19 +144,19 @@ router.post(
   })
 );
 
-router.patch('/:roomID/teams/:teamID', (req, res) => {
+router.patch('/:roomCode/teams/:teamID', (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
 //#endregion
 
 //#region categories
-router.post('/:roomID/categories', (req, res) => {
+router.post('/:roomCode/categories', (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
 
-router.delete('/:roomID/categories/:categoryID', (req, res) => {
+router.delete('/:roomCode/categories/:categoryID', (req, res) => {
   // @TODO
   res.send('Not implemented yet!');
 });
