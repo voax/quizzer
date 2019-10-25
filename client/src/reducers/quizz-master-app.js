@@ -114,6 +114,29 @@ export const confirmTeamsAndContinue = () => ({
   type: 'CONFIRM_TEAMS_APPROVED',
 });
 
+export const fetchCategories = () => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Retrieving categories...'));
+    const response = await fetch(`${API_URL}/categories`, {
+      headers: {
+        'Accept-Language': 'en',
+      },
+      mode: 'cors',
+      credentials: 'include',
+    });
+    const categories = await checkFetchError(response);
+    dispatch({ type: 'CATEGORIES_FETCHED', categories });
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
+
+export const selectCategory = () => ({
+  type: 'APPROVE_SELECTD_CATEGORY',
+});
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -145,6 +168,20 @@ const quizzMasterApp = produce(
       case 'CONFIRM_TEAMS_APPROVED':
         draft.teamsConfirmed = true;
         return;
+      case 'CATEGORIES_FETCHED':
+        draft.categories = action.categories.map(category => ({
+          id: category,
+          category,
+        }));
+        return;
+      case 'ITEM_LIST_CHANGED_CATEGORIES':
+        draft.selectedCategory = action.value;
+        return;
+      case 'APPROVE_SELECTD_CATEGORY':
+        draft.selectedCategories.push(draft.selectedCategory);
+        draft.categories = draft.categories.filter(({ id }) => id !== draft.selectedCategory.id);
+        draft.selectedCategory = null;
+        return;
       default:
         return;
     }
@@ -154,7 +191,15 @@ const quizzMasterApp = produce(
     selectedTeamApplication: null,
     teamApplications: [],
     approvedTeamApplications: [],
+    selectedCategory: null,
+    categories: [],
+    selectedCategories: [],
     teamsConfirmed: false,
+    questions: [],
+    questionsAsked: [],
+    currentQuestion: null,
+    round: 1,
+    question: 1,
   }
 );
 
