@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
+import { Redirect } from 'react-router-dom';
 
 import Button from './Button';
 import ItemList, { StaticItemList } from './ItemList';
@@ -27,6 +28,12 @@ const QMTeams = () => {
   const actionButtonsDisabled =
     !teamApplications.length || !selectedTeamApplication || teamsConfirmed;
   const middleWidth = 3;
+
+  if (!code) {
+    return <Redirect to="/master" />;
+  } else if (teamsConfirmed) {
+    return <Redirect to="/master/categories" />;
+  }
 
   return (
     <Container className="top-anxiety">
