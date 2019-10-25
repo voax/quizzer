@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
+import { Redirect } from 'react-router-dom';
 
 import Button from './Button';
 import ItemList, { StaticItemList } from './ItemList';
 import ItemListHeader from './ItemListHeader';
-import { fetchCategories, selectCategory } from '../reducers/quizz-master-app';
+import {
+  fetchCategories,
+  selectCategory,
+  confirmCategoriesAndContinue,
+} from '../reducers/quizz-master-app';
 import Loader from './Loader';
 import Logo from './Logo';
 
@@ -15,6 +20,8 @@ const QMCategories = () => {
   const isLoading = useSelector(state => state.loader.active);
   const categories = useSelector(state => state.quizzMasterApp.categories);
   const selectedCategories = useSelector(state => state.quizzMasterApp.selectedCategories);
+  const selectedCategory = useSelector(state => state.quizzMasterApp.selectedCategory);
+  const categoriesConfirmed = useSelector(state => state.quizzMasterApp.categoriesConfirmed);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -24,7 +31,9 @@ const QMCategories = () => {
 
   const middleWidth = 3;
 
-  if (isLoading) {
+  if (categoriesConfirmed) {
+    return <Redirect to="/master/questions" />;
+  } else if (isLoading) {
     return (
       <Container fluid className="full-screen center">
         <Row className="focus-center">
@@ -62,14 +71,14 @@ const QMCategories = () => {
         </Col>
         <Col xs={middleWidth} className="button-stack">
           <Button
-            disabled={selectedCategories.length >= 3}
+            disabled={selectedCategories.length >= 3 || !selectedCategory}
             onClick={() => dispatch(selectCategory())}
           >
             Select category
           </Button>
           <Button
             disabled={selectedCategories.length < 3}
-            // onClick={() => dispatch(confirmCategoriesAndContinue())}
+            onClick={() => dispatch(confirmCategoriesAndContinue())}
             className="center-stick-bottom start-round"
           >
             Start round
