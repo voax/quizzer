@@ -31,7 +31,6 @@ const socketMiddleware = () => {
             'Your team is accepted. Please wait for the Quizz Master to start the Quizz.'
           )
         );
-        socket.close();
         break;
       case 'APPLICATION_REJECTED':
         store.dispatch(stopLoaderAction());
@@ -39,6 +38,7 @@ const socketMiddleware = () => {
         socket.close();
         break;
       case 'ROOM_CLOSED':
+        store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('😔', 'Room has been closed.'));
         break;
       default:
