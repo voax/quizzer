@@ -75,7 +75,11 @@ router.post(
   '/:roomID/applications',
   catchErrors(async (req, res) => {
     const { name } = req.body;
-    const { teams, applications } = req.room;
+    const { roomClosed, teams, applications } = req.room;
+
+    if (roomClosed) {
+      return res.status(404).json({ message: 'This room is closed.' });
+    }
 
     if (!name) {
       return res.status(404).json({ message: 'Invalid team name.' });

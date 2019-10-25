@@ -1,21 +1,27 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { showPopUpAction } from '../reducers/pop-up';
+import { Redirect } from 'react-router-dom';
+import { applyTeam } from '../reducers/team-app';
 import Loader from './Loader';
 import Input from './Input';
 import Button from './Button';
 
 const TeamHome = () => {
   const isLoading = useSelector(state => state.loader.active);
+  const websocketConnected = useSelector(state => state.websocket.connected);
   const roomCodeValid = useSelector(state => state.teamApp.roomCode.valid);
+  const roomCodeValue = useSelector(state => state.teamApp.roomCode.value);
   const teamValid = useSelector(state => state.teamApp.team.valid);
+  const teamValue = useSelector(state => state.teamApp.team.value);
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(showPopUpAction('ERROR', 'Room code is invalid.'));
+    dispatch(applyTeam(roomCodeValue, teamValue));
   };
 
-  return isLoading ? (
+  return websocketConnected ? (
+    <Redirect to="/room" />
+  ) : isLoading ? (
     <Loader />
   ) : (
     <>

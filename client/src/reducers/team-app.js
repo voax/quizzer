@@ -1,4 +1,17 @@
 import produce from 'immer';
+import { setLoaderAction, stopLoaderAction } from './loader';
+import { showPopUpAction } from './pop-up';
+import { wsConnect } from './websocket';
+
+const API_URL = 'http://localhost:4000';
+
+const checkFetchError = async response => {
+  const json = await response.json();
+  if (response.ok) {
+    return json;
+  }
+  return Promise.reject(new Error(json.message));
+};
 
 export const textInputHandlerAction = (name, value, minLength, maxLength) => {
   return {
@@ -8,6 +21,31 @@ export const textInputHandlerAction = (name, value, minLength, maxLength) => {
     minLength,
     maxLength,
   };
+};
+
+export const applyTeam = (roomCode, name) => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Applying team'));
+
+    const bodyObject = { name };
+
+    const response = await fetch(`${API_URL}/rooms/${roomCode}/applications`, {
+      method: 'post',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObject),
+    });
+    await checkFetchError(response);
+
+    dispatch(wsConnect());
+    dispatch(stopLoaderAction());
+  } catch (error) {
+    dispatch(stopLoaderAction());
+    dispatch(showPopUpAction('ERROR', error.message));
+  }
 };
 
 const teamAppReducer = produce(
