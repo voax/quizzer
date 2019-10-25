@@ -1,5 +1,6 @@
 import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
+import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/quizz-master-app';
 
 const WS_HOST = 'ws://localhost:4000/';
@@ -24,8 +25,21 @@ const socketMiddleware = () => {
         const state = store.getState();
         store.dispatch(fetchTeamApplications(state.quizzMasterApp.roomCode));
         break;
+      case 'APPLICATION_ACCEPTED':
+        store.dispatch(
+          setLoaderAction(
+            'Your team is accepted. Please wait for the Quizz Master to start the Quizz.'
+          )
+        );
+        socket.close();
+        break;
+      case 'APPLICATION_REJECTED':
+        store.dispatch(stopLoaderAction());
+        store.dispatch(showPopUpAction('💔', 'You application has been rejected.'));
+        socket.close();
+        break;
       case 'ROOM_CLOSED':
-        store.dispatch(showPopUpAction('😔', 'Room has been closed'));
+        store.dispatch(showPopUpAction('😔', 'Room has been closed.'));
         break;
       default:
         break;

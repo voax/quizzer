@@ -42,7 +42,7 @@ export const applyTeam = (roomCode, name) => async dispatch => {
     await checkFetchError(response);
 
     dispatch(wsConnect('TEAM_APPLIED'));
-    dispatch(stopLoaderAction());
+    dispatch(setLoaderAction('Waiting for the Quizz Master to review your application...'));
   } catch (error) {
     dispatch(stopLoaderAction());
     dispatch(showPopUpAction('ERROR', error.message));
@@ -80,10 +80,10 @@ const teamAppReducer = produce(
       valid: false,
     },
     question: {
-      open: true,
-      number: 1,
-      question: 'In which art gallery is the Mona Lisa kept?',
-      category: 'Art and Literature',
+      open: false,
+      number: 0,
+      question: '',
+      category: '',
     },
     guess: {
       value: '',

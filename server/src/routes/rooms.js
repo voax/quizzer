@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Room = mongoose.model('Room');
 const Team = mongoose.model('Team');
 
+const sockets = require('../wss-clients');
 const catchErrors = require('../middleware/catch-errors');
 const { SCOREBOARD, TEAM, QM } = require('./roles');
 const { generateRoomCode } = require('../rooms/code');
@@ -123,6 +124,7 @@ router.delete(
     applicationDocument.remove();
     await req.room.save();
 
+    sockets.get(applicationDocument.sessionID).send('APPLICATION_REJECTED');
     res.json({ message: 'Application has been rejected.' });
   })
 );
@@ -149,6 +151,7 @@ router.post(
     applicationDocument.remove();
     await req.room.save();
 
+    sockets.get(applicationDocument.sessionID).send('APPLICATION_ACCEPTED');
     res.json({ message: 'Team has been approved.' });
   })
 );
