@@ -34,12 +34,12 @@ const socketMiddleware = () => {
         break;
       case 'APPLICATION_REJECTED':
         store.dispatch(stopLoaderAction());
-        store.dispatch(showPopUpAction('💔', 'You application has been rejected.'));
+        store.dispatch(showPopUpAction('😔', 'You application has been rejected.'));
         socket.close();
         break;
       case 'ROOM_CLOSED':
         store.dispatch(stopLoaderAction());
-        store.dispatch(showPopUpAction('😔', 'Room has been closed.'));
+        store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
         break;
       default:
         break;

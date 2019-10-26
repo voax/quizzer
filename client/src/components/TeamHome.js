@@ -7,8 +7,8 @@ import Input from './Input';
 import Button from './Button';
 
 const TeamHome = () => {
+  const connected = useSelector(state => state.websocket.connected);
   const isLoading = useSelector(state => state.loader.active);
-  const websocketConnected = useSelector(state => state.websocket.connected);
   const roomCodeValid = useSelector(state => state.teamApp.roomCode.valid);
   const roomCodeValue = useSelector(state => state.teamApp.roomCode.value);
   const teamValid = useSelector(state => state.teamApp.team.valid);
@@ -19,9 +19,11 @@ const TeamHome = () => {
     dispatch(applyTeam(roomCodeValue, teamValue));
   };
 
-  return websocketConnected ? (
-    <Redirect to="/room" />
-  ) : isLoading ? (
+  if (connected) {
+    return <Redirect to="/room" />;
+  }
+
+  return isLoading ? (
     <Loader />
   ) : (
     <>

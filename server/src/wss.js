@@ -8,6 +8,10 @@ module.exports = wss => {
     console.log('New connection!', id);
     sockets.set(id, socket);
 
+    if (!roomID) {
+      socket.close();
+    }
+
     socket.on('message', async data => {
       const room = await Room.findById(roomID);
       console.log('Data received:', data);
@@ -16,30 +20,32 @@ module.exports = wss => {
       switch (command) {
         case 'TEAM_APPLIED':
           sockets.get(room.host).send(command);
-          return;
+          break;
         default:
-          return;
+          break;
       }
     });
 
     socket.on('close', async (code, reason) => {
       console.log('Connection closed!', code, reason);
 
-      const room = await Room.findById(roomID);
-
-      if (id === room.host) {
-        room.ended = true;
-        for (const t of [...room.teams, ...room.applications]) {
-          const s = sockets.get(t.sessionID);
-          if (s) {
-            s.send('ROOM_CLOSED');
-            s.close();
+      if (roomID) {
+        const room = await Room.findById(roomID);
+        if (id === room.host) {
+          room.ended = true;
+          for (const team of [...room.teams, ...room.applications]) {
+            const s = sockets.get(team.sessionID);
+            if (s) {
+              s.send('ROOM_CLOSED');
+              s.close();
+            }
           }
+          await room.save();
         }
-        await room.save();
       }
 
       sockets.delete(id);
+      request.session.destroy();
     });
   });
 };
