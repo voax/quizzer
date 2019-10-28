@@ -3,8 +3,6 @@ import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
 
-const WS_HOST = 'ws://localhost:4000/';
-
 const socketMiddleware = () => {
   let socket = null;
 
@@ -54,7 +52,7 @@ const socketMiddleware = () => {
         if (socket !== null) {
           socket.close();
         }
-        socket = new WebSocket(WS_HOST);
+        socket = new WebSocket(process.env.REACT_APP_WS_URL);
         socket.onmessage = onMessage(store);
         socket.onclose = onClose(store);
         socket.onopen = onOpen(store, action.ping);
