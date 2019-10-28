@@ -163,9 +163,33 @@ export const selectCategory = () => ({
   type: 'APPROVE_SELECTD_CATEGORY',
 });
 
-export const confirmCategoriesAndContinue = () => ({
-  type: 'CONFIRM_CATEGORIES_SELECTED',
-});
+export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Loading...'));
+    const bodyObject = {
+      categories: selectedCategories.map(({ category }) => category),
+      questionNo: 1,
+      roundStarted: true,
+    };
+    const response = await fetch(`${API_URL}/rooms/${roomCode}`, {
+      method: 'PATCH',
+      cache: 'no-cache',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObject),
+    });
+    await checkFetchError(response);
+
+    dispatch({ type: 'CONFIRM_CATEGORIES_SELECTED' });
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
 
 const quizzMasterApp = produce(
   (draft, action) => {
@@ -210,11 +234,15 @@ const quizzMasterApp = produce(
         draft.selectedCategory = action.value;
         return;
       case 'APPROVE_SELECTD_CATEGORY':
+        if (draft.selectedCategories.length >= 3) {
+          return;
+        }
         draft.selectedCategories.push(draft.selectedCategory);
         draft.categories = draft.categories.filter(({ id }) => id !== draft.selectedCategory.id);
         draft.selectedCategory = null;
         return;
       case 'CONFIRM_CATEGORIES_SELECTED':
+        draft.question = 1;
         draft.categoriesConfirmed = true;
         return;
       default:
