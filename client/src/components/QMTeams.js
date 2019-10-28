@@ -91,7 +91,7 @@ const QMTeams = () => {
               approveSelectedApplication.length >= 6 ||
               teamsConfirmed
             }
-            onClick={() => dispatch(confirmTeamsAndContinue())}
+            onClick={() => dispatch(confirmTeamsAndContinue(code))}
             className="center-stick-bottom"
           >
             Next

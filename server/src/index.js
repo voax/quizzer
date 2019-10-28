@@ -36,6 +36,13 @@ app.use(
     credentials: true,
   })
 );
+app.options(
+  '*',
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 app.use(sessionParser);
 app.use(useAcceptLanguage());
@@ -56,6 +63,7 @@ const main = async () => {
   await mongoose.connect(`mongodb://${MONGODB_HOST}:${MONGODB_PORT}/${DB_NAME}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
   });
   await initRoomCodes();
   await new Promise(resolve => {

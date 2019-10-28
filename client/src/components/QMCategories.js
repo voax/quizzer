@@ -16,6 +16,7 @@ import Logo from './Logo';
 
 const QMCategories = () => {
   const dispatch = useDispatch();
+  const code = useSelector(state => state.quizzMasterApp.roomCode);
   const roundNo = useSelector(state => state.quizzMasterApp.round);
   const isLoading = useSelector(state => state.loader.active);
   const categories = useSelector(state => state.quizzMasterApp.categories);
@@ -78,7 +79,7 @@ const QMCategories = () => {
           </Button>
           <Button
             disabled={selectedCategories.length < 3}
-            onClick={() => dispatch(confirmCategoriesAndContinue())}
+            onClick={() => dispatch(confirmCategoriesAndContinue(code, selectedCategories))}
             className="center-stick-bottom start-round"
           >
             Start round
