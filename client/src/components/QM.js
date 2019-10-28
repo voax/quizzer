@@ -6,6 +6,7 @@ import QMHome from './QMHome';
 import QMTeams from './QMTeams';
 import QMCategories from './QMCategories';
 import QMQuestions from './QMQuestions';
+import QMGuesses from './QMGuesses';
 
 const QM = ({ location: { pathname } }) => {
   const connected = useSelector(state => state.websocket.connected);
@@ -27,6 +28,9 @@ const QM = ({ location: { pathname } }) => {
       </Route>
       <Route path="/master/questions">
         <QMQuestions />
+      </Route>
+      <Route path="/master/guesses">
+        <QMGuesses />
       </Route>
     </Switch>
   );

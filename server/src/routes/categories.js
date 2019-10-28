@@ -23,7 +23,9 @@ router.get(
     if (req.session.role !== QM) {
       return res.status(401).json({ message: "You're not welcome here..." });
     }
-    res.json(await Question.find({ category: req.params.category }, { __v: 0 }));
+    res.json(
+      await Question.find({ category: req.params.category, ...req.firstLanguage() }, { __v: 0 })
+    );
   })
 );
 

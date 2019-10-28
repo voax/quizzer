@@ -13,6 +13,13 @@ const checkFetchError = async response => {
   return Promise.reject(new Error(json.message));
 };
 
+const shuffle = array => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const rand = Math.floor(Math.random() * (i + 1));
+    [array[i], array[rand]] = [array[rand], array[i]];
+  }
+};
+
 export const setRoomCode = roomCode => ({ type: 'SET_ROOM_CODE', roomCode });
 export const clearRoomCode = () => ({ type: 'SET_ROOM_CODE' });
 
@@ -194,6 +201,7 @@ export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => as
 export const fetchQuestions = selectedCategories => async dispatch => {
   try {
     dispatch(setLoaderAction('Retrieving Questions...'));
+    dispatch({ type: 'CLEAR_QUESTIONS' });
     await Promise.all(
       selectedCategories.map(async ({ category }) => {
         const response = await fetch(`${API_URL}/categories/${category}/questions`, {
@@ -209,6 +217,33 @@ export const fetchQuestions = selectedCategories => async dispatch => {
         dispatch({ type: 'QUESTIONS_FETCHED', questions });
       })
     );
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
+
+export const confirmQuestionAndContinue = (roomCode, question) => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Loading...'));
+    const bodyObject = {
+      currentQuestion: question,
+      questionClosed: false,
+    };
+    const response = await fetch(`${API_URL}/rooms/${roomCode}`, {
+      method: 'PATCH',
+      cache: 'no-cache',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObject),
+    });
+    await checkFetchError(response);
+
+    dispatch({ type: 'CONFIRM_QUESTION_SELECTED', question });
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
@@ -271,9 +306,19 @@ const quizzMasterApp = produce(
         draft.categoriesConfirmed = true;
         return;
       case 'QUESTIONS_FETCHED':
-        draft.questions.push(...action.questions);
+        shuffle(action.questions);
+        draft.questions = [...draft.questions, ...action.questions];
+        return;
       case 'ITEM_LIST_CHANGED_QUESTIONS':
         draft.selectedQuestion = action.value;
+        return;
+      case 'CLEAR_QUESTIONS':
+        draft.questions = [];
+        return;
+      case 'CONFIRM_QUESTION_SELECTED':
+        draft.currentQuestion = action.question;
+        draft.questionsAsked = [...draft.questionsAsked, action.question._id];
+        draft.selectedQuestion = null;
         return;
       default:
         return;
@@ -289,7 +334,20 @@ const quizzMasterApp = produce(
 
     selectedCategory: null,
     categories: [],
-    selectedCategories: [],
+    selectedCategories: [
+      {
+        id: 'Art and Literature',
+        category: 'Art and Literature',
+      },
+      {
+        id: 'General Knowledge',
+        category: 'General Knowledge',
+      },
+      {
+        id: 'Geography',
+        category: 'Geography',
+      },
+    ],
     categoriesConfirmed: false,
 
     questions: [],
@@ -302,9 +360,9 @@ const quizzMasterApp = produce(
         language: 'en',
       },
     ],
+    currentQuestion: null,
     selectedQuestion: null,
 
-    currentQuestion: null,
     round: 0,
     question: 0,
   }

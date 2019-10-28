@@ -31,7 +31,7 @@ const Room = new mongoose.Schema({
   currentQuestion: Question,
   questionClosed: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   roomClosed: {
     type: Boolean,
