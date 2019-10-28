@@ -21,7 +21,8 @@ export const createRoom = () => async dispatch => {
     dispatch(setLoaderAction('Creating a room...'));
 
     const response = await fetch(`${API_URL}/rooms`, {
-      method: 'post',
+      method: 'POST',
+      cache: 'no-cache',
       credentials: 'include',
       mode: 'cors',
     });
@@ -29,10 +30,10 @@ export const createRoom = () => async dispatch => {
 
     dispatch(wsConnect());
     dispatch(setRoomCode(roomCode));
-    dispatch(stopLoaderAction());
   } catch (error) {
-    dispatch(stopLoaderAction());
     dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
   }
 };
 
@@ -44,7 +45,8 @@ export const addTeamApplications = applications => ({
 export const fetchTeamApplications = roomCode => async dispatch => {
   try {
     const response = await fetch(`${API_URL}/rooms/${roomCode}/applications`, {
-      method: 'get',
+      method: 'GET',
+      cache: 'default',
       credentials: 'include',
       mode: 'cors',
     });
@@ -71,7 +73,8 @@ export const approveSelectedApplication = (selectedTeamApplication, roomCode) =>
     const bodyObject = { applicationID: selectedTeamApplication.id };
 
     const response = await fetch(`${API_URL}/rooms/${roomCode}/teams`, {
-      method: 'post',
+      method: 'POST',
+      cache: 'no-cache',
       credentials: 'include',
       mode: 'cors',
       headers: {
@@ -97,7 +100,8 @@ export const rejectSelectedApplication = (selectedTeamApplication, roomCode) => 
     const response = await fetch(
       `${API_URL}/rooms/${roomCode}/applications/${selectedTeamApplication.id}`,
       {
-        method: 'delete',
+        method: 'DELETE',
+        cache: 'no-cache',
         credentials: 'include',
         mode: 'cors',
       }
@@ -110,14 +114,36 @@ export const rejectSelectedApplication = (selectedTeamApplication, roomCode) => 
   }
 };
 
-export const confirmTeamsAndContinue = () => ({
-  type: 'CONFIRM_TEAMS_APPROVED',
-});
+export const confirmTeamsAndContinue = roomCode => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Loading...'));
+    const bodyObject = { roomClosed: true, applications: [], round: 1 };
+    const response = await fetch(`${API_URL}/rooms/${roomCode}`, {
+      method: 'PATCH',
+      cache: 'no-cache',
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bodyObject),
+    });
+    await checkFetchError(response);
+
+    dispatch({ type: 'CONFIRM_TEAMS_APPROVED' });
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
 
 export const fetchCategories = () => async dispatch => {
   try {
     dispatch(setLoaderAction('Retrieving categories...'));
     const response = await fetch(`${API_URL}/categories`, {
+      method: 'GET',
+      cache: 'default',
       headers: {
         'Accept-Language': 'en',
       },
@@ -171,6 +197,8 @@ const quizzMasterApp = produce(
         return;
       case 'CONFIRM_TEAMS_APPROVED':
         draft.teamsConfirmed = true;
+        draft.round = 1;
+        draft.teamApplications = [];
         return;
       case 'CATEGORIES_FETCHED':
         draft.categories = action.categories.map(category => ({
@@ -210,8 +238,8 @@ const quizzMasterApp = produce(
     questionsAsked: [],
 
     currentQuestion: null,
-    round: 1,
-    question: 1,
+    round: 0,
+    question: 0,
   }
 );
 

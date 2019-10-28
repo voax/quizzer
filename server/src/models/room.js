@@ -14,11 +14,11 @@ const Room = new mongoose.Schema({
   },
   round: {
     type: Number,
-    default: 1,
+    default: 0,
   },
   questionNo: {
     type: Number,
-    default: 1,
+    default: 0,
   },
   roundStarted: {
     type: Boolean,

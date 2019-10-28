@@ -31,7 +31,8 @@ export const applyTeam = (roomCode, name) => async dispatch => {
     const bodyObject = { name };
 
     const response = await fetch(`${API_URL}/rooms/${roomCode}/applications`, {
-      method: 'post',
+      method: 'POST',
+      cache: 'no-cache',
       credentials: 'include',
       mode: 'cors',
       headers: {
