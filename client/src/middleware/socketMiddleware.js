@@ -40,6 +40,7 @@ const socketMiddleware = () => {
       case 'ROOM_CLOSED':
         store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
+        socket.close();
         break;
       default:
         break;
