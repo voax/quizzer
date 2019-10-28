@@ -11,7 +11,7 @@ export const fetchApi = (path, method = 'GET', opts = {}) => {
     method: method,
     credentials: 'include',
     mode: 'cors',
-    cache: 'no-cache',
+    cache: method === 'GET' ? 'default' : 'no-cache',
     ...opts,
   });
 };
