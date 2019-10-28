@@ -191,6 +191,31 @@ export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => as
   }
 };
 
+export const fetchQuestions = selectedCategories => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Retrieving Questions...'));
+    await Promise.all(
+      selectedCategories.map(async ({ category }) => {
+        const response = await fetch(`${API_URL}/categories/${category}/questions`, {
+          method: 'GET',
+          cache: 'default',
+          headers: {
+            'Accept-Language': 'en',
+          },
+          mode: 'cors',
+          credentials: 'include',
+        });
+        const questions = await checkFetchError(response);
+        dispatch({ type: 'QUESTIONS_FETCHED', questions });
+      })
+    );
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
+
 const quizzMasterApp = produce(
   (draft, action) => {
     switch (action.type) {
@@ -245,6 +270,11 @@ const quizzMasterApp = produce(
         draft.question = 1;
         draft.categoriesConfirmed = true;
         return;
+      case 'QUESTIONS_FETCHED':
+        draft.questions.push(...action.questions);
+      case 'ITEM_LIST_CHANGED_QUESTIONS':
+        draft.selectedQuestion = action.value;
+        return;
       default:
         return;
     }
@@ -254,7 +284,7 @@ const quizzMasterApp = produce(
 
     selectedTeamApplication: null,
     teamApplications: [],
-    approvedTeamApplications: [],
+    approvedTeamApplications: [{ id: 1, name: 'll' }, { id: 2, name: 'kk' }],
     teamsConfirmed: false,
 
     selectedCategory: null,
@@ -264,6 +294,7 @@ const quizzMasterApp = produce(
 
     questions: [],
     questionsAsked: [],
+    selectedQuestion: null,
 
     currentQuestion: null,
     round: 0,
