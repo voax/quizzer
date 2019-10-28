@@ -7,18 +7,15 @@ const sockets = require('../wss-clients');
 const catchErrors = require('../middleware/catch-errors');
 const { SCOREBOARD, TEAM, QM } = require('./roles');
 const { generateRoomCode } = require('../rooms/code');
-
-const verifyQuizzMaster = (req, res, next) => {
-  if (req.sessionID !== req.room.host) {
-    return res.status(400).json({ message: 'You are not allowed to perform this action.' });
-  }
-
-  next();
-};
+const { sessionHasWSConnect } = require('../middleware/socket');
+const { isQMAndHost } = require('../middleware/role');
 
 //#region rooms
 router.post(
   '/',
+  sessionHasWSConnect(
+    'Already hosting/joined a room. Please close the session in order to create a new room'
+  ),
   catchErrors(async (req, res) => {
     if (req.session.roomID) {
       await Room.updateOne({ _id: req.session.roomID, ended: false }, { ended: true });
@@ -62,7 +59,7 @@ router.get('/:roomCode', (req, res) => {
 
 router.patch(
   '/:roomCode',
-  verifyQuizzMaster,
+  ...isQMAndHost,
   catchErrors(async (req, res) => {
     await Room.findByIdAndUpdate(req.room._id, req.body);
 
@@ -72,7 +69,7 @@ router.patch(
 
 router.delete(
   '/:roomCode',
-  verifyQuizzMaster,
+  ...isQMAndHost,
   catchErrors(async (req, res) => {
     req.room.ended = true;
     await req.room.save();
@@ -82,7 +79,7 @@ router.delete(
 //#endregion
 
 //#region applications
-router.get('/:roomCode/applications', verifyQuizzMaster, (req, res) => {
+router.get('/:roomCode/applications', ...isQMAndHost, (req, res) => {
   const applications = req.room.applications.map(({ _id, name }) => ({ id: _id, name }));
   res.json(JSON.stringify(applications));
 });
@@ -123,7 +120,7 @@ router.post(
 
 router.delete(
   '/:roomCode/applications/:applicationID',
-  verifyQuizzMaster,
+  ...isQMAndHost,
   catchErrors(async (req, res) => {
     const applicationDocument = req.room.applications.id(req.params.applicationID);
 
@@ -143,7 +140,7 @@ router.delete(
 //#region teams
 router.post(
   '/:roomCode/teams',
-  verifyQuizzMaster,
+  ...isQMAndHost,
   catchErrors(async (req, res) => {
     if (req.room.teams.length >= 6) {
       return res.status(400).json({ message: 'Maximum number of teams reached.' });
