@@ -293,7 +293,15 @@ const quizzMasterApp = produce(
     categoriesConfirmed: false,
 
     questions: [],
-    questionsAsked: [],
+    questionsAsked: [
+      {
+        _id: '5da486d90dc34e04a8c70d5f',
+        question: 'Who wrote Twilight series of novels?',
+        answer: 'Stephenie Meyer',
+        category: 'Art and Literature',
+        language: 'en',
+      },
+    ],
     selectedQuestion: null,
 
     currentQuestion: null,

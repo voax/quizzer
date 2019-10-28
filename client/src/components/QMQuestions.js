@@ -15,6 +15,7 @@ const QMQuestions = () => {
   const roundNo = useSelector(state => state.quizzMasterApp.round);
   const selectedCategories = useSelector(state => state.quizzMasterApp.selectedCategories);
   const questions = useSelector(state => state.quizzMasterApp.questions);
+  const questionsAsked = useSelector(state => state.quizzMasterApp.questionsAsked);
 
   useEffect(() => {
     if (questions.length === 0) {
@@ -39,7 +40,8 @@ const QMQuestions = () => {
           <Col key={`${category.id}-2`}>
             <ItemList
               items={questions.reduce((acc, cur) => {
-                return cur.category === category.category
+                return cur.category === category.category &&
+                  questionsAsked.some(askedQ => askedQ._id !== cur._id)
                   ? acc.concat({ id: cur._id, question: cur.question })
                   : acc;
               }, [])}
