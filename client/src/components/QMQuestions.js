@@ -9,6 +9,14 @@ import ItemListHeader from './ItemListHeader';
 import Loader from './Loader';
 import Logo from './Logo';
 
+const shuffle = array => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const rand = Math.floor(Math.random() * (i + 1));
+    [array[i], array[rand]] = [array[rand], array[i]];
+  }
+  return array;
+};
+
 const QMQuestions = () => {
   const dispatch = useDispatch();
   const code = useSelector(state => state.quizzMasterApp.roomCode);
@@ -39,12 +47,14 @@ const QMQuestions = () => {
         {selectedCategories.map(category => (
           <Col key={`${category.id}-2`}>
             <ItemList
-              items={questions.reduce((acc, cur) => {
-                return cur.category === category.category &&
-                  questionsAsked.some(askedQ => askedQ._id !== cur._id)
-                  ? acc.concat({ id: cur._id, question: cur.question })
-                  : acc;
-              }, [])}
+              items={shuffle(
+                questions.reduce((acc, cur) => {
+                  return cur.category === category.category &&
+                    questionsAsked.some(askedQ => askedQ._id !== cur._id)
+                    ? acc.concat({ id: cur._id, question: cur.question })
+                    : acc;
+                }, [])
+              )}
               show="question"
               selectable
               reducer={['quizzMasterApp', 'selectedQuestion']}
