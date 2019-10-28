@@ -5,26 +5,24 @@ const isRole = (...conditions) => (req, res, next) => {
 
   const error = () => {
     res.status(400).json({ message: 'You are not allowed to perform this action.' });
-    return true;
   };
 
   for (const condition of conditions) {
     switch (typeof condition) {
       case 'function':
         if (!condition(req)) {
-          return error;
+          return error();
         }
         break;
       default:
         if (condition !== role) {
-          return error;
+          return error();
         }
         break;
     }
   }
 
   next();
-  return false;
 };
 
 const isQM = isRole(QM);
