@@ -7,15 +7,13 @@ const sockets = require('../wss-clients');
 const catchErrors = require('../middleware/catch-errors');
 const { SCOREBOARD, TEAM, QM } = require('./roles');
 const { generateRoomCode } = require('../rooms/code');
-const { sessionHasWSConnect } = require('../middleware/socket');
+const { hasNotJoinedOrHosted } = require('../middleware/socket');
 const { isQMAndHost } = require('../middleware/role');
 
 //#region rooms
 router.post(
   '/',
-  sessionHasWSConnect(
-    'Already hosting/joined a room. Please close the session in order to create a new room'
-  ),
+  hasNotJoinedOrHosted,
   catchErrors(async (req, res) => {
     if (req.session.roomID) {
       await Room.updateOne({ _id: req.session.roomID, ended: false }, { ended: true });
@@ -86,6 +84,7 @@ router.get('/:roomCode/applications', ...isQMAndHost, (req, res) => {
 
 router.post(
   '/:roomCode/applications',
+  hasNotJoinedOrHosted,
   catchErrors(async (req, res) => {
     const { name } = req.body;
     const { roomClosed, teams, applications } = req.room;
