@@ -10,7 +10,7 @@ import {
   fetchCategories,
   selectCategory,
   confirmCategoriesAndContinue,
-} from '../reducers/quizz-master-app';
+} from '../reducers/qm/category';
 import Loader from './Loader';
 import Logo from './Logo';
 

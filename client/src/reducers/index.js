@@ -5,7 +5,7 @@ import loader from './loader';
 import teamApp from './team-app';
 import questions from './questions';
 import scoreboard from './scoreboard';
-import quizzMasterApp from './quizz-master-app';
+import quizzMasterApp from './qm';
 
 export default combineReducers({
   websocket,

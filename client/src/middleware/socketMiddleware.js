@@ -1,7 +1,7 @@
 import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
-import { fetchTeamApplications } from '../reducers/quizz-master-app';
+import { fetchTeamApplications } from '../reducers/qm/team';
 
 const WS_HOST = 'ws://localhost:4000/';
 

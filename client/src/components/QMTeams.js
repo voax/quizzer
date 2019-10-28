@@ -10,7 +10,7 @@ import {
   approveSelectedApplication,
   rejectSelectedApplication,
   confirmTeamsAndContinue,
-} from '../reducers/quizz-master-app';
+} from '../reducers/qm/team';
 import Logo from './Logo';
 
 const QMTeams = () => {

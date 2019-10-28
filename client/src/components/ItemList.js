@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { handleItemListChange } from '../reducers/quizz-master-app';
+import { handleItemListChange } from '../reducers/item-list';
 
 export const StaticItemList = ({ items, show }) => {
   return (
