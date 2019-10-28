@@ -50,14 +50,29 @@ router.use(
 );
 
 router.get('/:roomCode', (req, res) => {
-  // if client hasn't a session yet, a session will be created with the scoreboard role.
-  if (!req.sessionID) {
-    req.session.role = SCOREBOARD;
-    req.session.roomID = req.room._id;
-  }
+  const { round, questionNo, currentQuestion, questionClosed, teams } = req.room;
+  const { category, question, answer } = currentQuestion;
 
-  // @TODO
-  res.send('Not implemented yet!');
+  switch (req.session.role) {
+    case QM:
+      res.json({ round, questionNo, questionClosed, category, question, teams });
+      return;
+    case TEAM:
+      res.json({ round, questionNo, questionClosed, category, question });
+      return;
+    case SCOREBOARD:
+      const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
+        name,
+        roundPoints,
+        roundScore,
+        guessCorrect,
+      }));
+      res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
+      return;
+    default:
+      res.status(404).json({ message: 'Incorrect request.' });
+      return;
+  }
 });
 
 router.patch(
@@ -193,6 +208,16 @@ router.patch(
     return res.status(400).json({ message: 'You are not allowed to perform this action.' });
   })
 );
+
+router.post('/:roomCode/scoreboards', (req, res) => {
+  req.session.role = SCOREBOARD;
+  req.session.roomID = req.room._id;
+
+  req.room.scoreboards.push(req.sessionID);
+  req.room.save(() => {
+    res.json({ message: 'You have been registered.' });
+  });
+});
 //#endregion
 
 //#region categories

@@ -37,6 +37,7 @@ const Room = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  scoreboards: [String],
   ended: {
     type: Boolean,
     default: false,
