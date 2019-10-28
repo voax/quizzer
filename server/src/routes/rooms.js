@@ -60,15 +60,25 @@ router.get('/:roomCode', (req, res) => {
   res.send('Not implemented yet!');
 });
 
-router.patch('/:roomCode', verifyQuizzMaster, (req, res) => {
-  // @TODO
-  res.send('Not implemented yet!');
-});
+router.patch(
+  '/:roomCode',
+  verifyQuizzMaster,
+  catchErrors(async (req, res) => {
+    await Room.findByIdAndUpdate(req.room._id, req.body);
 
-router.delete('/:roomCode', (req, res) => {
-  // @TODO
-  res.send('Not implemented yet!');
-});
+    res.json(JSON.stringify(req.room));
+  })
+);
+
+router.delete(
+  '/:roomCode',
+  verifyQuizzMaster,
+  catchErrors(async (req, res) => {
+    req.room.ended = true;
+    await req.room.save();
+    res.json({ message: 'Room has been ended.' });
+  })
+);
 //#endregion
 
 //#region applications
@@ -156,10 +166,33 @@ router.post(
   })
 );
 
-router.patch('/:roomCode/teams/:teamID', (req, res) => {
-  // @TODO
-  res.send('Not implemented yet!');
-});
+router.patch(
+  '/:roomCode/teams/:teamID',
+  catchErrors(async (req, res) => {
+    if (req.sessionID === req.room.host) {
+      // TODO: Implement Quizz Master guessCorrect toggle
+      return res.send('Quizz Master!');
+    }
+
+    const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+
+    if (team) {
+      if (req.params.teamID !== team.sessionID) {
+        return res.status(400).json({ message: 'This is not your team!' });
+      }
+
+      const teamDocument = await Team.findById(team._id);
+
+      team.guess = req.body.guess;
+      teamDocument.guess = req.body.guess;
+
+      // TODO: PING Quizz Master socket here
+      return res.json({ message: 'Guess submitted!' });
+    }
+
+    return res.status(400).json({ message: 'You are not allowed to perform this action.' });
+  })
+);
 //#endregion
 
 //#region categories
