@@ -2,7 +2,7 @@ import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
-import { fetchRoom } from '../reducers/team-app';
+import { fetchRoom, clearRoom } from '../reducers/team-app';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -49,6 +49,7 @@ const socketMiddleware = () => {
         console.log('GUESS_SUBMITTED');
         break;
       case 'ROOM_CLOSED':
+        store.dispatch(clearRoom());
         store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
         socket.close();

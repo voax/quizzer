@@ -31,6 +31,8 @@ export const applyTeam = (roomCode, name) => async dispatch => {
   }
 };
 
+export const clearRoom = () => ({ type: 'CLEAR_ROOM' });
+
 export const fetchRoom = roomCode => async dispatch => {
   try {
     dispatch(setLoaderAction('Loading question...'));
@@ -85,6 +87,14 @@ const teamAppReducer = produce(
         draft.question.category = action.category;
         draft.question.question = action.question;
         draft.teamID = action.teamID;
+        return;
+      case 'CLEAR_ROOM':
+        draft.roundNo = 0;
+        draft.question.number = 0;
+        draft.question.open = false;
+        draft.question.category = '';
+        draft.question.question = '';
+        draft.teamID = null;
         return;
       default:
         return;

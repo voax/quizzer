@@ -60,7 +60,6 @@ export const confirmTeamsAndContinue = roomCode => async dispatch => {
     const response = await fetchApiSendJson(`rooms/${roomCode}`, 'PATCH', {
       roomClosed: true,
       applications: [],
-      round: 1,
     });
     await checkFetchError(response);
     dispatch({ type: 'CONFIRM_TEAMS_APPROVED' });

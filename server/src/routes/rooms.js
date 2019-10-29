@@ -239,7 +239,7 @@ router.put(
 
     req.room.roundStarted = true;
     req.room.categories = categories;
-    req.room.questionNo++;
+    req.room.round++;
     await req.room.save();
 
     for (const team of req.room.teams) {
@@ -271,6 +271,7 @@ router.put(
 
     req.room.questionClosed = false;
     req.room.currentQuestion = question;
+    req.room.questionNo++;
     req.room.askedQuestions.push(question._id);
     await req.room.save();
 
