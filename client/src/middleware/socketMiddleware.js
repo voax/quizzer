@@ -55,6 +55,10 @@ const socketMiddleware = () => {
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
         socket.close();
         break;
+      case 'QUESTION_CLOSED':
+        // TODO
+        console.log('Hallo question is closed hehe');
+        break;
       default:
         break;
     }

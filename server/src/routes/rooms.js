@@ -89,6 +89,9 @@ router.patch(
 
     if (questionClosed !== undefined) {
       req.room.questionClosed = questionClosed;
+      for (const t of req.room.teams) {
+        sockets.get(t.sessionID).send('QUESTION_CLOSED');
+      }
     }
 
     if (applications) {
