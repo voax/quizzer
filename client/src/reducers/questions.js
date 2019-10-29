@@ -1,12 +1,11 @@
 import produce from 'immer';
 
-const API_URL = 'http://localhost:4000';
+import { fetchApi } from '.././utils';
 
 export const fetchQuestionsAction = () => async dispatch => {
   dispatch({ type: 'REQUEST_FETCH' });
 
-  const response = await fetch(`${API_URL}/questions`, {
-    method: 'get',
+  const response = await fetchApi('questions', 'GET', {
     headers: {
       'Accept-Language': 'nl',
     },

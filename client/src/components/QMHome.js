@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { createRoom } from '../reducers/quizz-master-app';
+import { createRoom } from '../reducers/qm/room';
 import Logo from './Logo';
 import Button from './Button';
 import Loader from './Loader';
