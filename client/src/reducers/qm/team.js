@@ -60,7 +60,6 @@ export const confirmTeamsAndContinue = roomCode => async dispatch => {
     const response = await fetchApiSendJson(`rooms/${roomCode}`, 'PATCH', {
       roomClosed: true,
       applications: [],
-      round: 1,
     });
     await checkFetchError(response);
     dispatch({ type: 'CONFIRM_TEAMS_APPROVED' });
@@ -95,7 +94,6 @@ export default produce((draft, action) => {
     case 'CONFIRM_TEAMS_APPROVED':
       draft.teamsConfirmed = true;
       draft.teamApplications = [];
-      draft.round = 1;
       return;
     default:
       return;

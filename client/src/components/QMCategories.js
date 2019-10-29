@@ -54,7 +54,7 @@ const QMCategories = () => {
           <ItemListHeader>Categories</ItemListHeader>
         </Col>
         <Col xs={middleWidth}>
-          <ItemListHeader style={{ textAlign: 'center' }}>Round {roundNo}</ItemListHeader>
+          <ItemListHeader style={{ textAlign: 'center' }}>Round {roundNo + 1}</ItemListHeader>
         </Col>
         <Col>
           <ItemListHeader>Selected Categories</ItemListHeader>

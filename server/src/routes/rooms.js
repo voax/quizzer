@@ -50,7 +50,20 @@ router.get('/:roomCode', (req, res) => {
     case QM:
       return res.json({ round, questionNo, questionClosed, currentQuestion, teams });
     case TEAM:
-      return res.json({ round, questionNo, questionClosed, category, question });
+      const team = teams.find(team => team.sessionID === req.sessionID);
+
+      if (!team) {
+        return res.status(404).json({ message: 'Your team does not belong to this room.' });
+      }
+
+      return res.json({
+        round,
+        questionNo,
+        questionClosed,
+        category,
+        question,
+        teamID: team._id,
+      });
     case SCOREBOARD:
       const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
         name,
@@ -68,7 +81,24 @@ router.patch(
   '/:roomCode',
   ...isQMAndHost,
   catchErrors(async (req, res) => {
-    await Room.findByIdAndUpdate(req.room._id, req.body);
+    const { roomClosed, questionClosed, applications } = req.body;
+
+    if (roomClosed !== undefined) {
+      req.room.roomClosed = roomClosed;
+    }
+
+    if (questionClosed !== undefined) {
+      req.room.questionClosed = questionClosed;
+    }
+
+    if (applications) {
+      for (const application of req.room.applications) {
+        sockets.get(application.sessionID).send('APPLICATION_REJECTED');
+      }
+      req.room.applications = [];
+    }
+
+    req.room.save();
 
     res.json(JSON.stringify(req.room));
   })
@@ -173,8 +203,9 @@ router.patch(
   '/:roomCode/teams/:teamID',
   catchErrors(async (req, res) => {
     const team = req.room.teams.find(team => team._id.equals(req.params.teamID));
+
     if (!team) {
-      return res.status(404).json({ message: 'Team does not exist' });
+      return res.status(404).json({ message: 'This team does not exist!' });
     }
 
     switch (req.session.role) {
@@ -185,17 +216,18 @@ router.patch(
 
         return res.json({ teams: req.room.teams });
       case TEAM:
-        // const team = req.room.teams.find(team => team.sessionID === req.sessionID);
-
-        if (req.params.teamID !== team.sessionID) {
-          return res.status(400).json({ message: 'This is not your team!' });
+        if (req.room.questionClosed) {
+          return res.status(400).json({ message: 'Question is closed.' });
         }
 
-        const teamDocument = await Team.findById(team._id);
+        if (req.sessionID !== team.sessionID) {
+          return res.status(404).json({ message: 'This is not your team!' });
+        }
 
         team.guess = req.body.guess;
         await req.room.save();
 
+        const teamDocument = await Team.findById(team._id);
         teamDocument.guess = req.body.guess;
         await teamDocument.save();
 
@@ -238,7 +270,7 @@ router.put(
 
     req.room.roundStarted = true;
     req.room.categories = categories;
-    req.room.questionNo = 1;
+    req.room.round++;
     await req.room.save();
 
     for (const team of req.room.teams) {
@@ -249,6 +281,49 @@ router.put(
     }
 
     res.json({ message: 'Categories have been selected.' });
+  })
+);
+//#endregion
+
+//#region question
+router.put(
+  '/:roomCode/question',
+  ...isQMAndHost,
+  catchErrors(async (req, res) => {
+    const { question } = req.body;
+
+    if (!req.room.questionClosed) {
+      return res.status(400).json({ message: 'Question is already ongoing.' });
+    }
+
+    if (req.room.askedQuestions.includes(question._id)) {
+      return res.status(400).json({ message: 'The selected question has already been asked.' });
+    }
+
+    for (const t of req.room.teams) {
+      const team = await Team.findById(t._id);
+      team.guess = '';
+      team.guessCorrect = false;
+      await team.save();
+
+      t.guess = '';
+      t.guessCorrect = false;
+    }
+
+    req.room.questionClosed = false;
+    req.room.currentQuestion = question;
+    req.room.questionNo++;
+    req.room.askedQuestions.push(question._id);
+    await req.room.save();
+
+    for (const team of req.room.teams) {
+      const socket = sockets.get(team.sessionID);
+      if (socket) {
+        socket.send('QUESTION_SELECTED');
+      }
+    }
+
+    res.json({ message: 'Question has been selected.' });
   })
 );
 //#endregion

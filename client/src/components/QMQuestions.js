@@ -45,7 +45,7 @@ const QMQuestions = () => {
       <Logo center />
       <div className="round-question">
         <span>Round: {roundNo}</span>
-        <span>Question: {questionNo}</span>
+        <span>Question: {questionNo + 1}</span>
       </div>
       <Row>
         {selectedCategories.map(category => {

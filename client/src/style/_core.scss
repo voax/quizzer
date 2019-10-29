@@ -143,6 +143,10 @@ button {
     cursor: not-allowed;
   }
 
+  &.small {
+    max-width: 5em;
+  }
+
   &.secondary {
     background-color: $light;
     color: $grey;
