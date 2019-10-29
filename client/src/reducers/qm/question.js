@@ -28,10 +28,7 @@ export const fetchQuestions = selectedCategories => async dispatch => {
 export const confirmQuestionAndContinue = (roomCode, question) => async dispatch => {
   try {
     dispatch(setLoaderAction('Loading...'));
-    const response = await fetchApiSendJson(`rooms/${roomCode}`, 'PATCH', {
-      currentQuestion: question,
-      questionClosed: false,
-    });
+    const response = await fetchApiSendJson(`rooms/${roomCode}/question`, 'PUT', { question });
     await checkFetchError(response);
 
     dispatch({ type: 'CONFIRM_QUESTION_SELECTED', question });

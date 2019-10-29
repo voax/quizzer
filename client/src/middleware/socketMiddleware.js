@@ -38,6 +38,9 @@ const socketMiddleware = () => {
       case 'CATEGORIES_SELECTED':
         console.log('CATEGORIES_SELECTED');
         break;
+      case 'QUESTION_SELECTED':
+        console.log('QUESTION_SELECTED');
+        break;
       case 'GUESS_SUBMITTED':
         // store.dispatch(fetchRoom());
         console.log('GUESS_SUBMITTED');

@@ -245,4 +245,36 @@ router.put(
 );
 //#endregion
 
+//#region question
+router.put(
+  '/:roomCode/question',
+  ...isQMAndHost,
+  catchErrors(async (req, res) => {
+    const { question } = req.body;
+
+    if (!req.room.questionClosed) {
+      return res.status(400).json({ message: 'Question is already ongoing.' });
+    }
+
+    if (req.room.askedQuestions.includes(question._id)) {
+      return res.status(400).json({ message: 'The selected question has already been asked.' });
+    }
+
+    req.room.questionClosed = false;
+    req.room.currentQuestion = question;
+    req.room.askedQuestions.push(question._id);
+    await req.room.save();
+
+    for (const team of req.room.teams) {
+      const socket = sockets.get(team.sessionID);
+      if (socket) {
+        socket.send('QUESTION_SELECTED');
+      }
+    }
+
+    res.json({ message: 'Question has been selected.' });
+  })
+);
+//#endregion
+
 module.exports = router;

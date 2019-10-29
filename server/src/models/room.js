@@ -27,7 +27,12 @@ const Room = new mongoose.Schema({
   teams: [Team],
   applications: [Team],
   categories: [String],
-  askedQuestions: [Question],
+  askedQuestions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Question',
+    },
+  ],
   currentQuestion: Question,
   questionClosed: {
     type: Boolean,
