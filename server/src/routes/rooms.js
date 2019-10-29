@@ -201,7 +201,7 @@ router.patch(
       team.guess = req.body.guess;
       teamDocument.guess = req.body.guess;
 
-      // TODO: PING Quizz Master socket here
+      sockets.get(req.room.host).send('GUESS_SUBMITTED');
       return res.json({ message: 'Guess submitted!' });
     }
 

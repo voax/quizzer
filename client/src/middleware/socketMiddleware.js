@@ -28,14 +28,18 @@ const socketMiddleware = () => {
       case 'APPLICATION_ACCEPTED':
         store.dispatch(
           setLoaderAction(
-            'Your team is accepted. Please wait for the Quizz Master to start the Quizz.'
+            'Your team is approved. Please wait for the Quizz Master to start the Quizz.'
           )
         );
         break;
       case 'APPLICATION_REJECTED':
         store.dispatch(stopLoaderAction());
-        store.dispatch(showPopUpAction('😔', 'You application has been rejected.'));
+        store.dispatch(showPopUpAction('😔', 'Your application has been rejected.'));
         socket.close();
+        break;
+      case 'GUESS_SUBMITTED':
+        // store.dispatch(fetchRoom());
+        console.log('GUESS_SUBMITTED');
         break;
       case 'ROOM_CLOSED':
         store.dispatch(stopLoaderAction());
