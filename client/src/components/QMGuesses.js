@@ -7,12 +7,15 @@ import { fetchRoomState, closeRoomQuestion } from '../reducers/qm/room';
 
 const Header = () => {
   const questionNo = useSelector(state => state.quizzMasterApp.question);
+  const round = useSelector(state => state.quizzMasterApp.round);
   const { question, answer } = useSelector(state => state.quizzMasterApp.currentQuestion);
 
   return (
     <Row>
       <Col xs={8} push={{ xs: 2 }} style={{ textAlign: 'center' }}>
-        <h1>Question {questionNo}</h1>
+        <h1>
+          Round {round} Question {questionNo}
+        </h1>
         <h2>Q: {question}</h2>
         <h2>A: {answer}</h2>
       </Col>
