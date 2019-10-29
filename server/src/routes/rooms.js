@@ -172,12 +172,20 @@ router.post(
 router.patch(
   '/:roomCode/teams/:teamID',
   catchErrors(async (req, res) => {
+    const team = req.room.teams.find(team => team._id.equals(req.params.teamID));
+    if (!team) {
+      return res.status(404).json({ message: 'Team does not exist' });
+    }
+
     switch (req.session.role) {
       case QM:
-        // TODO: Implement Quizz Master guessCorrect toggle
-        return res.send('Quizz Master!');
+        team.guessCorrect = req.body.guessCorrect;
+        await Team.updateOne({ _id: team.id }, { guessCorrect: req.body.guessCorrect });
+        await req.room.save();
+
+        return res.json({ teams: req.room.teams });
       case TEAM:
-        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+        // const team = req.room.teams.find(team => team.sessionID === req.sessionID);
 
         if (req.params.teamID !== team.sessionID) {
           return res.status(400).json({ message: 'This is not your team!' });

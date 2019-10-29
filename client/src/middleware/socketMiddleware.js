@@ -2,6 +2,7 @@ import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
+import { fetchRoomState } from '../reducers/qm/room';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -18,9 +19,9 @@ const socketMiddleware = () => {
   };
 
   const onMessage = store => ({ data }) => {
+    const state = store.getState();
     switch (data) {
       case 'TEAM_APPLIED':
-        const state = store.getState();
         store.dispatch(fetchTeamApplications(state.quizzMasterApp.roomCode));
         break;
       case 'APPLICATION_ACCEPTED':
@@ -39,7 +40,7 @@ const socketMiddleware = () => {
         console.log('CATEGORIES_SELECTED');
         break;
       case 'GUESS_SUBMITTED':
-        // store.dispatch(fetchRoom());
+        store.dispatch(fetchRoomState(state.quizzMasterApp.roomCode));
         console.log('GUESS_SUBMITTED');
         break;
       case 'ROOM_CLOSED':

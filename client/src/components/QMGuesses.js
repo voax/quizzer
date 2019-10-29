@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Container, Row, Col } from 'react-grid-system';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Button from './Button';
 import { fetchRoomState, closeRoomQuestion } from '../reducers/qm/room';
+import { toggleGuessCorrect } from '../reducers/qm/guess';
 
 const Header = () => {
   const questionNo = useSelector(state => state.quizzMasterApp.question);
@@ -24,23 +25,36 @@ const Header = () => {
 };
 
 const TeamGuess = ({ team: teamNo }) => {
+  const dispatch = useDispatch();
+  const roomCode = useSelector(state => state.quizzMasterApp.roomCode);
   const team = useSelector(state => state.quizzMasterApp.approvedTeamApplications[teamNo]);
   const questionClosed = useSelector(state => state.quizzMasterApp.questionClosed);
+  const approvingATeamGuess = useSelector(state => state.quizzMasterApp.approvingATeamGuess);
+
+  const toggleGuess = useCallback(() => {
+    dispatch(toggleGuessCorrect(roomCode, team._id, !team.guessCorrect));
+  }, [roomCode, team, dispatch]);
 
   if (!team) {
     return <Col />;
   }
-
   return (
     <Col>
       <div className="team-guess">
         <h3>{team.name}</h3>
         <h3>{team.guess || '-'}</h3>
+
         {questionClosed && (
-          <Button type="small">
-            <span role="img" aria-label="Approve answer">
-              👍
-            </span>
+          <Button type="small" onClick={toggleGuess} disabled={approvingATeamGuess || !team.guess}>
+            {!team.guessCorrect ? (
+              <span role="img" aria-label={`Approve team ${team.name}'s guess`}>
+                👍
+              </span>
+            ) : (
+              <span role="img" aria-label={`Reject team ${team.name}'s guess`}>
+                👎
+              </span>
+            )}
           </Button>
         )}
       </div>

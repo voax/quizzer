@@ -27,7 +27,7 @@ export const createRoom = () => async dispatch => {
 
 export const fetchRoomState = roomCode => async dispatch => {
   try {
-    dispatch(setLoaderAction('Fetching room information...'));
+    // dispatch(setLoaderAction('Fetching room information...'));
 
     const response = await fetchApi(`rooms/${roomCode}`);
     const room = await checkFetchError(response);
@@ -36,7 +36,7 @@ export const fetchRoomState = roomCode => async dispatch => {
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
-    dispatch(stopLoaderAction());
+    // dispatch(stopLoaderAction());
   }
 };
 
@@ -76,6 +76,7 @@ export default produce((draft, action) => {
       return;
     case 'ROOM_QUESTION_CLOSE':
       draft.questionClosed = true;
+      return;
     default:
       return;
   }

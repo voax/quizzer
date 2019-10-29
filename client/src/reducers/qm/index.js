@@ -4,6 +4,7 @@ import room from './room';
 import team from './team';
 import category from './category';
 import question from './question';
+import guess from './guess';
 
 export default reduceReducers(
   {
@@ -11,6 +12,7 @@ export default reduceReducers(
 
     round: 0,
     question: 0,
+    questionClosed: false,
 
     selectedTeamApplication: null,
     teamApplications: [],
@@ -44,9 +46,12 @@ export default reduceReducers(
     questionsAsked: [],
     currentQuestion: null,
     selectedQuestion: null,
+
+    approvingATeamGuess: false,
   },
   room,
   team,
   category,
-  question
+  question,
+  guess
 );
