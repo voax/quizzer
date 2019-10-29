@@ -95,7 +95,6 @@ export default produce((draft, action) => {
     case 'CONFIRM_TEAMS_APPROVED':
       draft.teamsConfirmed = true;
       draft.teamApplications = [];
-      draft.round = 1;
       return;
     default:
       return;
