@@ -50,13 +50,19 @@ router.get('/:roomCode', (req, res) => {
     case QM:
       return res.json({ round, questionNo, questionClosed, category, question, teams });
     case TEAM:
+      const team = teams.find(team => team.sessionID === req.sessionID);
+
+      if (!team) {
+        return res.status(404).json({ message: 'Your team does not belong to this room.' });
+      }
+
       return res.json({
         round,
         questionNo,
         questionClosed,
         category,
         question,
-        teamID: req.sessionID,
+        teamID: team._id,
       });
     case SCOREBOARD:
       const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
@@ -75,7 +81,24 @@ router.patch(
   '/:roomCode',
   ...isQMAndHost,
   catchErrors(async (req, res) => {
-    await Room.findByIdAndUpdate(req.room._id, req.body);
+    const { roomClosed, questionClosed, applications } = req.body;
+
+    if (roomClosed !== undefined) {
+      req.room.roomClosed = roomClosed;
+    }
+
+    if (questionClosed !== undefined) {
+      req.room.questionClosed = questionClosed;
+    }
+
+    if (applications) {
+      for (const application of req.room.applications) {
+        sockets.get(application.sessionID).send('APPLICATION_REJECTED');
+      }
+      req.room.applications = [];
+    }
+
+    req.room.save();
 
     res.json(JSON.stringify(req.room));
   })
@@ -179,20 +202,25 @@ router.post(
 router.patch(
   '/:roomCode/teams/:teamID',
   catchErrors(async (req, res) => {
+    const team = req.room.teams.find(team => team._id.equals(req.params.teamID));
+
+    if (!team) {
+      return res.status(404).json({ message: 'This team does not exist!' });
+    }
+
     switch (req.session.role) {
       case QM:
         // TODO: Implement Quizz Master guessCorrect toggle
         return res.send('Quizz Master!');
       case TEAM:
-        if (req.params.teamID !== req.sessionID) {
-          return res.status(404).json({ message: 'This is not your team!' });
-        }
-
         if (req.room.questionClosed) {
           return res.status(400).json({ message: 'Question is closed.' });
         }
 
-        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+        if (req.sessionID !== team.sessionID) {
+          return res.status(404).json({ message: 'This is not your team!' });
+        }
+
         team.guess = req.body.guess;
         await req.room.save();
 
@@ -267,6 +295,16 @@ router.put(
 
     if (req.room.askedQuestions.includes(question._id)) {
       return res.status(400).json({ message: 'The selected question has already been asked.' });
+    }
+
+    for (const t of req.room.teams) {
+      const team = await Team.findById(t._id);
+      team.guess = '';
+      team.guessCorrect = false;
+      await team.save();
+
+      t.guess = '';
+      t.guessCorrect = false;
     }
 
     req.room.questionClosed = false;
