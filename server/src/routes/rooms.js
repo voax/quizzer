@@ -48,7 +48,7 @@ router.get('/:roomCode', (req, res) => {
 
   switch (req.session.role) {
     case QM:
-      return res.json({ round, questionNo, questionClosed, category, question, teams });
+      return res.json({ round, questionNo, questionClosed, currentQuestion, teams });
     case TEAM:
       return res.json({ round, questionNo, questionClosed, category, question });
     case SCOREBOARD:

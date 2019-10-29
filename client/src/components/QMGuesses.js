@@ -3,12 +3,11 @@ import { Container, Row, Col } from 'react-grid-system';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Button from './Button';
-import { fetchRoomState } from '../reducers/qm/room';
+import { fetchRoomState, closeRoomQuestion } from '../reducers/qm/room';
 
 const Header = () => {
   const questionNo = useSelector(state => state.quizzMasterApp.question);
-  const question = useSelector(state => state.quizzMasterApp.currentQuestion.question);
-  const answer = useSelector(state => state.quizzMasterApp.currentQuestion.answer);
+  const { question, answer } = useSelector(state => state.quizzMasterApp.currentQuestion);
 
   return (
     <Row>
@@ -23,6 +22,7 @@ const Header = () => {
 
 const TeamGuess = ({ team: teamNo }) => {
   const team = useSelector(state => state.quizzMasterApp.approvedTeamApplications[teamNo]);
+  const questionClosed = useSelector(state => state.quizzMasterApp.questionClosed);
 
   if (!team) {
     return <Col />;
@@ -33,11 +33,13 @@ const TeamGuess = ({ team: teamNo }) => {
       <div className="team-guess">
         <h3>{team.name}</h3>
         <h3>{team.guess || '-'}</h3>
-        <Button type="small">
-          <span role="img" aria-label="Approve answer">
-            👍
-          </span>
-        </Button>
+        {questionClosed && (
+          <Button type="small">
+            <span role="img" aria-label="Approve answer">
+              👍
+            </span>
+          </Button>
+        )}
       </div>
     </Col>
   );
@@ -61,10 +63,24 @@ const Guesses = () => {
 };
 
 const NextButton = () => {
+  const dispatch = useDispatch();
+  const questionClosed = useSelector(state => state.quizzMasterApp.questionClosed);
+  const roomCode = useSelector(state => state.quizzMasterApp.roomCode);
+
   return (
     <Row className="top-anxiety">
       <Col xs={4} push={{ xs: 4 }}>
-        <Button>Next</Button>
+        {questionClosed ? (
+          <Button>Next</Button>
+        ) : (
+          <Button
+            onClick={() => {
+              dispatch(closeRoomQuestion(roomCode));
+            }}
+          >
+            Close Question
+          </Button>
+        )}
       </Col>
     </Row>
   );
