@@ -5,12 +5,13 @@ const sockets = require('./wss-clients');
 module.exports = wss => {
   wss.on('connection', (socket, request) => {
     const { id, roomID } = request.session;
-    console.log('New connection!', id);
-    sockets.set(id, socket);
 
     if (!roomID) {
-      socket.close();
+      return socket.close();
     }
+
+    console.log('[WSS] New connection!', id);
+    sockets.set(id, socket);
 
     socket.on('message', async data => {
       const room = await Room.findById(roomID);
@@ -27,10 +28,11 @@ module.exports = wss => {
     });
 
     socket.on('close', async (code, reason) => {
-      console.log('Connection closed!', code, reason);
+      console.log('[WSS] Connection closed!', code, reason);
 
       if (roomID) {
         const room = await Room.findById(roomID);
+        request.session.roomID = null;
         if (id === room.host) {
           room.ended = true;
           for (const team of [...room.teams, ...room.applications]) {
@@ -44,8 +46,9 @@ module.exports = wss => {
         }
       }
 
-      sockets.delete(id);
-      request.session.destroy();
+      request.session.save(() => {
+        sockets.delete(id);
+      });
     });
   });
 };

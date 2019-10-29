@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Col } from 'react-grid-system';
 import { Redirect } from 'react-router-dom';
 
-import { fetchQuestions, confirmQuestionAndContinue } from '../reducers/quizz-master-app';
+import { fetchQuestions, confirmQuestionAndContinue } from '../reducers/qm/question';
 import Button from './Button';
 import ItemList from './ItemList';
 import ItemListHeader from './ItemListHeader';

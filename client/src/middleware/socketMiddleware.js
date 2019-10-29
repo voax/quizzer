@@ -1,9 +1,7 @@
 import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
-import { fetchTeamApplications } from '../reducers/quizz-master-app';
-
-const WS_HOST = 'ws://localhost:4000/';
+import { fetchTeamApplications } from '../reducers/qm/team';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -44,6 +42,7 @@ const socketMiddleware = () => {
       case 'ROOM_CLOSED':
         store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
+        socket.close();
         break;
       default:
         break;
@@ -57,7 +56,7 @@ const socketMiddleware = () => {
         if (socket !== null) {
           socket.close();
         }
-        socket = new WebSocket(WS_HOST);
+        socket = new WebSocket(process.env.REACT_APP_WS_URL);
         socket.onmessage = onMessage(store);
         socket.onclose = onClose(store);
         socket.onopen = onOpen(store, action.ping);
