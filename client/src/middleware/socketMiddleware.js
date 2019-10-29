@@ -35,6 +35,9 @@ const socketMiddleware = () => {
         store.dispatch(showPopUpAction('😔', 'Your application has been rejected.'));
         socket.close();
         break;
+      case 'CATEGORIES_SELECTED':
+        console.log('CATEGORIES_SELECTED');
+        break;
       case 'GUESS_SUBMITTED':
         // store.dispatch(fetchRoom());
         console.log('GUESS_SUBMITTED');

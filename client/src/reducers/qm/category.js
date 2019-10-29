@@ -29,10 +29,8 @@ export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => as
   try {
     dispatch(setLoaderAction('Loading...'));
 
-    const response = await fetchApiSendJson(`rooms/${roomCode}`, 'PATCH', {
+    const response = await fetchApiSendJson(`rooms/${roomCode}/categories`, 'PUT', {
       categories: selectedCategories.map(({ category }) => category),
-      questionNo: 1,
-      roundStarted: true,
     });
     await checkFetchError(response);
 

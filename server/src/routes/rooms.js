@@ -214,15 +214,35 @@ router.post(
 //#endregion
 
 //#region categories
-router.post('/:roomCode/categories', (req, res) => {
-  // @TODO
-  res.send('Not implemented yet!');
-});
+router.put(
+  '/:roomCode/categories',
+  ...isQMAndHost,
+  catchErrors(async (req, res) => {
+    const { categories } = req.body;
 
-router.delete('/:roomCode/categories/:categoryID', (req, res) => {
-  // @TODO
-  res.send('Not implemented yet!');
-});
+    if (req.room.roundStarted) {
+      return res.status(400).json({ message: 'Round has already been started.' });
+    }
+
+    if (categories.length !== 3) {
+      return res.status(400).json({ message: 'Invalid amount of categories selected.' });
+    }
+
+    req.room.roundStarted = true;
+    req.room.categories = categories;
+    req.room.questionNo = 1;
+    await req.room.save();
+
+    for (const team of req.room.teams) {
+      const socket = sockets.get(team.sessionID);
+      if (socket) {
+        socket.send('CATEGORIES_SELECTED');
+      }
+    }
+
+    res.json({ message: 'Categories have been selected.' });
+  })
+);
 //#endregion
 
 module.exports = router;
