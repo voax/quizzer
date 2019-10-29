@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Container, Row, Col } from 'react-grid-system';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import Button from './Button';
+import { fetchRoomState } from '../reducers/qm/room';
 
 const Header = () => {
   const questionNo = useSelector(state => state.quizzMasterApp.question);
@@ -70,6 +71,13 @@ const NextButton = () => {
 };
 
 const QMGuesses = () => {
+  const dispatch = useDispatch();
+  const roomCode = useSelector(state => state.quizzMasterApp.roomCode);
+
+  useEffect(() => {
+    dispatch(fetchRoomState(roomCode));
+  }, [dispatch, roomCode]);
+
   return (
     <Container className="top-anxiety">
       <Header />

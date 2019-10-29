@@ -42,7 +42,6 @@ export const confirmQuestionAndContinue = (roomCode, question) => async dispatch
   }
 };
 
-// @TODO
 export default produce((draft, action) => {
   switch (action.type) {
     case 'QUESTIONS_FETCHED':
