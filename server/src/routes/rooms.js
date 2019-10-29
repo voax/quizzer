@@ -48,7 +48,7 @@ router.get('/:roomCode', (req, res) => {
 
   switch (req.session.role) {
     case QM:
-      return res.json({ round, questionNo, questionClosed, category, question, teams });
+      return res.json({ round, questionNo, questionClosed, currentQuestion, teams });
     case TEAM:
       const team = teams.find(team => team.sessionID === req.sessionID);
 
@@ -89,6 +89,9 @@ router.patch(
 
     if (questionClosed !== undefined) {
       req.room.questionClosed = questionClosed;
+      for (const t of req.room.teams) {
+        sockets.get(t.sessionID).send('QUESTION_CLOSED');
+      }
     }
 
     if (applications) {
@@ -210,8 +213,11 @@ router.patch(
 
     switch (req.session.role) {
       case QM:
-        // TODO: Implement Quizz Master guessCorrect toggle
-        return res.send('Quizz Master!');
+        team.guessCorrect = req.body.guessCorrect;
+        await Team.updateOne({ _id: team.id }, { guessCorrect: req.body.guessCorrect });
+        await req.room.save();
+
+        return res.json({ teams: req.room.teams });
       case TEAM:
         if (req.room.questionClosed) {
           return res.status(400).json({ message: 'Question is closed.' });

@@ -2,6 +2,7 @@ import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
+import { fetchRoomState } from '../reducers/qm/room';
 import { fetchRoom, clearRoom } from '../reducers/team-app';
 
 const socketMiddleware = () => {
@@ -45,7 +46,7 @@ const socketMiddleware = () => {
         store.dispatch(fetchRoom(state.teamApp.roomCode.value));
         break;
       case 'GUESS_SUBMITTED':
-        // store.dispatch(fetchRoom());
+        store.dispatch(fetchRoomState(state.quizzMasterApp.roomCode));
         console.log('GUESS_SUBMITTED');
         break;
       case 'ROOM_CLOSED':
@@ -53,6 +54,10 @@ const socketMiddleware = () => {
         store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
         socket.close();
+        break;
+      case 'QUESTION_CLOSED':
+        // TODO
+        console.log('Hallo question is closed hehe');
         break;
       default:
         break;
