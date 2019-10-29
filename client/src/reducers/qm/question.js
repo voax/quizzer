@@ -56,6 +56,7 @@ export default produce((draft, action) => {
       draft.currentQuestion = action.question;
       draft.questionsAsked = [...draft.questionsAsked, action.question._id];
       draft.selectedQuestion = null;
+      draft.question++;
       return;
     default:
       return;

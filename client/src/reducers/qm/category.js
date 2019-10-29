@@ -62,8 +62,8 @@ export default produce((draft, action) => {
       draft.selectedCategory = null;
       return;
     case 'CONFIRM_CATEGORIES_SELECTED':
-      draft.question = 1;
       draft.categoriesConfirmed = true;
+      draft.round++;
       return;
     default:
       return;

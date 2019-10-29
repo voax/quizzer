@@ -50,7 +50,14 @@ router.get('/:roomCode', (req, res) => {
     case QM:
       return res.json({ round, questionNo, questionClosed, category, question, teams });
     case TEAM:
-      return res.json({ round, questionNo, questionClosed, category, question });
+      return res.json({
+        round,
+        questionNo,
+        questionClosed,
+        category,
+        question,
+        teamID: req.sessionID,
+      });
     case SCOREBOARD:
       const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
         name,
@@ -177,17 +184,19 @@ router.patch(
         // TODO: Implement Quizz Master guessCorrect toggle
         return res.send('Quizz Master!');
       case TEAM:
-        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
-
-        if (req.params.teamID !== team.sessionID) {
-          return res.status(400).json({ message: 'This is not your team!' });
+        if (req.params.teamID !== req.sessionID) {
+          return res.status(404).json({ message: 'This is not your team!' });
         }
 
-        const teamDocument = await Team.findById(team._id);
+        if (req.room.questionClosed) {
+          return res.status(400).json({ message: 'Question is closed.' });
+        }
 
+        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
         team.guess = req.body.guess;
         await req.room.save();
 
+        const teamDocument = await Team.findById(team._id);
         teamDocument.guess = req.body.guess;
         await teamDocument.save();
 
@@ -230,7 +239,7 @@ router.put(
 
     req.room.roundStarted = true;
     req.room.categories = categories;
-    req.room.questionNo = 1;
+    req.room.questionNo++;
     await req.room.save();
 
     for (const team of req.room.teams) {
