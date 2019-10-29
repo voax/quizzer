@@ -44,15 +44,13 @@ router.use(
 
 router.get('/:roomCode', (req, res) => {
   const { round, questionNo, currentQuestion, questionClosed, teams } = req.room;
-  const { category, question, answer } = currentQuestion;
+  const { category, question } = currentQuestion;
 
   switch (req.session.role) {
     case QM:
-      res.json({ round, questionNo, questionClosed, category, question, teams });
-      return;
+      return res.json({ round, questionNo, questionClosed, category, question, teams });
     case TEAM:
-      res.json({ round, questionNo, questionClosed, category, question });
-      return;
+      return res.json({ round, questionNo, questionClosed, category, question });
     case SCOREBOARD:
       const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
         name,
@@ -60,11 +58,9 @@ router.get('/:roomCode', (req, res) => {
         roundScore,
         guessCorrect,
       }));
-      res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
-      return;
+      return res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
     default:
-      res.status(404).json({ message: 'Incorrect request.' });
-      return;
+      return res.status(404).json({ message: 'Incorrect request.' });
   }
 });
 
@@ -176,28 +172,30 @@ router.post(
 router.patch(
   '/:roomCode/teams/:teamID',
   catchErrors(async (req, res) => {
-    if (req.sessionID === req.room.host) {
-      // TODO: Implement Quizz Master guessCorrect toggle
-      return res.send('Quizz Master!');
+    switch (req.session.role) {
+      case QM:
+        // TODO: Implement Quizz Master guessCorrect toggle
+        return res.send('Quizz Master!');
+      case TEAM:
+        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+
+        if (req.params.teamID !== team.sessionID) {
+          return res.status(400).json({ message: 'This is not your team!' });
+        }
+
+        const teamDocument = await Team.findById(team._id);
+
+        team.guess = req.body.guess;
+        await req.room.save();
+
+        teamDocument.guess = req.body.guess;
+        await teamDocument.save();
+
+        sockets.get(req.room.host).send('GUESS_SUBMITTED');
+        return res.json({ message: 'Guess submitted!' });
+      default:
+        return res.status(400).json({ message: 'You are not allowed to perform this action.' });
     }
-
-    const team = req.room.teams.find(team => team.sessionID === req.sessionID);
-
-    if (team) {
-      if (req.params.teamID !== team.sessionID) {
-        return res.status(400).json({ message: 'This is not your team!' });
-      }
-
-      const teamDocument = await Team.findById(team._id);
-
-      team.guess = req.body.guess;
-      teamDocument.guess = req.body.guess;
-
-      sockets.get(req.room.host).send('GUESS_SUBMITTED');
-      return res.json({ message: 'Guess submitted!' });
-    }
-
-    return res.status(400).json({ message: 'You are not allowed to perform this action.' });
   })
 );
 
