@@ -25,6 +25,10 @@ code {
   padding-top: 1rem;
 }
 
+.bottom-anxiety {
+  padding-bottom: 1rem;
+}
+
 .full-screen {
   min-height: 100vh;
   height: 100%;
@@ -194,4 +198,14 @@ button {
   $m: 15px;
   margin-left: $m;
   width: calc(100% - #{$m * 2});
+}
+
+.round-question {
+  position: absolute;
+  top: 1em;
+  font-size: 2em;
+
+  span {
+    display: block;
+  }
 }

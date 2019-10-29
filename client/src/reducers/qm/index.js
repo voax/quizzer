@@ -9,6 +9,9 @@ export default reduceReducers(
   {
     roomCode: null,
 
+    round: 0,
+    question: 0,
+
     selectedTeamApplication: null,
     teamApplications: [],
     approvedTeamApplications: [],
@@ -19,9 +22,10 @@ export default reduceReducers(
     selectedCategories: [],
     categoriesConfirmed: false,
 
+    questions: [],
+    questionsAsked: [],
     currentQuestion: null,
-    round: 0,
-    question: 0,
+    selectedQuestion: null,
   },
   room,
   team,

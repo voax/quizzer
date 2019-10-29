@@ -25,9 +25,7 @@ router.post(
     await newlyCreatedRoom.save();
     req.session.roomID = newlyCreatedRoom._id;
 
-    req.session.save(() => {
-      res.json({ roomCode: code });
-    });
+    req.session.save(() => res.json({ roomCode: code }));
   })
 );
 
@@ -45,14 +43,25 @@ router.use(
 );
 
 router.get('/:roomCode', (req, res) => {
-  // if client hasn't a session yet, a session will be created with the scoreboard role.
-  if (!req.sessionID) {
-    req.session.role = SCOREBOARD;
-    req.session.roomID = req.room._id;
-  }
+  const { round, questionNo, currentQuestion, questionClosed, teams } = req.room;
+  const { category, question } = currentQuestion;
 
-  // @TODO
-  res.send('Not implemented yet!');
+  switch (req.session.role) {
+    case QM:
+      return res.json({ round, questionNo, questionClosed, category, question, teams });
+    case TEAM:
+      return res.json({ round, questionNo, questionClosed, category, question });
+    case SCOREBOARD:
+      const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
+        name,
+        roundPoints,
+        roundScore,
+        guessCorrect,
+      }));
+      return res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
+    default:
+      return res.status(404).json({ message: 'Incorrect request.' });
+  }
 });
 
 router.patch(
@@ -111,9 +120,7 @@ router.post(
     req.room.applications.push(newApplication);
     await req.room.save();
 
-    req.session.save(() => {
-      res.json({ message: 'Team application received.' });
-    });
+    req.session.save(() => res.json({ message: 'Team application received.' }));
   })
 );
 
@@ -165,28 +172,43 @@ router.post(
 router.patch(
   '/:roomCode/teams/:teamID',
   catchErrors(async (req, res) => {
-    if (req.sessionID === req.room.host) {
-      // TODO: Implement Quizz Master guessCorrect toggle
-      return res.send('Quizz Master!');
+    switch (req.session.role) {
+      case QM:
+        // TODO: Implement Quizz Master guessCorrect toggle
+        return res.send('Quizz Master!');
+      case TEAM:
+        const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+
+        if (req.params.teamID !== team.sessionID) {
+          return res.status(400).json({ message: 'This is not your team!' });
+        }
+
+        const teamDocument = await Team.findById(team._id);
+
+        team.guess = req.body.guess;
+        await req.room.save();
+
+        teamDocument.guess = req.body.guess;
+        await teamDocument.save();
+
+        sockets.get(req.room.host).send('GUESS_SUBMITTED');
+        return res.json({ message: 'Guess submitted!' });
+      default:
+        return res.status(400).json({ message: 'You are not allowed to perform this action.' });
     }
+  })
+);
 
-    const team = req.room.teams.find(team => team.sessionID === req.sessionID);
+router.post(
+  '/:roomCode/scoreboards',
+  catchErrors(async (req, res) => {
+    req.session.role = SCOREBOARD;
+    req.session.roomID = req.room._id;
 
-    if (team) {
-      if (req.params.teamID !== team.sessionID) {
-        return res.status(400).json({ message: 'This is not your team!' });
-      }
+    req.room.scoreboards.push(req.sessionID);
+    await req.room.save();
 
-      const teamDocument = await Team.findById(team._id);
-
-      team.guess = req.body.guess;
-      teamDocument.guess = req.body.guess;
-
-      // TODO: PING Quizz Master socket here
-      return res.json({ message: 'Guess submitted!' });
-    }
-
-    return res.status(400).json({ message: 'You are not allowed to perform this action.' });
+    req.session.save(() => res.json({ message: 'You have been registered.' }));
   })
 );
 //#endregion
