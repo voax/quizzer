@@ -25,9 +25,7 @@ router.post(
     await newlyCreatedRoom.save();
     req.session.roomID = newlyCreatedRoom._id;
 
-    req.session.save(() => {
-      res.json({ roomCode: code });
-    });
+    req.session.save(() => res.json({ roomCode: code }));
   })
 );
 
@@ -126,9 +124,7 @@ router.post(
     req.room.applications.push(newApplication);
     await req.room.save();
 
-    req.session.save(() => {
-      res.json({ message: 'Team application received.' });
-    });
+    req.session.save(() => res.json({ message: 'Team application received.' }));
   })
 );
 
@@ -205,15 +201,18 @@ router.patch(
   })
 );
 
-router.post('/:roomCode/scoreboards', (req, res) => {
-  req.session.role = SCOREBOARD;
-  req.session.roomID = req.room._id;
+router.post(
+  '/:roomCode/scoreboards',
+  catchErrors(async (req, res) => {
+    req.session.role = SCOREBOARD;
+    req.session.roomID = req.room._id;
 
-  req.room.scoreboards.push(req.sessionID);
-  req.room.save(() => {
-    res.json({ message: 'You have been registered.' });
-  });
-});
+    req.room.scoreboards.push(req.sessionID);
+    await req.room.save();
+
+    req.session.save(() => res.json({ message: 'You have been registered.' }));
+  })
+);
 //#endregion
 
 //#region categories
