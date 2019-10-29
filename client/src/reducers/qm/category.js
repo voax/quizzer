@@ -9,7 +9,7 @@ export const fetchCategories = () => async dispatch => {
     dispatch(setLoaderAction('Retrieving categories...'));
     const response = await fetchApi(`categories`, 'GET', {
       headers: {
-        'Accept-Language': 'en',
+        'Accept-Language': 'nl',
       },
     });
     const categories = await checkFetchError(response);

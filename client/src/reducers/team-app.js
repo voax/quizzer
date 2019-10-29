@@ -32,7 +32,6 @@ export const applyTeam = (roomCode, name) => async dispatch => {
 };
 
 export const clearRoom = () => ({ type: 'CLEAR_ROOM' });
-
 export const fetchRoom = roomCode => async dispatch => {
   try {
     dispatch(setLoaderAction('Loading question...'));
@@ -45,6 +44,20 @@ export const fetchRoom = roomCode => async dispatch => {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
     dispatch(stopLoaderAction());
+  }
+};
+
+export const closeQuestion = roomCode => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Loading room...'));
+
+    const response = await fetchApi(`rooms/${roomCode}`, 'GET');
+    const { questionClosed } = await checkFetchError(response);
+
+    dispatch({ type: 'CLOSE_QUESTION', questionClosed });
+    dispatch(setLoaderAction('Question closed. The Quizz Master is reviewing your guess.'));
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
   }
 };
 
@@ -80,6 +93,9 @@ const teamAppReducer = produce(
         }
         draft[action.name].value = action.value;
         return;
+      case 'CLOSE_QUESTION':
+        draft.question.open = !action.questionClosed;
+        return;
       case 'SET_ROOM':
         draft.roundNo = action.round;
         draft.question.number = action.questionNo;
@@ -94,6 +110,8 @@ const teamAppReducer = produce(
         draft.question.open = false;
         draft.question.category = '';
         draft.question.question = '';
+        draft.guess.value = '';
+        draft.guess.valid = false;
         draft.teamID = null;
         return;
       default:

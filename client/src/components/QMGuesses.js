@@ -46,7 +46,7 @@ const TeamGuess = ({ team: teamNo }) => {
 
         {questionClosed && (
           <Button type="small" onClick={toggleGuess} disabled={approvingATeamGuess || !team.guess}>
-            {!team.guessCorrect ? (
+            {team.guessCorrect ? (
               <span role="img" aria-label={`Approve team ${team.name}'s guess`}>
                 👍
               </span>

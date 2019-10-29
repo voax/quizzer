@@ -11,7 +11,7 @@ export const fetchQuestions = selectedCategories => async dispatch => {
       selectedCategories.map(async ({ category }) => {
         const response = await fetchApi(`categories/${category}/questions`, 'GET', {
           headers: {
-            'Accept-Language': 'en',
+            'Accept-Language': 'nl',
           },
         });
         const questions = await checkFetchError(response);

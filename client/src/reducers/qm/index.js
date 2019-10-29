@@ -16,30 +16,12 @@ export default reduceReducers(
 
     selectedTeamApplication: null,
     teamApplications: [],
-    approvedTeamApplications: [
-      { id: 1, name: 'Fake Team 1' },
-      { id: 2, name: 'Fake Team 2' },
-      { id: 3, name: 'Fake Team 3' },
-      { id: 4, name: 'Fake Team 4' },
-    ],
+    approvedTeamApplications: [],
     teamsConfirmed: false,
 
     selectedCategory: null,
     categories: [],
-    selectedCategories: [
-      {
-        id: 'Art and Literature',
-        category: 'Art and Literature',
-      },
-      {
-        id: 'Geography',
-        category: 'Geography',
-      },
-      {
-        id: 'General Knowledge',
-        category: 'General Knowledge',
-      },
-    ],
+    selectedCategories: [],
     categoriesConfirmed: false,
 
     questions: [],

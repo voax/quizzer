@@ -37,7 +37,7 @@ const TeamRoom = () => {
       <span className="question-number">{`Question ${questionNo}`}</span>
       <span className="category">{category}</span>
       <span className="question">{question}</span>
-      <Input reducer="teamApp" item="guess" placeholder="Your answer" maxLength="60" />
+      <Input reducer="teamApp" item="guess" placeholder="Your answer" labelText="Answer" maxLength="50" showCounter />
       <Button onClick={handleSubmit}>Submit!</Button>
     </>
   );
