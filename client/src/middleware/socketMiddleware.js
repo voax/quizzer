@@ -4,6 +4,7 @@ import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
 import { fetchRoomState } from '../reducers/qm/room';
 import { fetchRoom, clearRoom, closeQuestion } from '../reducers/team-app';
+import { fetchGameState } from '../reducers/scoreboard';
 
 const socketMiddleware = () => {
   let socket = null;
@@ -47,7 +48,6 @@ const socketMiddleware = () => {
         break;
       case 'GUESS_SUBMITTED':
         store.dispatch(fetchRoomState(state.quizzMasterApp.roomCode));
-        console.log('GUESS_SUBMITTED');
         break;
       case 'ROOM_CLOSED':
         store.dispatch(clearRoom());
@@ -58,7 +58,11 @@ const socketMiddleware = () => {
       case 'QUESTION_CLOSED':
         store.dispatch(closeQuestion(state.teamApp.roomCode.value));
         break;
+      case 'SCOREBOARD_REFRESH':
+        store.dispatch(fetchGameState(state.scoreboard.roomCode));
+        break;
       default:
+        console.warn(`Not implemented: type "${data}".`);
         break;
     }
   };

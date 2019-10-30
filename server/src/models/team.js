@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const sockets = require('../wss-clients');
+
 const Team = new mongoose.Schema({
   sessionID: {
     type: String,
@@ -24,5 +26,11 @@ const Team = new mongoose.Schema({
     type: Boolean,
   },
 });
+
+Team.methods.ping = function(msg) {
+  if (sockets.has(this.sessionID)) {
+    sockets.get(this.sessionID).send(msg);
+  }
+};
 
 mongoose.model('Team', Team);
