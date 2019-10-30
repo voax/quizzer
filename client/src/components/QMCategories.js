@@ -4,11 +4,12 @@ import { Container, Row, Col } from 'react-grid-system';
 import { Redirect } from 'react-router-dom';
 
 import Button from './Button';
-import ItemList, { StaticItemList } from './ItemList';
+import ItemList from './ItemList';
 import ItemListHeader from './ItemListHeader';
 import {
   fetchCategories,
   selectCategory,
+  deselectCategory,
   confirmCategoriesAndContinue,
 } from '../reducers/qm/category';
 import Loader from './Loader';
@@ -72,10 +73,20 @@ const QMCategories = () => {
         </Col>
         <Col xs={middleWidth} className="button-stack">
           <Button
-            disabled={selectedCategories.length >= 3 || !selectedCategory}
+            disabled={
+              selectedCategories.length >= 3 ||
+              !selectedCategory ||
+              !categories.includes(selectedCategory)
+            }
             onClick={() => dispatch(selectCategory())}
           >
             Select category
+          </Button>
+          <Button
+            disabled={!selectedCategory || !selectedCategories.includes(selectedCategory)}
+            onClick={() => dispatch(deselectCategory())}
+          >
+            Deselect category
           </Button>
           <Button
             disabled={selectedCategories.length < 3}
@@ -86,7 +97,13 @@ const QMCategories = () => {
           </Button>
         </Col>
         <Col>
-          <StaticItemList items={selectedCategories} show="category" />
+          <ItemList
+            items={selectedCategories}
+            show="category"
+            selectable
+            reducer={['quizzMasterApp', 'selectedCategory']}
+            dispatchAs="CATEGORIES"
+          />
         </Col>
       </Row>
     </Container>

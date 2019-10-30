@@ -22,7 +22,11 @@ export const fetchCategories = () => async dispatch => {
 };
 
 export const selectCategory = () => ({
-  type: 'APPROVE_SELECTD_CATEGORY',
+  type: 'APPROVE_SELECTED_CATEGORY',
+});
+
+export const deselectCategory = () => ({
+  type: 'REMOVE_SELECTED_CATEGORY',
 });
 
 export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => async dispatch => {
@@ -53,12 +57,19 @@ export default produce((draft, action) => {
     case 'ITEM_LIST_CHANGED_CATEGORIES':
       draft.selectedCategory = action.value;
       return;
-    case 'APPROVE_SELECTD_CATEGORY':
+    case 'APPROVE_SELECTED_CATEGORY':
       if (draft.selectedCategories.length >= 3) {
         return;
       }
       draft.selectedCategories.push(draft.selectedCategory);
       draft.categories = draft.categories.filter(({ id }) => id !== draft.selectedCategory.id);
+      draft.selectedCategory = null;
+      return;
+    case 'REMOVE_SELECTED_CATEGORY':
+      draft.selectedCategories = draft.selectedCategories.filter(
+        ({ id }) => id !== draft.selectedCategory.id
+      );
+      draft.categories.push(draft.selectedCategory);
       draft.selectedCategory = null;
       return;
     case 'CONFIRM_CATEGORIES_SELECTED':
