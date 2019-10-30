@@ -44,7 +44,7 @@ router.use(
 
 router.get('/:roomCode', (req, res) => {
   const { round, questionNo, currentQuestion, questionClosed, teams } = req.room;
-  const { category, question } = currentQuestion;
+  const { category, question } = currentQuestion || {};
 
   switch (req.session.role) {
     case QM:
