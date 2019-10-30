@@ -10,6 +10,8 @@ const { generateRoomCode } = require('../rooms/code');
 const { hasNotJoinedOrHosted } = require('../middleware/socket');
 const { isQMAndHost } = require('../middleware/role');
 
+const MAX_QUESTIONS_PER_ROUND = 2;
+
 //#region rooms
 router.post(
   '/',
@@ -82,7 +84,28 @@ router.patch(
   '/:roomCode',
   ...isQMAndHost,
   catchErrors(async (req, res) => {
-    const { roomClosed, questionClosed, applications } = req.body;
+    const { questionCompleted, roomClosed, questionClosed, applications } = req.body;
+
+    if (questionCompleted) {
+      for (const team of req.room.teams) {
+        if (team.guessCorrect) {
+          team.roundScore++;
+        }
+      }
+
+      req.room.currentQuestion = null;
+
+      if (req.room.questionNo >= MAX_QUESTIONS_PER_ROUND) {
+        req.room.roundStarted = false;
+        req.room.questionNo = 0;
+        // TODO: roundPoints
+        // for (const team of req.room.teams) {
+        //   if (team.guessCorrect) {
+        //     team.roundScore = 0;
+        //   }
+        // }
+      }
+    }
 
     if (roomClosed !== undefined) {
       req.room.roomClosed = roomClosed;
@@ -104,8 +127,16 @@ router.patch(
 
     await req.room.save();
 
+    // TODO: Ping Scoreboards room is updated
+    // for (const scoreboard of req.room.scoreboards) {
+    //   sockets.get(scoreboard).send('ROOM_UPDATED');
+    // }
+
     res.json({
       roomClosed: req.room.roomClosed,
+      roundStarted: req.room.roundStarted,
+      questionNo: req.room.questionNo,
+      currentQuestion: req.room.currentQuestion,
       questionClosed: req.room.questionClosed,
       applications: req.room.applications,
     });

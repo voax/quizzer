@@ -10,10 +10,12 @@ const Team = new mongoose.Schema({
     required: true,
   },
   roundPoints: {
-    type: String,
+    type: Number,
+    default: 0,
   },
   roundScore: {
     type: Number,
+    default: 0,
   },
   guess: {
     type: String,
