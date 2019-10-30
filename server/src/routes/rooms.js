@@ -10,8 +10,6 @@ const { generateRoomCode } = require('../rooms/code');
 const { hasNotJoinedOrHosted } = require('../middleware/socket');
 const { isQMAndHost } = require('../middleware/role');
 
-const MAX_QUESTIONS_PER_ROUND = 2;
-
 //#region rooms
 router.post(
   '/',
@@ -86,24 +84,7 @@ router.patch(
     const { questionCompleted, roomClosed, questionClosed, applications } = req.body;
 
     if (questionCompleted) {
-      for (const team of req.room.teams) {
-        if (team.guessCorrect) {
-          team.roundScore++;
-        }
-      }
-
-      req.room.currentQuestion = null;
-
-      if (req.room.questionNo >= MAX_QUESTIONS_PER_ROUND) {
-        req.room.roundStarted = false;
-        req.room.questionNo = 0;
-        // TODO: roundPoints
-        // for (const team of req.room.teams) {
-        //   if (team.guessCorrect) {
-        //     team.roundScore = 0;
-        //   }
-        // }
-      }
+      req.room.nextQuestion();
     }
 
     if (roomClosed !== undefined) {
