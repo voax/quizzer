@@ -23,15 +23,14 @@ const QMTeams = () => {
   const selectedTeamApplication = useSelector(
     state => state.quizzMasterApp.selectedTeamApplication
   );
-  const teamsConfirmed = useSelector(state => state.quizzMasterApp.teamsConfirmed);
+  const roomClosed = useSelector(state => state.quizzMasterApp.roomClosed);
 
-  const actionButtonsDisabled =
-    !teamApplications.length || !selectedTeamApplication || teamsConfirmed;
+  const actionButtonsDisabled = !teamApplications.length || !selectedTeamApplication || roomClosed;
   const middleWidth = 3;
 
   if (!code) {
     return <Redirect to="/master" />;
-  } else if (teamsConfirmed) {
+  } else if (roomClosed) {
     return <Redirect to="/master/categories" />;
   }
 
@@ -89,7 +88,7 @@ const QMTeams = () => {
             disabled={
               approvedTeamApplications.length < 2 ||
               approveSelectedApplication.length >= 6 ||
-              teamsConfirmed
+              roomClosed
             }
             onClick={() => dispatch(confirmTeamsAndContinue(code))}
             className="center-stick-bottom"

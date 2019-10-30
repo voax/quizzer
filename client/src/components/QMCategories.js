@@ -22,7 +22,7 @@ const QMCategories = () => {
   const categories = useSelector(state => state.quizzMasterApp.categories);
   const selectedCategories = useSelector(state => state.quizzMasterApp.selectedCategories);
   const selectedCategory = useSelector(state => state.quizzMasterApp.selectedCategory);
-  const categoriesConfirmed = useSelector(state => state.quizzMasterApp.categoriesConfirmed);
+  const roundStarted = useSelector(state => state.quizzMasterApp.roundStarted);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -32,7 +32,7 @@ const QMCategories = () => {
 
   const middleWidth = 3;
 
-  if (categoriesConfirmed) {
+  if (roundStarted) {
     return <Redirect to="/master/questions" />;
   } else if (isLoading) {
     return (

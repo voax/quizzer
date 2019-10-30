@@ -101,9 +101,13 @@ router.patch(
       req.room.applications = [];
     }
 
-    req.room.save();
+    await req.room.save();
 
-    res.json(JSON.stringify(req.room));
+    res.json({
+      roomClosed: req.room.roomClosed,
+      questionClosed: req.room.questionClosed,
+      applications: req.room.applications,
+    });
   })
 );
 
@@ -283,7 +287,7 @@ router.put(
       }
     }
 
-    res.json({ message: 'Categories have been selected.' });
+    res.json({ roundStarted: req.room.roundStarted, round: req.room.round });
   })
 );
 //#endregion
@@ -326,7 +330,7 @@ router.put(
       }
     }
 
-    res.json({ message: 'Question has been selected.' });
+    res.json({ questionClosed: req.room.questionClosed, questionNo: req.room.questionNo });
   })
 );
 //#endregion

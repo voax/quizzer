@@ -61,8 +61,9 @@ export const confirmTeamsAndContinue = roomCode => async dispatch => {
       roomClosed: true,
       applications: [],
     });
-    await checkFetchError(response);
-    dispatch({ type: 'CONFIRM_TEAMS_APPROVED' });
+    const { roomClosed, applications } = await checkFetchError(response);
+
+    dispatch({ type: 'CONFIRM_TEAMS_APPROVED', roomClosed, applications });
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
@@ -92,8 +93,8 @@ export default produce((draft, action) => {
       draft.selectedTeamApplication = null;
       return;
     case 'CONFIRM_TEAMS_APPROVED':
-      draft.teamsConfirmed = true;
-      draft.teamApplications = [];
+      draft.roomClosed = action.roomClosed;
+      draft.teamApplications = action.applications;
       return;
     default:
       return;

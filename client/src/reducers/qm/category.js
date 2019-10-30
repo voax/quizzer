@@ -32,9 +32,9 @@ export const confirmCategoriesAndContinue = (roomCode, selectedCategories) => as
     const response = await fetchApiSendJson(`rooms/${roomCode}/categories`, 'PUT', {
       categories: selectedCategories.map(({ category }) => category),
     });
-    await checkFetchError(response);
+    const { roundStarted, round } = await checkFetchError(response);
 
-    dispatch({ type: 'CONFIRM_CATEGORIES_SELECTED' });
+    dispatch({ type: 'CONFIRM_CATEGORIES_SELECTED', roundStarted, round });
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
@@ -62,8 +62,8 @@ export default produce((draft, action) => {
       draft.selectedCategory = null;
       return;
     case 'CONFIRM_CATEGORIES_SELECTED':
-      draft.categoriesConfirmed = true;
-      draft.round++;
+      draft.roundStarted = action.roundStarted;
+      draft.round = action.round;
       return;
     default:
       return;

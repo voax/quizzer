@@ -29,9 +29,9 @@ export const confirmQuestionAndContinue = (roomCode, question) => async dispatch
   try {
     dispatch(setLoaderAction('Loading...'));
     const response = await fetchApiSendJson(`rooms/${roomCode}/question`, 'PUT', { question });
-    await checkFetchError(response);
+    const { questionClosed, questionNo } = await checkFetchError(response);
 
-    dispatch({ type: 'CONFIRM_QUESTION_SELECTED', question });
+    dispatch({ type: 'CONFIRM_QUESTION_SELECTED', question, questionClosed, questionNo });
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
@@ -54,8 +54,9 @@ export default produce((draft, action) => {
     case 'CONFIRM_QUESTION_SELECTED':
       draft.currentQuestion = action.question;
       draft.questionsAsked = [...draft.questionsAsked, action.question._id];
+      draft.questionClosed = action.questionClosed;
+      draft.question = action.questionNo;
       draft.selectedQuestion = null;
-      draft.question++;
       return;
     default:
       return;

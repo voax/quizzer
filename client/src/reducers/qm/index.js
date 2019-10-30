@@ -10,23 +10,22 @@ export default reduceReducers(
   {
     roomCode: null,
 
-    round: 0,
-    question: 0,
-    questionClosed: false,
-
     selectedTeamApplication: null,
     teamApplications: [],
     approvedTeamApplications: [],
-    teamsConfirmed: false,
+    roomClosed: false,
 
+    round: 0,
+    roundStarted: false,
     selectedCategory: null,
     categories: [],
     selectedCategories: [],
-    categoriesConfirmed: false,
 
+    question: 0,
     questions: [],
     questionsAsked: [],
     currentQuestion: null,
+    questionClosed: true,
     selectedQuestion: null,
 
     approvingATeamGuess: false,
