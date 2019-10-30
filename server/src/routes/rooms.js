@@ -65,11 +65,12 @@ router.get('/:roomCode', (req, res) => {
         teamID: team._id,
       });
     case SCOREBOARD:
-      const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect }) => ({
+      const teamList = teams.map(({ name, roundPoints, roundScore, guessCorrect, guess }) => ({
         name,
         roundPoints,
         roundScore,
         guessCorrect,
+        guess,
       }));
       return res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
     default:

@@ -28,50 +28,95 @@ const Header = () => {
     <>
       <Row>
         <Col>
-          <h3 style={{ float: 'left' }}>Round {round}</h3>
+          <h1 style={{ float: 'left' }}>Round {round}</h1>
         </Col>
         <Col>
-          <h3 style={{ textAlign: 'center' }}>Q{questionNo}</h3>
+          <h1 style={{ textAlign: 'center' }}>{category}</h1>
         </Col>
         <Col>
-          <h3 style={{ float: 'right' }}>{category}</h3>
+          <h1 style={{ float: 'right' }}>Question {questionNo}</h1>
         </Col>
       </Row>
       <Row>
         <Col>
-          <h1 style={{ textAlign: 'center' }}>{question}</h1>
+          <h1 style={{ textAlign: 'center', fontSize: '4rem' }}>{question}</h1>
         </Col>
       </Row>
     </>
   );
 };
 
-const TeamStatus = ({ team }) => {
+const TeamStatus = ({ team, pos }) => {
+  const questionClosed = useSelector(state => state.scoreboard.questionClosed);
+
   if (!team) {
     return <Col />;
   }
 
-  return <Col>Wadup dit is een team bruv</Col>;
+  return (
+    <Col>
+      <div className="team-status">
+        <div className="info">
+          <span className="pos">{pos}</span>
+          <span className="round-points">{team.roundPoints}RP</span>
+          <span className="round-score">{team.roundScore}/12</span>
+        </div>
+        <div className="team">
+          <span className="name">{team.name}</span>
+          {questionClosed ? (
+            <>
+              {team.guessCorrect ? (
+                <span className="status" role="img" aria-label="Correct guess">
+                  ✔️
+                </span>
+              ) : (
+                <span className="status" role="img" aria-label="Incorrect guess">
+                  ❌
+                </span>
+              )}
+            </>
+          ) : (
+            <>
+              {!team.guess && (
+                <span className="status" role="img" aria-label="The team is thinking of a guess">
+                  💭
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        {questionClosed && (
+          <div className="guess">
+            <span className="guess">{team.guess || '-'}</span>
+          </div>
+        )}
+      </div>
+    </Col>
+  );
 };
 
 const TeamStatuses = () => {
-  const teams = useSelector(state => state.scoreboard.teams).sort(
-    (a, b) => a.roundScore < b.roundScore
-  );
+  const scoreboardTeams = useSelector(state => state.scoreboard.teams);
+
+  if (!scoreboardTeams) {
+    return <></>;
+  }
+
+  const teams = scoreboardTeams.slice().sort((a, b) => a.roundPoints < b.roundPoints);
 
   return (
     <>
-      <Row className="top-anxiety">
-        <TeamStatus team={teams[0]} />
-        <TeamStatus team={teams[1]} />
+      <Row className="big top-anxiety">
+        <TeamStatus pos={1} team={teams[0]} />
+        <TeamStatus pos={2} team={teams[1]} />
       </Row>
-      <Row className="top-anxiety">
-        <TeamStatus team={teams[2]} />
-        <TeamStatus team={teams[3]} />
+      <Row className="big top-anxiety">
+        <TeamStatus pos={3} team={teams[2]} />
+        <TeamStatus pos={4} team={teams[3]} />
       </Row>
-      <Row className="top-anxiety">
-        <TeamStatus team={teams[4]} />
-        <TeamStatus team={teams[5]} />
+      <Row className="big top-anxiety">
+        <TeamStatus pos={5} team={teams[4]} />
+        <TeamStatus pos={6} team={teams[5]} />
       </Row>
     </>
   );
@@ -86,7 +131,7 @@ const ScoreBoard = () => {
   }, [dispatch, roomCode]);
 
   return (
-    <Container className="top-anxiety">
+    <Container fluid className="top-anxiety">
       <Header />
       <TeamStatuses />
     </Container>
