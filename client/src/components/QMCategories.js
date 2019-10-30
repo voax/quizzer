@@ -12,6 +12,7 @@ import {
   deselectCategory,
   confirmCategoriesAndContinue,
 } from '../reducers/qm/category';
+import { endQuizz } from '../reducers/qm/room';
 import Loader from './Loader';
 import Logo from './Logo';
 
@@ -105,6 +106,17 @@ const QMCategories = () => {
             dispatchAs="CATEGORIES"
           />
         </Col>
+      </Row>
+      <Row>
+        <Col />
+        <Col xs={middleWidth} className="top-anxiety">
+          {roundNo >= 1 ? (
+            <Button className="secondary" onClick={() => dispatch(endQuizz(code))}>
+              End Quizz
+            </Button>
+          ) : null}
+        </Col>
+        <Col />
       </Row>
     </Container>
   );

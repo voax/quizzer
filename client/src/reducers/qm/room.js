@@ -1,6 +1,6 @@
 import produce from 'immer';
 
-import { wsConnect } from '../websocket';
+import { wsConnect, wsDisconnect } from '../websocket';
 import { setLoaderAction, stopLoaderAction } from '../loader';
 import { showPopUpAction } from '../pop-up';
 import { checkFetchError, fetchApi, fetchApiSendJson } from '../../utils';
@@ -81,6 +81,24 @@ export const questionCompleted = roomCode => async dispatch => {
   }
 };
 
+export const clearQuizzMaster = () => ({ type: 'CLEAR_QUIZZ_MASTER' });
+
+export const endQuizz = roomCode => async dispatch => {
+  try {
+    dispatch(setLoaderAction('Loading...'));
+    const response = await fetchApi(`rooms/${roomCode}`, 'DELETE');
+    await checkFetchError(response);
+
+    dispatch(clearQuizzMaster());
+    dispatch(wsDisconnect());
+    dispatch(showPopUpAction('🏁', 'Quizz Ended.'));
+  } catch (error) {
+    dispatch(showPopUpAction('ERROR', error.message));
+  } finally {
+    dispatch(stopLoaderAction());
+  }
+};
+
 export default produce((draft, action) => {
   switch (action.type) {
     case 'SET_ROOM_CODE':
@@ -111,6 +129,25 @@ export default produce((draft, action) => {
         draft.selectedCategories = [];
         draft.selectedCategory = null;
       }
+      return;
+    case 'CLEAR_QUIZZ_MASTER':
+      draft.roomCode = null;
+      draft.selectedTeamApplication = null;
+      draft.teamApplications = [];
+      draft.approvedTeamApplications = [];
+      draft.roomClosed = false;
+      draft.round = 0;
+      draft.roundStarted = false;
+      draft.selectedCategory = null;
+      draft.categories = [];
+      draft.selectedCategories = [];
+      draft.question = 0;
+      draft.questions = [];
+      draft.questionsAsked = [];
+      draft.currentQuestion = null;
+      draft.questionClosed = true;
+      draft.selectedQuestion = null;
+      draft.approvingATeamGuess = false;
       return;
     default:
       return;
