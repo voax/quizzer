@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const Room = mongoose.model('Room');
 const Team = mongoose.model('Team');
 
-const sockets = require('../wss-clients');
 const catchErrors = require('../middleware/catch-errors');
 const { SCOREBOARD, TEAM, QM } = require('./roles');
 const { generateRoomCode } = require('../rooms/code');
@@ -20,14 +19,14 @@ router.post(
     if (req.session.roomID) {
       await Room.updateOne({ _id: req.session.roomID, ended: false }, { ended: true });
     }
+
     req.session.role = QM;
 
-    const code = generateRoomCode();
-    const newlyCreatedRoom = new Room({ code, host: req.sessionID });
+    const newlyCreatedRoom = new Room({ code: generateRoomCode(), host: req.sessionID });
     await newlyCreatedRoom.save();
     req.session.roomID = newlyCreatedRoom._id;
 
-    req.session.save(() => res.json({ roomCode: code }));
+    req.session.save(() => res.json({ roomCode: newlyCreatedRoom.code }));
   })
 );
 
@@ -113,24 +112,17 @@ router.patch(
 
     if (questionClosed !== undefined) {
       req.room.questionClosed = questionClosed;
-      for (const t of req.room.teams) {
-        sockets.get(t.sessionID).send('QUESTION_CLOSED');
-      }
+      req.room.pingTeams('QUESTION_CLOSED');
     }
 
     if (applications) {
-      for (const application of req.room.applications) {
-        sockets.get(application.sessionID).send('APPLICATION_REJECTED');
-      }
+      req.room.pingApplications('APPLICATION_REJECTED');
       req.room.applications = [];
     }
 
     await req.room.save();
 
-    // TODO: Ping Scoreboards room is updated
-    // for (const scoreboard of req.room.scoreboards) {
-    //   sockets.get(scoreboard).send('ROOM_UPDATED');
-    // }
+    req.room.pingScoreboards('SCOREBOARD_REFRESH');
 
     res.json({
       roomClosed: req.room.roomClosed,
@@ -206,7 +198,8 @@ router.delete(
     applicationDocument.remove();
     await req.room.save();
 
-    sockets.get(applicationDocument.sessionID).send('APPLICATION_REJECTED');
+    applicationDocument.ping('APPLICATION_REJECTED');
+
     res.json({ message: 'Application has been rejected.' });
   })
 );
@@ -233,7 +226,9 @@ router.post(
     applicationDocument.remove();
     await req.room.save();
 
-    sockets.get(applicationDocument.sessionID).send('APPLICATION_ACCEPTED');
+    applicationDocument.ping('APPLICATION_ACCEPTED');
+    req.room.pingScoreboards('SCOREBOARD_REFRESH');
+
     res.json({ message: 'Team has been approved.' });
   })
 );
@@ -250,8 +245,11 @@ router.patch(
     switch (req.session.role) {
       case QM:
         team.guessCorrect = req.body.guessCorrect;
+
         await Team.updateOne({ _id: team.id }, { guessCorrect: req.body.guessCorrect });
         await req.room.save();
+
+        req.room.pingScoreboards('SCOREBOARD_REFRESH');
 
         return res.json({ teams: req.room.teams });
       case TEAM:
@@ -270,7 +268,9 @@ router.patch(
         teamDocument.guess = req.body.guess;
         await teamDocument.save();
 
-        sockets.get(req.room.host).send('GUESS_SUBMITTED');
+        req.room.pingHost('GUESS_SUBMITTED');
+        req.room.pingScoreboards('SCOREBOARD_REFRESH');
+
         return res.json({ message: 'Guess submitted!' });
       default:
         return res.status(400).json({ message: 'You are not allowed to perform this action.' });
@@ -312,12 +312,7 @@ router.put(
     req.room.round++;
     await req.room.save();
 
-    for (const team of req.room.teams) {
-      const socket = sockets.get(team.sessionID);
-      if (socket) {
-        socket.send('CATEGORIES_SELECTED');
-      }
-    }
+    req.room.pingTeams('CATEGORIES_SELECTED');
 
     res.json({ roundStarted: req.room.roundStarted, round: req.room.round });
   })
@@ -355,12 +350,8 @@ router.put(
     req.room.askedQuestions.push(question._id);
     await req.room.save();
 
-    for (const team of req.room.teams) {
-      const socket = sockets.get(team.sessionID);
-      if (socket) {
-        socket.send('QUESTION_SELECTED');
-      }
-    }
+    req.room.pingTeams('QUESTION_SELECTED');
+    req.room.pingScoreboards('SCOREBOARD_REFRESH');
 
     res.json({ questionClosed: req.room.questionClosed, questionNo: req.room.questionNo });
   })

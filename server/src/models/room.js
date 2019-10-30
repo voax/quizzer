@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const Question = mongoose.model('Question').schema;
 const Team = mongoose.model('Team').schema;
 
+const sockets = require('../wss-clients');
+
 const Room = new mongoose.Schema({
   code: {
     type: String,
@@ -48,5 +50,35 @@ const Room = new mongoose.Schema({
     default: false,
   },
 });
+
+Room.methods.pingTeams = function(msg) {
+  for (const { sessionID: id } of this.teams) {
+    if (sockets.has(id)) {
+      sockets.get(id).send(msg);
+    }
+  }
+};
+
+Room.methods.pingScoreboards = function(msg) {
+  for (const id of this.scoreboards) {
+    if (sockets.has(id)) {
+      sockets.get(id).send(msg);
+    }
+  }
+};
+
+Room.methods.pingApplications = function(msg) {
+  for (const { sessionID: id } of this.applications) {
+    if (sockets.has(id)) {
+      sockets.get(id).send(msg);
+    }
+  }
+};
+
+Room.methods.pingHost = function(msg) {
+  if (sockets.has(this.host)) {
+    sockets.get(this.host).send(msg);
+  }
+};
 
 mongoose.model('Room', Room);
