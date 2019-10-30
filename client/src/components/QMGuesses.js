@@ -1,9 +1,10 @@
 import React, { useEffect, useCallback } from 'react';
 import { Container, Row, Col } from 'react-grid-system';
 import { useSelector, useDispatch } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import Button from './Button';
-import { fetchRoomState, closeRoomQuestion } from '../reducers/qm/room';
+import { fetchRoomState, closeRoomQuestion, questionCompleted } from '../reducers/qm/room';
 import { toggleGuessCorrect } from '../reducers/qm/guess';
 
 const Header = () => {
@@ -88,7 +89,13 @@ const NextButton = () => {
     <Row className="top-anxiety">
       <Col xs={4} push={{ xs: 4 }}>
         {questionClosed ? (
-          <Button>Next</Button>
+          <Button
+            onClick={() => {
+              dispatch(questionCompleted(roomCode));
+            }}
+          >
+            Next
+          </Button>
         ) : (
           <Button
             onClick={() => {
@@ -106,10 +113,15 @@ const NextButton = () => {
 const QMGuesses = () => {
   const dispatch = useDispatch();
   const roomCode = useSelector(state => state.quizzMasterApp.roomCode);
+  const currentQuestion = useSelector(state => state.quizzMasterApp.currentQuestion);
 
   useEffect(() => {
     dispatch(fetchRoomState(roomCode));
   }, [dispatch, roomCode]);
+
+  if (!currentQuestion) {
+    return <Redirect to="/master/categories" />;
+  }
 
   return (
     <Container className="top-anxiety">

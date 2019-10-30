@@ -32,6 +32,7 @@ export const applyTeam = (roomCode, name) => async dispatch => {
 };
 
 export const clearRoom = () => ({ type: 'CLEAR_ROOM' });
+
 export const fetchRoom = roomCode => async dispatch => {
   try {
     dispatch(setLoaderAction('Loading question...'));
@@ -102,6 +103,8 @@ const teamAppReducer = produce(
         draft.question.open = !action.questionClosed;
         draft.question.category = action.category;
         draft.question.question = action.question;
+        draft.guess.value = '';
+        draft.guess.valid = false;
         draft.teamID = action.teamID;
         return;
       case 'CLEAR_ROOM':
