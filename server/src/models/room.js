@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 const { MAX_QUESTIONS_PER_ROUND } = process.env;
 
-const Question = mongoose.model('Question').schema;
-const Team = mongoose.model('Team').schema;
+const QuestionSchema = mongoose.model('Question').schema;
+const Team = mongoose.model('Team');
+const TeamSchema = Team.schema;
 
 const Room = new mongoose.Schema({
   code: {
@@ -25,8 +26,8 @@ const Room = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  teams: [Team],
-  applications: [Team],
+  teams: [TeamSchema],
+  applications: [TeamSchema],
   categories: [String],
   askedQuestions: [
     {
@@ -34,7 +35,7 @@ const Room = new mongoose.Schema({
       ref: 'Question',
     },
   ],
-  currentQuestion: Question,
+  currentQuestion: QuestionSchema,
   questionClosed: {
     type: Boolean,
     default: true,
@@ -50,7 +51,7 @@ const Room = new mongoose.Schema({
   },
 });
 
-Room.methods.calculateRP = function() {
+Room.methods.calculateRP = async function() {
   this.teams.sort((a, b) => b.roundScore - a.roundScore);
 
   let position = 1;
@@ -83,28 +84,34 @@ Room.methods.calculateRP = function() {
     team.roundScore = 0;
 
     position++;
+
+    await Team.findByIdAndUpdate(team._id, {
+      roundScore: team.roundScore,
+      roundPoints: team.roundPoints,
+    });
   }
 
   this.teams.sort((a, b) => b.roundPoints - a.roundPoints);
 };
 
-Room.methods.nextRound = function() {
+Room.methods.nextRound = async function() {
   this.roundStarted = false;
   this.questionNo = 0;
-  this.calculateRP();
+  await this.calculateRP();
 };
 
-Room.methods.nextQuestion = function() {
+Room.methods.nextQuestion = async function() {
   for (const team of this.teams) {
     if (team.guessCorrect) {
       team.roundScore++;
+      await Team.findByIdAndUpdate(team._id, { roundScore: team.roundScore });
     }
   }
 
   this.currentQuestion = null;
 
   if (this.questionNo >= MAX_QUESTIONS_PER_ROUND) {
-    this.nextRound();
+    await this.nextRound();
   }
 };
 

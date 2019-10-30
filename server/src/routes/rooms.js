@@ -84,7 +84,7 @@ router.patch(
     const { questionCompleted, roomClosed, questionClosed, applications } = req.body;
 
     if (questionCompleted) {
-      req.room.nextQuestion();
+      await req.room.nextQuestion();
     }
 
     if (roomClosed !== undefined) {
