@@ -184,7 +184,7 @@ The `isRole` function export is a middleware creator function. This function tak
 
 However if the type is a function it will be passed the `req` object and whether the function returns true or false it will respond with an error or `next()` it.
 
-If the condition results into false it will execute the following code:
+If any condition results into false it will execute the following code:
 
 ```js
 res.status(400).json({
@@ -192,7 +192,7 @@ res.status(400).json({
 });
 ```
 
-To combine multiple role middleware you can simply put them in an array like shown above. To use it like an array in your route handlers you can simply use the spread operator:
+To combine multiple role middleware you can simply put them in an array. To use it like an array in your route handlers you can simply use the spread operator:
 
 ```js
 const isHost = isRole(req => req.room && req.sessionID === req.room.host)
@@ -200,6 +200,7 @@ const isQM = isRole('QM')
 
 const isQMAndHost = [isQuizzMaster, isHost]
 
+//                       spread like so
 router.get('/protected', ...isQMAndHost, (req, res) => {...})
 // or
 app.use('/protected', ...isQMAndHost)
