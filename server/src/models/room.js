@@ -88,7 +88,7 @@ Room.methods.calculateRP = async function() {
 
   let position = 1;
   let incrementPosition = 0;
-  let previousRoundScore = 0;
+  let previousRoundScore = null;
 
   for (const team of this.teams) {
     if (previousRoundScore === team.roundScore) {
