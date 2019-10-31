@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'react-grid-system';
 import { Redirect } from 'react-router-dom';
 
 import { loginAsScoreboardViewer, fetchGameState } from '../reducers/scoreboard';
+import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import Loader from './Loader';
 
 const CenterLoader = () => {
@@ -147,6 +148,8 @@ const ScoreboardHome = ({
   const triedConnectingToRoom = useSelector(state => state.scoreboard.triedConnectingToRoom);
   const connectedToRoom = useSelector(state => state.scoreboard.connectedToRoom);
   const connectingToRoom = useSelector(state => state.scoreboard.connectingToRoom);
+  const questionNo = useSelector(state => state.scoreboard.questionNo);
+  const round = useSelector(state => state.scoreboard.round);
 
   useEffect(() => {
     if (!connectingToRoom && !triedConnectingToRoom) {
@@ -154,7 +157,19 @@ const ScoreboardHome = ({
     }
   }, [dispatch, roomCode, connectingToRoom, triedConnectingToRoom]);
 
-  if (!triedConnectingToRoom) {
+  useEffect(() => {
+    if (questionNo === 0 && round <= 0) {
+      dispatch(setLoaderAction('Wait for the Quizz Master to start the Quizz.'));
+    }
+  }, [dispatch, round, questionNo]);
+
+  useEffect(() => {
+    return () => dispatch(stopLoaderAction());
+  }, [dispatch]);
+
+  if (questionNo === 0 && round <= 0) {
+    return <CenterLoader />;
+  } else if (!triedConnectingToRoom) {
     return <CenterLoader />;
   } else if (!connectedToRoom) {
     return <Redirect to="/" />;
