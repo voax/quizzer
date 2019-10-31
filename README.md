@@ -35,42 +35,42 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 3. Communitation protocols
 
-### 3.1 Wesocket
+### 3.1 WebSocket
 
-- **Team App**
-  - WS_TEAM_APPROVED
-  - WS_SELECTING_CATEGORIES
-  - WS_SELECTING_QUESTION
-  - WS_QUESTION_STARTED
-  - WS_QUESTION_CLOSED
-  - WS_ROUND_ENDED
-  - WS_ROOM_CLOSED
-- **Quizz Master App**
-  - WS_ROOM_CREATED
-  - WS_TEAM_APPLIED
-  - WS_GUESS_SUBMITTED
-  - WS_ROOM_DESTROYED
-- **Scoreboard App**
-  - WS_QUESTION_STARTED
-  - WS_GUESS_SUBMITTED
-  - WS_QUESTION_ENDED_AND_APPROVED
+Client receives:
+
+- TEAM_APPLIED
+- APPLICATION_ACCEPTED
+- APPLICATION_REJECTED
+- CATEGORIES_SELECTED
+- QUESTION_SELECTED
+- GUESS_SUBMITTED
+- ROOM_CLOSED
+- QUESTION_CLOSED
+- SCOREBOARD_REFRESH
+
+Clients sends:
+
+- TEAM_APPLIED
 
 ### 3.2 Rest Endpoints
 
-| Method | Url                                        |
-| ------ | ------------------------------------------ |
-| GET    | /categories/                               |
-| GET    | /categories/:categoryID/questions          |
-| POST   | /rooms                                     |
-| GET    | /rooms/:roomID                             |
-| PATCH  | /rooms/:roomID                             |
-| DELETE | /rooms/:roomID                             |
-| POST   | /rooms/:roomID/applications                |
-| DELETE | /rooms/:roomID/applications/:applicationId |
-| POST   | /rooms/:roomID/teams                       |
-| PATCH  | /rooms/:roomID/teams/:teamID               |
-| POST   | /rooms/:roomID/categories                  |
-| DELETE | /rooms/:roomID/categories/:categoryID      |
+| Method | Url                                          |
+| ------ | -------------------------------------------- |
+| GET    | /categories/                                 |
+| GET    | /categories/:categoryID/questions            |
+| POST   | /rooms                                       |
+| GET    | /rooms/:roomCode                             |
+| PATCH  | /rooms/:roomCode                             |
+| DELETE | /rooms/:roomCode                             |
+| GET    | /rooms/:roomCode/applications                |
+| POST   | /rooms/:roomCode/applications                |
+| DELETE | /rooms/:roomCode/applications/:applicationId |
+| POST   | /rooms/:roomCode/teams                       |
+| PATCH  | /rooms/:roomCode/teams/:teamID               |
+| PUT    | /rooms/:roomCode/teams/question              |
+| PUT    | /rooms/:roomCode/categories                  |
+| POST   | /rooms/:roomCode/scoreboards                 |
 
 ---
 
@@ -121,44 +121,107 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 5. Clientside State
 
-- **Redux - Reducers:**
-  - **loader**
-    - text: string
-    - active: boolean
-  - **pop-up**
-    - title: string
-    - message: string
-    - button: string
-    - active: boolean
-  - **team-app**
-    - room: string
-    - team: string
-    - round: number
-    - question: object
-      - open: boolean
-      - number: number
-      - question: string
-      - category: string
-    - guess: string
-  - **quizz-master-app**
-    - room: string
-    - categories: array
-    - selectedCategories: array
-    - questions: array
-    - questionsAsked: array
-    - currentQuestion: object
-    - round: number
-    - question: number
-    - teams: array
-  - **scoreboard-app**
-    - room: string
-    - round: number
-    - question: object
-      - open: boolean
-      - number: number
-      - question: string
-      - category: string
-    - teams: array
+### websocket
+
+```js
+{
+  connected: false;
+}
+```
+
+### team-app
+
+```js
+{
+  teamID: null,
+  roomCode: {
+    value: '',
+    valid: false,
+  },
+  team: {
+    value: '',
+    valid: false,
+  },
+  roundNo: 0,
+  question: {
+    open: false,
+    number: 0,
+    question: '',
+    category: '',
+  },
+  guess: {
+    value: '',
+    valid: false,
+  },
+}
+```
+
+### scoreboard
+
+```js
+{
+  roomCode: null,
+  connectedToRoom: false,
+  connectingToRoom: false,
+  triedConnectingToRoom: false,
+
+  round: null,
+  teams: null,
+  category: null,
+  question: null,
+  questionNo: null,
+  questionClosed: null,
+}
+```
+
+### popup
+
+```js
+{
+  title: '',
+  message: '',
+  button: '',
+  active: false,
+}
+```
+
+### loader
+
+```js
+{
+  active: false,
+  text: '',
+}
+```
+
+### qm (Quizz Master)
+
+```js
+{
+  roomCode: null,
+  language: null,
+
+  selectedTeamApplication: null,
+  teamApplications: [],
+  approvedTeamApplications: [],
+  roomClosed: false,
+
+  round: 0,
+  roundStarted: false,
+  selectedCategory: null,
+  categories: [],
+  selectedCategories: [],
+
+  question: 0,
+  questions: [],
+  questionsAsked: [],
+  currentQuestion: null,
+  questionClosed: true,
+  selectedQuestion: null,
+
+  approvingATeamGuess: false,
+},
+```
 
 ---
 
