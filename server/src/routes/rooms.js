@@ -14,17 +14,20 @@ router.post(
   '/',
   hasNotJoinedOrHosted,
   catchErrors(async (req, res) => {
+    const { language } = req.body;
+
     if (req.session.roomID) {
       await Room.updateOne({ _id: req.session.roomID, ended: false }, { ended: true });
     }
 
     req.session.role = QM;
+    req.session.language = language;
 
-    const newlyCreatedRoom = new Room({ code: generateRoomCode(), host: req.sessionID });
+    const newlyCreatedRoom = new Room({ code: generateRoomCode(), host: req.sessionID, language });
     await newlyCreatedRoom.save();
     req.session.roomID = newlyCreatedRoom._id;
 
-    req.session.save(() => res.json({ roomCode: newlyCreatedRoom.code }));
+    req.session.save(() => res.json({ roomCode: newlyCreatedRoom.code, language }));
   })
 );
 
@@ -294,6 +297,15 @@ router.put(
       return res.status(400).json({ message: 'Invalid amount of categories selected.' });
     }
 
+    for (const team of req.room.teams) {
+      team.roundScore = 0;
+
+      await Team.findByIdAndUpdate(team._id, {
+        roundScore: team.roundScore,
+      });
+    }
+
+    req.room.questionNo = 0;
     req.room.roundStarted = true;
     req.room.categories = categories;
     req.room.round++;

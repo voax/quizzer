@@ -7,11 +7,7 @@ import { checkFetchError, fetchApi, fetchApiSendJson } from '../../utils';
 export const fetchCategories = () => async dispatch => {
   try {
     dispatch(setLoaderAction('Retrieving categories...'));
-    const response = await fetchApi(`categories`, 'GET', {
-      headers: {
-        'Accept-Language': 'nl',
-      },
-    });
+    const response = await fetchApi(`categories`);
     const categories = await checkFetchError(response);
     dispatch({ type: 'CATEGORIES_FETCHED', categories });
   } catch (error) {

@@ -9,11 +9,7 @@ export const fetchQuestions = selectedCategories => async dispatch => {
     dispatch({ type: 'CLEAR_QUESTIONS' });
     await Promise.all(
       selectedCategories.map(async ({ category }) => {
-        const response = await fetchApi(`categories/${category}/questions`, 'GET', {
-          headers: {
-            'Accept-Language': 'nl',
-          },
-        });
+        const response = await fetchApi(`categories/${category}/questions`);
         const questions = await checkFetchError(response);
         dispatch({ type: 'QUESTIONS_FETCHED', questions });
       })

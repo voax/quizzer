@@ -5,19 +5,19 @@ import { setLoaderAction, stopLoaderAction } from '../loader';
 import { showPopUpAction } from '../pop-up';
 import { checkFetchError, fetchApi, fetchApiSendJson } from '../../utils';
 
-export const setRoomCode = roomCode => ({ type: 'SET_ROOM_CODE', roomCode });
+export const setRoom = (roomCode, language) => ({ type: 'SET_ROOM', roomCode, language });
 
 export const clearRoomCode = () => ({ type: 'CLEAR_ROOM_CODE' });
 
-export const createRoom = () => async dispatch => {
+export const createRoom = lang => async dispatch => {
   try {
     dispatch(setLoaderAction('Creating a room...'));
 
-    const response = await fetchApi(`rooms`, 'POST');
-    const { roomCode } = await checkFetchError(response);
+    const response = await fetchApiSendJson(`rooms`, 'POST', { language: lang });
+    const { roomCode, language } = await checkFetchError(response);
 
     dispatch(wsConnect());
-    dispatch(setRoomCode(roomCode));
+    dispatch(setRoom(roomCode, language));
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
   } finally {
@@ -101,8 +101,9 @@ export const endQuizz = roomCode => async dispatch => {
 
 export default produce((draft, action) => {
   switch (action.type) {
-    case 'SET_ROOM_CODE':
+    case 'SET_ROOM':
       draft.roomCode = action.roomCode;
+      draft.language = action.language;
       return;
     case 'CLEAR_ROOM_CODE':
       draft.roomCode = null;
@@ -112,8 +113,6 @@ export default produce((draft, action) => {
       draft.currentQuestion = action.room.currentQuestion;
       draft.round = action.room.round;
       draft.questionClosed = action.room.questionClosed;
-      // category(pin):"Geography"
-      // question(pin):"Name the river that flows through the city of Albuquerque in the USA."
       draft.approvedTeamApplications = action.room.teams;
       return;
     case 'ROOM_QUESTION_CLOSE':
@@ -132,6 +131,7 @@ export default produce((draft, action) => {
       return;
     case 'CLEAR_QUIZZ_MASTER':
       draft.roomCode = null;
+      draft.language = null;
       draft.selectedTeamApplication = null;
       draft.teamApplications = [];
       draft.approvedTeamApplications = [];

@@ -9,6 +9,7 @@ import guess from './guess';
 export default reduceReducers(
   {
     roomCode: null,
+    language: null,
 
     selectedTeamApplication: null,
     teamApplications: [],

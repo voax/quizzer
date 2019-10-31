@@ -11,7 +11,6 @@ const ws = require('ws');
 require('./models');
 
 const simpleErrorHandler = require('./middleware/error-handler');
-const useAcceptLanguage = require('./middleware/accept-language');
 const httpWsUpgrade = require('./middleware/http-ws-upgrade');
 const { initRoomCodes } = require('./rooms/code');
 
@@ -45,7 +44,6 @@ app.options(
 );
 app.use(bodyParser.json());
 app.use(sessionParser);
-app.use(useAcceptLanguage());
 
 require('./routes')(app);
 

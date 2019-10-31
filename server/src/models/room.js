@@ -16,6 +16,10 @@ const Room = new mongoose.Schema({
     type: String,
     required: true,
   },
+  language: {
+    type: String,
+    required: true,
+  },
   round: {
     type: Number,
     default: 0,
@@ -117,12 +121,10 @@ Room.methods.calculateRP = async function() {
     }
 
     previousRoundScore = team.roundScore;
-    team.roundScore = 0;
 
     position++;
 
     await Team.findByIdAndUpdate(team._id, {
-      roundScore: team.roundScore,
       roundPoints: team.roundPoints,
     });
   }
@@ -132,7 +134,6 @@ Room.methods.calculateRP = async function() {
 
 Room.methods.nextRound = async function() {
   this.roundStarted = false;
-  this.questionNo = 0;
   await this.calculateRP();
 };
 
