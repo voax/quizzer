@@ -146,12 +146,102 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 6. Server Structure
 
-- Middleware
-  - useAcceptLanguageHeader
-  - catchErrors
-  - simpleRouteErrorHandler
-- Mongoose
-  - validatie methodes
-  - model methodes
+### Middleware
 
----
+#### accept-language.js
+
+module.exports = `(): (req, res, next) => void`
+
+This module exports a middleware creator which uses the **accept-language-parser** package to parse the Accept-Language HTTP header.
+The following properties are added tot the `req` object.
+
+- `language` : The parsed Accept-Language header
+- `firstLanguage()` : Returns the first language code in the header in an object: `{ langague: String }`
+
+#### catch-errors.js
+
+module.exports = `(fn: (req, res, next) => Promise ): (req, res, next) => void`
+
+This module exports a router wrapper for async route handlers. It allows the user to use async route handlers without having to use try/catch. When this wrapper 'catches' an error it passes to `next(error)`.
+
+#### error-handler.js
+
+module.exports = `({ defaultStatusCode: Number, defaultMessage: String }): (err, req, res, next) => void`
+
+This module exports a basic error handler middleware creator. If the user does not pass both initial arguments it will use the `statusCode` and `message` props from the object passed from `next()`. Furthermore the closure will also log the error using `console.error` to the console.
+
+#### http-ws-upgrade.js
+
+module.exports = `(sessionParser): (wss): (request, socket, head) => void`
+
+An application specific function for this project which is used to prevent users who do not have a role connecting to our WebSocket server.
+
+#### role.js
+
+module.exports.isRole = `(...conditions: any): (req, res, next) => void`
+
+The `isRole` function export is a middleware creator function. This function takes a 0.\* arguments which are used to check for the users's `session.role` value.
+
+However if the type is a function it will be passed the `req` object and whether the function returns true or false it will respond with an error or `next()` it.
+
+If the condition results into false it will execute the following code:
+
+```js
+res.status(400).json({
+  message: 'You are not allowed to perform this action.',
+});
+```
+
+To combine multiple role middleware you can simply put them in an array like shown above. To use it like an array in your route handlers you can simply use the spread operator:
+
+```js
+const isHost = isRole(req => req.room && req.sessionID === req.room.host)
+const isQM = isRole('QM')
+
+const isQMAndHost = [isQuizzMaster, isHost]
+
+router.get('/protected', ...isQMAndHost, (req, res) => {...})
+// or
+app.use('/protected', ...isQMAndHost)
+```
+
+#### socket.js
+
+module.exports.sessionHasWSConnect = `(errorMsg: String): (req, res, next) => void`
+
+The returned middleware closure checks for whether the request is already connected to the WebSocket server.
+If the user is already connected it will respond with a `400` status code and with the passed in `errorMsg` parameter.
+
+### Mongoose methods
+
+#### Room
+
+#### .pingTeams(msg: String)
+
+Ping the WebSocket for all team connections with the given `msg`.
+
+#### .pingScoreboards(msg: String)
+
+Ping the WebSocket for all scoreboard connections with the given `msg`.
+
+#### .pingApplications(msg: String)
+
+Ping the WebSocket for all team-application connections with the given `msg`.
+
+#### .pingHost(msg: String)
+
+Ping the host's WebSocket connection with the given `msg`.
+
+#### async .calculateRP()
+
+This method determines the winnner(s) and respectively gives all the teams their points.
+
+#### async .nextRound()
+
+Updates `roundStarted` to `false` and `questionNo` to `0`. Then it will call `calculateRP()`
+
+#### async .nextQuestion()
+
+1. Updates for all teams their `.roundScore` property if `.guessCorrect` is true
+2. Sets `currentQuestion` to `null` and `questionCompleted` to `true`
+3. calls `.nextRound()` if the current question is `>= MAX_QUESTIONS_PER_ROUND` defined in `server/.env`
