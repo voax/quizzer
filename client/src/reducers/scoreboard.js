@@ -46,6 +46,7 @@ export default produce(
         draft.category = action.data.category || draft.category;
         draft.question = action.data.question || draft.question;
         draft.teams = action.data.teams;
+        draft.questionCompleted = action.data.questionCompleted;
         return;
       case 'ACCESS_CONFIRMED':
         draft.roomCode = action.roomCode;

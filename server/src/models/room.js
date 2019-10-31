@@ -51,6 +51,10 @@ const Room = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  questionCompleted: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 Room.methods.pingTeams = function(msg) {
@@ -141,6 +145,7 @@ Room.methods.nextQuestion = async function() {
   }
 
   this.currentQuestion = null;
+  this.questionCompleted = true;
 
   if (this.questionNo >= MAX_QUESTIONS_PER_ROUND) {
     await this.nextRound();

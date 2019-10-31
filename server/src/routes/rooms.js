@@ -42,7 +42,7 @@ router.use(
 );
 
 router.get('/:roomCode', (req, res) => {
-  const { round, questionNo, currentQuestion, questionClosed, teams } = req.room;
+  const { round, questionNo, currentQuestion, questionClosed, teams, questionCompleted } = req.room;
   const { category, question } = currentQuestion || {};
 
   switch (req.session.role) {
@@ -71,7 +71,15 @@ router.get('/:roomCode', (req, res) => {
         guessCorrect,
         guess,
       }));
-      return res.json({ round, questionNo, questionClosed, category, question, teams: teamList });
+      return res.json({
+        round,
+        questionNo,
+        questionClosed,
+        category,
+        question,
+        teams: teamList,
+        questionCompleted,
+      });
     default:
       return res.status(404).json({ message: 'Incorrect request.' });
   }
@@ -95,6 +103,7 @@ router.patch(
     if (questionClosed !== undefined) {
       req.room.questionClosed = questionClosed;
       req.room.pingTeams('QUESTION_CLOSED');
+      req.room.pingScoreboards('SCOREBOARD_REFRESH');
     }
 
     if (applications) {
@@ -324,6 +333,7 @@ router.put(
 
     req.room.questionClosed = false;
     req.room.currentQuestion = question;
+    req.room.questionCompleted = false;
     req.room.questionNo++;
     req.room.askedQuestions.push(question._id);
     await req.room.save();

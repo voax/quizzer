@@ -49,6 +49,7 @@ const Header = () => {
 
 const TeamStatus = ({ team, pos }) => {
   const questionClosed = useSelector(state => state.scoreboard.questionClosed);
+  const questionCompleted = useSelector(state => state.scoreboard.questionCompleted);
 
   if (!team) {
     return <Col />;
@@ -64,7 +65,7 @@ const TeamStatus = ({ team, pos }) => {
         </div>
         <div className="team">
           <span className="name">{team.name}</span>
-          {questionClosed ? (
+          {questionCompleted ? (
             <>
               {team.guessCorrect ? (
                 <span className="status" role="img" aria-label="Correct guess">
