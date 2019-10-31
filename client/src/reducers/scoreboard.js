@@ -43,8 +43,8 @@ export default produce(
         draft.round = action.data.round;
         draft.questionNo = action.data.questionNo;
         draft.questionClosed = action.data.questionClosed;
-        draft.category = action.data.category;
-        draft.question = action.data.question;
+        draft.category = action.data.category || draft.category;
+        draft.question = action.data.question || draft.question;
         draft.teams = action.data.teams;
         return;
       case 'ACCESS_CONFIRMED':

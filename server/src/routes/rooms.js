@@ -85,6 +85,7 @@ router.patch(
 
     if (questionCompleted) {
       await req.room.nextQuestion();
+      req.room.pingScoreboards('SCOREBOARD_REFRESH');
     }
 
     if (roomClosed !== undefined) {
@@ -102,8 +103,6 @@ router.patch(
     }
 
     await req.room.save();
-
-    req.room.pingScoreboards('SCOREBOARD_REFRESH');
 
     res.json({
       roomClosed: req.room.roomClosed,
@@ -229,8 +228,6 @@ router.patch(
 
         await Team.updateOne({ _id: team.id }, { guessCorrect: req.body.guessCorrect });
         await req.room.save();
-
-        req.room.pingScoreboards('SCOREBOARD_REFRESH');
 
         return res.json({ teams: req.room.teams });
       case TEAM:
