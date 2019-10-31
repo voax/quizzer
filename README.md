@@ -76,30 +76,48 @@ Click [here](./Wireframes.md) for our wireframes.
 
 ## 4. Data Schema
 
-- Mongoose Schema
-  - **Room**
-    - code: String
-    - host: String
-    - round: Number
-    - roundStarted: Boolean
-    - questionNo: Number
-    - askedQuestions: [Question]
-    - currentQuestion: Question
-    - questionClosed: Boolean
-    - teams: [Team]
-  - **Question**
-    - question: String
-    - answer: String
-    - category: String
-    - language: String
-  - **Team**
-    - name: String
-    - roundPoints: String
-    - roundScore: Number
-    - guess: String
-    - guessCorrect: Boolean
+### Mongoose Schema
 
----
+#### Question
+
+| Property | Type   | Default | Required |
+| -------- | ------ | :-----: | :------: |
+| question | String |   ❌    |    ✔️    |
+| answer   | String |   ❌    |    ✔️    |
+| category | String |   ❌    |    ✔️    |
+| language | String |   ❌    |    ✔️    |
+
+#### Team
+
+| Property     | Type    | Default | Required |
+| ------------ | ------- | :-----: | :------: |
+| sessionID    | String  |   ❌    |    ✔️    |
+| name         | String  |   ❌    |    ✔️    |
+| roundPoints  | Number  |    0    |    ❌    |
+| roundScore   | Number  |    0    |    ❌    |
+| guess        | String  |   ❌    |    ❌    |
+| guessCorrect | Boolean |   ❌    |    ❌    |
+
+#### Room
+
+| Property          | Type           | Default  | Required |
+| ----------------- | -------------- | :------: | :------: |
+| code              | String         |    ❌    |    ✔️    |
+| host              | String         |    ❌    |    ✔️    |
+| language          | String         |    ❌    |    ✔️    |
+| round             | Number         |    0     |    ❌    |
+| questionNo        | Number         |    0     |    ❌    |
+| roundStarted      | Boolean        |  false   |    ❌    |
+| teams             | [Team]         |    ❌    |    ❌    |
+| applications      | [Team]         |    ❌    |    ❌    |
+| categories        | [String]       |    ❌    |    ❌    |
+| askedQuestions    | ref:[Question] |    ❌    |    ❌    |
+| currentQuestion   | Question       | Question |    ❌    |
+| questionClosed    | Boolean        |   true   |    ❌    |
+| roomClosed        | Boolean        |  false   |    ❌    |
+| scoreboards       | [String]       |    ❌    |    ❌    |
+| ended             | Boolean        |  false   |    ❌    |
+| questionCompleted | Boolean        |  false   |    ❌    |
 
 ## 5. Clientside State
 
