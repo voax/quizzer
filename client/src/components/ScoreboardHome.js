@@ -60,8 +60,8 @@ const TeamStatus = ({ team, pos }) => {
       <div className="team-status">
         <div className="info">
           <span className="pos">{pos}</span>
-          <span className="round-points">{team.roundPoints}RP</span>
-          <span className="round-score">{team.roundScore}/12</span>
+          <span className="round-points">{team.roundPoints} RP</span>
+          <span className="round-score">{team.roundScore} correct this round</span>
         </div>
         <div className="team">
           <span className="name">{team.name}</span>
