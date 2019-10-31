@@ -246,3 +246,9 @@ Updates `roundStarted` to `false` and `questionNo` to `0`. Then it will call `ca
 1. Updates for all teams their `.roundScore` property if `.guessCorrect` is true
 2. Sets `currentQuestion` to `null` and `questionCompleted` to `true`
 3. calls `.nextRound()` if the current question is `>= MAX_QUESTIONS_PER_ROUND` defined in `server/.env`
+
+### Team
+
+#### .ping(msg)
+
+Ping the team's WebSocket connection with the given `msg`.
