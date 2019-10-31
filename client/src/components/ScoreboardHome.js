@@ -173,7 +173,7 @@ const ScoreboardHome = ({
   } else if (!triedConnectingToRoom) {
     return <CenterLoader />;
   } else if (!connectedToRoom) {
-    return <Redirect to="/" />;
+    return <Redirect to="/scoreboard" />;
   }
   return <ScoreBoard />;
 };
