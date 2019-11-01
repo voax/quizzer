@@ -239,7 +239,7 @@ router.patch(
       case QM:
         team.guessCorrect = req.body.guessCorrect;
 
-        await Team.updateOne({ _id: team.id }, { guessCorrect: req.body.guessCorrect });
+        await Team.findByIdAndUpdate(team._id, { guessCorrect: req.body.guessCorrect });
         await req.room.save();
 
         return res.json({ teams: req.room.teams });
@@ -255,9 +255,7 @@ router.patch(
         team.guess = req.body.guess;
         await req.room.save();
 
-        const teamDocument = await Team.findById(team._id);
-        teamDocument.guess = req.body.guess;
-        await teamDocument.save();
+        await Team.findByIdAndUpdate(team._id, { guess: req.body.guess });
 
         req.room.pingHost('GUESS_SUBMITTED');
         req.room.pingScoreboards('SCOREBOARD_REFRESH');
