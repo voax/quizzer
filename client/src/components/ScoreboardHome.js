@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { loginAsScoreboardViewer, fetchGameState } from '../reducers/scoreboard';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import Loader from './Loader';
+import Logo from './Logo';
 
 const CenterLoader = () => {
   return (
@@ -22,10 +23,22 @@ const CenterLoader = () => {
 const Header = () => {
   const round = useSelector(state => state.scoreboard.round);
   const questionNo = useSelector(state => state.scoreboard.questionNo);
-  const category = useSelector(state => state.scoreboard.category);
-  const question = useSelector(state => state.scoreboard.question);
+  const category = useSelector(state => state.scoreboard.currentQuestion.category);
+  const question = useSelector(state => state.scoreboard.currentQuestion.question);
+  const answer = useSelector(state => state.scoreboard.currentQuestion.answer);
+  const questionCompleted = useSelector(state => state.scoreboard.questionCompleted);
+  const ended = useSelector(state => state.scoreboard.ended);
 
-  return (
+  return ended ? (
+    <>
+      <Logo center />
+      <Row>
+        <Col>
+          <h1 style={{ textAlign: 'center', fontSize: '3rem', marginTop: '0' }}>Quizz Ended</h1>
+        </Col>
+      </Row>
+    </>
+  ) : (
     <>
       <Row>
         <Col>
@@ -38,11 +51,19 @@ const Header = () => {
           <h1 style={{ float: 'right' }}>Question {questionNo}</h1>
         </Col>
       </Row>
-      <Row>
+      {!questionCompleted ? (
+        <Row>
+          <Col>
+            <h1 style={{ textAlign: 'center', fontSize: '3rem' }}>Q: {question}</h1>
+          </Col>
+        </Row>
+      ) : (
         <Col>
-          <h1 style={{ textAlign: 'center', fontSize: '4rem' }}>{question}</h1>
+          <Col>
+            <h1 style={{ textAlign: 'center', fontSize: '3rem' }}>A: {answer}</h1>
+          </Col>
         </Col>
-      </Row>
+      )}
     </>
   );
 };
@@ -50,22 +71,26 @@ const Header = () => {
 const TeamStatus = ({ team, pos }) => {
   const questionClosed = useSelector(state => state.scoreboard.questionClosed);
   const questionCompleted = useSelector(state => state.scoreboard.questionCompleted);
+  const ended = useSelector(state => state.scoreboard.ended);
+
+  const styleLeft = { paddingLeft: '75px', paddingRight: '50px' };
+  const styleRight = { paddingLeft: '50px', paddingRight: '75px' };
 
   if (!team) {
     return <Col />;
   }
 
   return (
-    <Col>
+    <Col style={pos % 2 ? styleLeft : styleRight}>
       <div className="team-status">
         <div className="info">
           <span className="pos">{pos}</span>
-          <span className="round-points">{team.roundPoints} RP</span>
-          <span className="round-score">{team.roundScore} correct this round</span>
+          {ended || <span className="round-score">{team.roundScore}</span>}
+          <span className="round-points">{team.roundPoints}</span>
         </div>
         <div className="team">
           <span className="name">{team.name}</span>
-          {questionCompleted ? (
+          {questionCompleted && !ended && (
             <>
               {team.guessCorrect ? (
                 <span className="status" role="img" aria-label="Correct guess">
@@ -77,7 +102,8 @@ const TeamStatus = ({ team, pos }) => {
                 </span>
               )}
             </>
-          ) : (
+          )}
+          {questionClosed || ended || (
             <>
               {!team.guess && (
                 <span className="status" role="img" aria-label="The team is thinking of a guess">
@@ -87,7 +113,7 @@ const TeamStatus = ({ team, pos }) => {
             </>
           )}
         </div>
-        {questionClosed && (
+        {questionCompleted && !ended && (
           <div className="guess">
             <span className="guess">{team.guess || '-'}</span>
           </div>

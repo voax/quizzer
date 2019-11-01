@@ -35,6 +35,7 @@ module.exports = wss => {
         request.session.roomID = null;
         if (id === room.host) {
           room.ended = true;
+          room.pingScoreboards('SCOREBOARD_QUIZZ_ENDED');
           for (const team of [...room.teams, ...room.applications]) {
             const s = sockets.get(team.sessionID);
             if (s) {

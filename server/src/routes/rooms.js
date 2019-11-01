@@ -78,8 +78,7 @@ router.get('/:roomCode', (req, res) => {
         round,
         questionNo,
         questionClosed,
-        category,
-        question,
+        currentQuestion,
         teams: teamList,
         questionCompleted,
       });

@@ -234,21 +234,35 @@ button {
     $marginBetweenInfo: 1.5rem;
     font-size: 2.5rem;
     font-weight: normal;
+    position: relative;
 
-    .pos::before {
-      content: '#';
+    .pos {
+      font-weight: 600;
+
+      &::before {
+        content: '#';
+        font-size: 0.75em;
+      }
     }
 
-    $space: 0.75rem;
-    .round-points::after {
-      content: '-';
-      margin-left: $space;
+    .round-score {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 0;
+
+      &::after {
+        content: ' ✔/round';
+        font-size: 0.75em;
+      }
     }
 
-    span {
-      margin-right: $space;
-      &:last-child {
-        margin-right: 0;
+    .round-points {
+      float: right;
+
+      &::after {
+        content: ' RP';
+        font-size: 0.75em;
       }
     }
   }

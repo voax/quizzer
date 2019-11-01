@@ -36,6 +36,8 @@ export const fetchGameState = roomCode => async dispatch => {
   }
 };
 
+export const quizzEnded = () => ({ type: 'QUIZZ_ENDED' });
+
 export default produce(
   (draft, action) => {
     switch (action.type) {
@@ -43,8 +45,7 @@ export default produce(
         draft.round = action.data.round;
         draft.questionNo = action.data.questionNo;
         draft.questionClosed = action.data.questionClosed;
-        draft.category = action.data.category || draft.category;
-        draft.question = action.data.question || draft.question;
+        draft.currentQuestion = action.data.currentQuestion || draft.currentQuestion;
         draft.teams = action.data.teams;
         draft.questionCompleted = action.data.questionCompleted;
         return;
@@ -61,11 +62,15 @@ export default produce(
       case 'STOPPED_CONNECTING_TO_ROOM':
         draft.connectingToRoom = false;
         return;
+      case 'QUIZZ_ENDED':
+        draft.ended = true;
+        return;
       default:
         return;
     }
   },
   {
+    ended: false,
     roomCode: null,
     connectedToRoom: false,
     connectingToRoom: false,
@@ -73,8 +78,7 @@ export default produce(
 
     round: null,
     teams: null,
-    category: null,
-    question: null,
+    currentQuestion: {},
     questionNo: null,
     questionClosed: null,
   }
