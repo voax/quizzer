@@ -11,11 +11,40 @@ The final assignment for the course DWA in the first semester of 2019.
   - [1 Introduction](#1-introduction)
   - [2 Wireframes / resources / system reactions](#2-wireframes--resources--system-reactions)
   - [3. Communitation protocols](#3-communitation-protocols)
-    - [3.1 Wesocket](#31-wesocket)
+    - [3.1 WebSocket](#31-websocket)
     - [3.2 Rest Endpoints](#32-rest-endpoints)
   - [4. Data Schema](#4-data-schema)
+    - [4.1 Mongoose Schema](#41-mongoose-schema)
+      - [4.1.1 Question](#411-question)
+      - [4.1.2 Team](#412-team)
+      - [4.1.3 Room](#413-room)
   - [5. Clientside State](#5-clientside-state)
+    - [5.1 websocket](#51-websocket)
+    - [5.2 team-app](#52-team-app)
+    - [5.3 scoreboard](#53-scoreboard)
+    - [5.4 popup](#54-popup)
+    - [5.5 loader](#55-loader)
+    - [5.6 qm (Quizz Master)](#56-qm-quizz-master)
   - [6. Server Structure](#6-server-structure)
+    - [6.1 Middleware](#61-middleware)
+      - [6.1.1 catch-errors.js](#611-catch-errorsjs)
+      - [6.1.2 error-handler.js](#612-error-handlerjs)
+      - [6.1.3 http-ws-upgrade.js](#613-http-ws-upgradejs)
+      - [6.1.4 role.js](#614-rolejs)
+      - [6.1.5 socket.js](#615-socketjs)
+    - [6.2 Mongoose methods](#62-mongoose-methods)
+      - [6.2.1 Room](#621-room)
+      - [6.2.2 .pingTeams(msg: String)](#622-pingteamsmsg-string)
+      - [6.2.3 .pingScoreboards(msg: String)](#623-pingscoreboardsmsg-string)
+      - [6.2.4 .pingApplications(msg: String)](#624-pingapplicationsmsg-string)
+      - [6.2.5 .pingHost(msg: String)](#625-pinghostmsg-string)
+      - [6.2.6 async .calculateRP()](#626-async-calculaterp)
+      - [6.2.7 async .nextRound()](#627-async-nextround)
+      - [6.2.8 async .nextQuestion()](#628-async-nextquestion)
+      - [6.2.9 async .startRound(categories)](#629-async-startroundcategories)
+      - [6.2.10 async .startQuestion(question)](#6210-async-startquestionquestion)
+    - [6.3 Team](#63-team)
+      - [6.3.1 .ping(msg)](#631-pingmsg)
 
 ---
 
@@ -76,9 +105,9 @@ Clients sends:
 
 ## 4. Data Schema
 
-### Mongoose Schema
+### 4.1 Mongoose Schema
 
-#### Question
+#### 4.1.1 Question
 
 | Property | Type   | Default | Required |
 | -------- | ------ | :-----: | :------: |
@@ -87,7 +116,7 @@ Clients sends:
 | category | String |   ❌    |    ✔️    |
 | language | String |   ❌    |    ✔️    |
 
-#### Team
+#### 4.1.2 Team
 
 | Property     | Type    | Default | Required |
 | ------------ | ------- | :-----: | :------: |
@@ -98,7 +127,7 @@ Clients sends:
 | guess        | String  |   ❌    |    ❌    |
 | guessCorrect | Boolean |   ❌    |    ❌    |
 
-#### Room
+#### 4.1.3 Room
 
 | Property          | Type           | Default  | Required |
 | ----------------- | -------------- | :------: | :------: |
@@ -121,7 +150,7 @@ Clients sends:
 
 ## 5. Clientside State
 
-### websocket
+### 5.1 websocket
 
 ```js
 {
@@ -129,7 +158,7 @@ Clients sends:
 }
 ```
 
-### team-app
+### 5.2 team-app
 
 ```js
 {
@@ -156,7 +185,7 @@ Clients sends:
 }
 ```
 
-### scoreboard
+### 5.3 scoreboard
 
 ```js
 {
@@ -174,7 +203,7 @@ Clients sends:
 }
 ```
 
-### popup
+### 5.4 popup
 
 ```js
 {
@@ -185,7 +214,7 @@ Clients sends:
 }
 ```
 
-### loader
+### 5.5 loader
 
 ```js
 {
@@ -194,7 +223,7 @@ Clients sends:
 }
 ```
 
-### qm (Quizz Master)
+### 5.6 qm (Quizz Master)
 
 ```js
 {
@@ -227,37 +256,27 @@ Clients sends:
 
 ## 6. Server Structure
 
-### Middleware
+### 6.1 Middleware
 
-#### accept-language.js
-
-module.exports = `(): (req, res, next) => void`
-
-This module exports a middleware creator which uses the **accept-language-parser** package to parse the Accept-Language HTTP header.
-The following properties are added tot the `req` object.
-
-- `language` : The parsed Accept-Language header
-- `firstLanguage()` : Returns the first language code in the header in an object: `{ langague: String }`
-
-#### catch-errors.js
+#### 6.1.1 catch-errors.js
 
 module.exports = `(fn: (req, res, next) => Promise ): (req, res, next) => void`
 
 This module exports a router wrapper for async route handlers. It allows the user to use async route handlers without having to use try/catch. When this wrapper 'catches' an error it passes to `next(error)`.
 
-#### error-handler.js
+#### 6.1.2 error-handler.js
 
 module.exports = `({ defaultStatusCode: Number, defaultMessage: String }): (err, req, res, next) => void`
 
 This module exports a basic error handler middleware creator. If the user does not pass both initial arguments it will use the `statusCode` and `message` props from the object passed from `next()`. Furthermore the closure will also log the error using `console.error` to the console.
 
-#### http-ws-upgrade.js
+#### 6.1.3 http-ws-upgrade.js
 
 module.exports = `(sessionParser): (wss): (request, socket, head) => void`
 
 An application specific function for this project which is used to prevent users who do not have a role connecting to our WebSocket server.
 
-#### role.js
+#### 6.1.4 role.js
 
 module.exports.isRole = `(...conditions: any): (req, res, next) => void`
 
@@ -287,49 +306,57 @@ router.get('/protected', ...isQMAndHost, (req, res) => {...})
 app.use('/protected', ...isQMAndHost)
 ```
 
-#### socket.js
+#### 6.1.5 socket.js
 
 module.exports.sessionHasWSConnect = `(errorMsg: String): (req, res, next) => void`
 
 The returned middleware closure checks for whether the request is already connected to the WebSocket server.
 If the user is already connected it will respond with a `400` status code and with the passed in `errorMsg` parameter.
 
-### Mongoose methods
+### 6.2 Mongoose methods
 
-#### Room
+#### 6.2.1 Room
 
-#### .pingTeams(msg: String)
+#### 6.2.2 .pingTeams(msg: String)
 
 Ping the WebSocket for all team connections with the given `msg`.
 
-#### .pingScoreboards(msg: String)
+#### 6.2.3 .pingScoreboards(msg: String)
 
 Ping the WebSocket for all scoreboard connections with the given `msg`.
 
-#### .pingApplications(msg: String)
+#### 6.2.4 .pingApplications(msg: String)
 
 Ping the WebSocket for all team-application connections with the given `msg`.
 
-#### .pingHost(msg: String)
+#### 6.2.5 .pingHost(msg: String)
 
 Ping the host's WebSocket connection with the given `msg`.
 
-#### async .calculateRP()
+#### 6.2.6 async .calculateRP()
 
 This method determines the winnner(s) and respectively gives all the teams their points.
 
-#### async .nextRound()
+#### 6.2.7 async .nextRound()
 
 Updates `roundStarted` to `false` and `questionNo` to `0`. Then it will call `calculateRP()`
 
-#### async .nextQuestion()
+#### 6.2.8 async .nextQuestion()
 
 1. Updates for all teams their `.roundScore` property if `.guessCorrect` is true
 2. Sets `currentQuestion` to `null` and `questionCompleted` to `true`
 3. calls `.nextRound()` if the current question is `>= MAX_QUESTIONS_PER_ROUND` defined in `server/.env`
 
-### Team
+#### 6.2.9 async .startRound(categories)
 
-#### .ping(msg)
+Increments `round` , updates `questionNo` to `0`, `categories` to `categories`, `roundStarted` to `true` and updates the team's `roundScore` to `0`. Then it will ping the teams with `'CATEGORIES_SELECTED'` and returns `roundStarted`, `round` and `questionNo`.
+
+#### 6.2.10 async .startQuestion(question)
+
+Increments `questionNo` , updates `questionCompleted` to `false`, `questionClosed` to `false`, `currentQuestion` to `question`, adds the `question._id` to the `askedQuestions` array, next it updates the team's `guess` to `''` and `guessCorrect` to `false`. Then it will ping the teams with `'QUESTION_SELECTED'` and the scoreboards with `'SCOREBOARD_REFRESH'`. Then it returns `questionClosed` and `questionNo`.
+
+### 6.3 Team
+
+#### 6.3.1 .ping(msg)
 
 Ping the team's WebSocket connection with the given `msg`.
