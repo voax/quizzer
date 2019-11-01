@@ -95,7 +95,6 @@ router.patch(
 
     if (questionCompleted) {
       await req.room.nextQuestion();
-      req.room.pingScoreboards('SCOREBOARD_REFRESH');
     }
 
     if (roomClosed !== undefined) {
@@ -158,7 +157,10 @@ router.post(
       return res.status(404).json({ message: 'Invalid team name.' });
     }
 
-    if (teams.some(team => team.name === name) || applications.some(team => team.name === name)) {
+    if (
+      teams.some(team => team.name.toLowerCase() === name.toLowerCase()) ||
+      applications.some(team => team.name.toLowerCase() === name.toLowerCase())
+    ) {
       return res.status(404).json({ message: 'Team name is already in use.' });
     }
 
@@ -288,31 +290,9 @@ router.put(
   catchErrors(async (req, res) => {
     const { categories } = req.body;
 
-    if (req.room.roundStarted) {
-      return res.status(400).json({ message: 'Round has already been started.' });
-    }
+    const { roundStarted, round, questionNo } = await req.room.startRound(categories);
 
-    if (categories.length !== 3) {
-      return res.status(400).json({ message: 'Invalid amount of categories selected.' });
-    }
-
-    for (const team of req.room.teams) {
-      team.roundScore = 0;
-
-      await Team.findByIdAndUpdate(team._id, {
-        roundScore: team.roundScore,
-      });
-    }
-
-    req.room.questionNo = 0;
-    req.room.roundStarted = true;
-    req.room.categories = categories;
-    req.room.round++;
-    await req.room.save();
-
-    req.room.pingTeams('CATEGORIES_SELECTED');
-
-    res.json({ roundStarted: req.room.roundStarted, round: req.room.round });
+    res.json({ roundStarted, round, questionNo });
   })
 );
 //#endregion
@@ -324,35 +304,9 @@ router.put(
   catchErrors(async (req, res) => {
     const { question } = req.body;
 
-    if (!req.room.questionClosed) {
-      return res.status(400).json({ message: 'Question is already ongoing.' });
-    }
+    const { questionClosed, questionNo } = await req.room.startQuestion(question);
 
-    if (req.room.askedQuestions.includes(question._id)) {
-      return res.status(400).json({ message: 'The selected question has already been asked.' });
-    }
-
-    for (const t of req.room.teams) {
-      const team = await Team.findById(t._id);
-      team.guess = '';
-      team.guessCorrect = false;
-      await team.save();
-
-      t.guess = '';
-      t.guessCorrect = false;
-    }
-
-    req.room.questionClosed = false;
-    req.room.currentQuestion = question;
-    req.room.questionCompleted = false;
-    req.room.questionNo++;
-    req.room.askedQuestions.push(question._id);
-    await req.room.save();
-
-    req.room.pingTeams('QUESTION_SELECTED');
-    req.room.pingScoreboards('SCOREBOARD_REFRESH');
-
-    res.json({ questionClosed: req.room.questionClosed, questionNo: req.room.questionNo });
+    res.json({ questionClosed, questionNo });
   })
 );
 //#endregion

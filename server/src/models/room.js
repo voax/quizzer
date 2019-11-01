@@ -92,64 +92,148 @@ Room.methods.pingHost = function(msg) {
 };
 
 Room.methods.calculateRP = async function() {
-  this.teams.sort((a, b) => b.roundScore - a.roundScore);
+  try {
+    this.teams.sort((a, b) => b.roundScore - a.roundScore);
 
-  let position = 1;
-  let incrementPosition = 0;
-  let previousRoundScore = null;
+    let position = 1;
+    let incrementPosition = 0;
+    let previousRoundScore = null;
 
-  for (const team of this.teams) {
-    if (previousRoundScore === team.roundScore) {
-      incrementPosition++;
-    } else {
-      incrementPosition = 0;
+    for (const team of this.teams) {
+      if (previousRoundScore === team.roundScore) {
+        incrementPosition++;
+      } else {
+        incrementPosition = 0;
+      }
+
+      switch (position - incrementPosition) {
+        case 1:
+          team.roundPoints += 4;
+          break;
+        case 2:
+          team.roundPoints += 2;
+          break;
+        case 3:
+          team.roundPoints += 1;
+          break;
+        default:
+          team.roundPoints += 0.1;
+          break;
+      }
+
+      previousRoundScore = team.roundScore;
+
+      position++;
+
+      await Team.findByIdAndUpdate(team._id, {
+        roundPoints: team.roundPoints,
+      });
     }
 
-    switch (position - incrementPosition) {
-      case 1:
-        team.roundPoints += 4;
-        break;
-      case 2:
-        team.roundPoints += 2;
-        break;
-      case 3:
-        team.roundPoints += 1;
-        break;
-      default:
-        team.roundPoints += 0.1;
-        break;
-    }
-
-    previousRoundScore = team.roundScore;
-
-    position++;
-
-    await Team.findByIdAndUpdate(team._id, {
-      roundPoints: team.roundPoints,
-    });
+    this.teams.sort((a, b) => b.roundPoints - a.roundPoints);
+  } catch (error) {
+    return Promise.reject(error);
   }
-
-  this.teams.sort((a, b) => b.roundPoints - a.roundPoints);
 };
 
 Room.methods.nextRound = async function() {
-  this.roundStarted = false;
-  await this.calculateRP();
+  try {
+    this.roundStarted = false;
+    await this.calculateRP();
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };
 
 Room.methods.nextQuestion = async function() {
-  for (const team of this.teams) {
-    if (team.guessCorrect) {
-      team.roundScore++;
-      await Team.findByIdAndUpdate(team._id, { roundScore: team.roundScore });
+  try {
+    for (const team of this.teams) {
+      if (team.guessCorrect) {
+        team.roundScore++;
+        await Team.findByIdAndUpdate(team._id, { roundScore: team.roundScore });
+      }
     }
+
+    this.currentQuestion = null;
+    this.questionCompleted = true;
+
+    if (this.questionNo >= MAX_QUESTIONS_PER_ROUND) {
+      await this.nextRound();
+    }
+
+    this.pingScoreboards('SCOREBOARD_REFRESH');
+  } catch (error) {
+    return Promise.reject(error);
   }
+};
 
-  this.currentQuestion = null;
-  this.questionCompleted = true;
+Room.methods.startRound = async function(categories) {
+  try {
+    if (this.roundStarted) {
+      return Promise.reject({ statusCode: 400, message: 'Round has already been started.' });
+    }
 
-  if (this.questionNo >= MAX_QUESTIONS_PER_ROUND) {
-    await this.nextRound();
+    if (categories.length !== 3) {
+      return Promise.reject({ statusCode: 400, message: 'Invalid amount of categories selected.' });
+    }
+
+    for (const team of this.teams) {
+      team.roundScore = 0;
+
+      await Team.findByIdAndUpdate(team._id, {
+        roundScore: team.roundScore,
+      });
+    }
+
+    this.round++;
+    this.questionNo = 0;
+    this.categories = categories;
+    this.roundStarted = true;
+
+    await this.save();
+
+    this.pingTeams('CATEGORIES_SELECTED');
+
+    return { roundStarted: this.roundStarted, round: this.round, questionNo: this.questionNo };
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+Room.methods.startQuestion = async function(question) {
+  try {
+    if (!this.questionClosed) {
+      return Promise.reject({ statusCode: 400, message: 'Question is already ongoing.' });
+    }
+
+    if (this.askedQuestions.includes(question._id)) {
+      return Promise.reject({
+        statusCode: 400,
+        message: 'The selected question has already been asked.',
+      });
+    }
+
+    for (const team of this.teams) {
+      team.guess = '';
+      team.guessCorrect = false;
+
+      await Team.findByIdAndUpdate(team._id, { guess: '', guessCorrect: false });
+    }
+
+    this.questionCompleted = false;
+    this.questionClosed = false;
+    this.questionNo++;
+    this.currentQuestion = question;
+    this.askedQuestions.push(question._id);
+
+    await this.save();
+
+    this.pingTeams('QUESTION_SELECTED');
+    this.pingScoreboards('SCOREBOARD_REFRESH');
+
+    return { questionClosed: this.questionClosed, questionNo: this.questionNo };
+  } catch (error) {
+    return Promise.reject(error);
   }
 };
 
