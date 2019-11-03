@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { loginAsScoreboardViewer } from '../reducers/scoreboard';
 import { Container, Row, Col } from 'react-grid-system';
 import Logo from './Logo';
-import Loader from './Loader';
+import { CenterLoader } from './Loader';
 import Input from './Input';
 import Button from './Button';
 
@@ -21,6 +21,8 @@ const ScoreboardLogin = () => {
 
   if (connected) {
     return <Redirect to={`/scoreboard/${roomCodeValue}`} />;
+  } else if (isLoading) {
+    return <CenterLoader />;
   }
 
   return (
@@ -28,24 +30,18 @@ const ScoreboardLogin = () => {
       <Row className="focus-center">
         <Col>
           <Logo center />
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <>
-              <Input
-                reducer="teamApp"
-                item="roomCode"
-                labelText="Room code"
-                placeholder="Enter 4-letter code"
-                uppercase
-                minLength="4"
-                maxLength="4"
-              />
-              <Button onClick={handleClick} disabled={!roomCodeValid}>
-                Join
-              </Button>
-            </>
-          )}
+          <Input
+            reducer="teamApp"
+            item="roomCode"
+            labelText="Room code"
+            placeholder="Enter 4-letter code"
+            uppercase
+            minLength="4"
+            maxLength="4"
+          />
+          <Button onClick={handleClick} disabled={!roomCodeValid}>
+            Join
+          </Button>
         </Col>
       </Row>
     </Container>

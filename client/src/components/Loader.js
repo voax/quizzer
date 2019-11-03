@@ -1,5 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Container, Row, Col } from 'react-grid-system';
+
+export const CenterLoader = (...props) => {
+  return (
+    <Container fluid className="full-screen center">
+      <Row className="focus-center">
+        <Col>
+          <Loader {...props} />
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
 const Loader = ({ color = '#eee', size = 75 }) => {
   const text = useSelector(state => state.loader.text);

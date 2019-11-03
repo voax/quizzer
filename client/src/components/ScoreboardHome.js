@@ -5,20 +5,8 @@ import { Redirect } from 'react-router-dom';
 
 import { loginAsScoreboardViewer, fetchGameState } from '../reducers/scoreboard';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
-import Loader from './Loader';
+import { CenterLoader } from './Loader';
 import Logo from './Logo';
-
-const CenterLoader = () => {
-  return (
-    <Container fluid className="full-screen center">
-      <Row className="focus-center">
-        <Col>
-          <Loader />
-        </Col>
-      </Row>
-    </Container>
-  );
-};
 
 const Header = () => {
   const round = useSelector(state => state.scoreboard.round);

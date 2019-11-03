@@ -7,7 +7,7 @@ import { fetchQuestions, confirmQuestionAndContinue } from '../reducers/qm/quest
 import Button from './Button';
 import ItemList from './ItemList';
 import ItemListHeader from './ItemListHeader';
-import Loader from './Loader';
+import { CenterLoader } from './Loader';
 import Logo from './Logo';
 
 const QMQuestions = () => {
@@ -30,15 +30,7 @@ const QMQuestions = () => {
   if (!questionClosed && currentQuestion) {
     return <Redirect to="/master/guesses" />;
   } else if (isLoading) {
-    return (
-      <Container fluid className="full-screen center">
-        <Row className="focus-center">
-          <Col>
-            <Loader />
-          </Col>
-        </Row>
-      </Container>
-    );
+    return <CenterLoader />;
   }
 
   return (

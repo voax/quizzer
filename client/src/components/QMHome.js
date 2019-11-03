@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 import { createRoom } from '../reducers/qm/room';
 import Logo from './Logo';
 import Button from './Button';
-import Loader from './Loader';
+import { CenterLoader } from './Loader';
 
 import { Container, Row, Col } from 'react-grid-system';
 
@@ -16,32 +16,29 @@ const QMHome = () => {
     dispatch(createRoom(language));
   };
 
-  return websocketConnected ? (
-    <Redirect to="/master/teams" />
-  ) : (
+  if (websocketConnected) {
+    return <Redirect to="/master/teams" />;
+  } else if (isLoading) {
+    return <CenterLoader />;
+  }
+  return (
     <Container className="full-screen center">
       <Row className="focus-center">
         <Col>
           <Logo />
           <h2>Host a game</h2>
-          {isLoading ? (
-            <Loader />
-          ) : (
-            <>
-              <Button
-                onClick={() => handleClick('en')}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginRight: '16px' }}
-              >
-                English
-              </Button>
-              <Button
-                onClick={() => handleClick('nl')}
-                style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
-              >
-                Dutch
-              </Button>
-            </>
-          )}
+          <Button
+            onClick={() => handleClick('en')}
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)', marginRight: '16px' }}
+          >
+            English
+          </Button>
+          <Button
+            onClick={() => handleClick('nl')}
+            style={{ display: 'inline-block', width: 'calc(50% - 8px)' }}
+          >
+            Dutch
+          </Button>
         </Col>
       </Row>
     </Container>

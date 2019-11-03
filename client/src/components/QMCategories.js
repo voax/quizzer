@@ -13,7 +13,7 @@ import {
   confirmCategoriesAndContinue,
 } from '../reducers/qm/category';
 import { endQuizz } from '../reducers/qm/room';
-import Loader from './Loader';
+import { CenterLoader } from './Loader';
 import Logo from './Logo';
 
 const QMCategories = () => {
@@ -37,15 +37,7 @@ const QMCategories = () => {
   if (roundStarted) {
     return <Redirect to="/master/questions" />;
   } else if (isLoading) {
-    return (
-      <Container fluid className="full-screen center">
-        <Row className="focus-center">
-          <Col>
-            <Loader />
-          </Col>
-        </Row>
-      </Container>
-    );
+    return <CenterLoader />;
   }
 
   return (
