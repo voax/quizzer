@@ -5,38 +5,46 @@ import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import Button from './Button';
 
+const Card = ({ title, subtitle, br, link, button }) => (
+  <div className="card">
+    <h2>{title}</h2>
+    <h3>{subtitle}</h3>
+    {br && <br />}
+    <Link to={link}>
+      <Button>{button}</Button>
+    </Link>
+  </div>
+);
+
 const Home = () => {
   return (
     <Container className="home-page top-anxiety">
       <Logo center />
       <Row>
         <Col>
-          <div className="card">
-            <h2>Quizz Master</h2>
-            <h3>Become a Quizz Master, host a Quizz Night and let teams apply to your Quizz!</h3>
-            <Link to="/master">
-              <Button>Start!</Button>
-            </Link>
-          </div>
+          <Card
+            title="Quizz Master"
+            subtitle="Become a Quizz Master, host a Quizz Night and let teams apply to your Quizz!"
+            link="/master"
+            button="Start!"
+          />
         </Col>
         <Col>
-          <div className="card">
-            <h2>Team</h2>
-            <h3>Apply as a Team with only a valid room code and team name to apply to a Quizz!</h3>
-            <Link to="/team">
-              <Button>Join!</Button>
-            </Link>
-          </div>
+          <Card
+            title="Team"
+            subtitle="Apply as a Team with only a valid room code and team name to apply to a Quizz!"
+            link="/team"
+            button="Join!"
+          />
         </Col>
         <Col>
-          <div className="card">
-            <h2>Scoreboard</h2>
-            <h3>Set up a scoreboard of your Quizz and view the rankings!</h3>
-            <br />
-            <Link to="/scoreboard">
-              <Button>View!</Button>
-            </Link>
-          </div>
+          <Card
+            title="Scoreboard"
+            subtitle="Set up a scoreboard of your Quizz and view the rankings!"
+            br
+            link="/scoreboard"
+            button="View!"
+          />
         </Col>
       </Row>
     </Container>
