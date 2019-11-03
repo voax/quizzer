@@ -290,6 +290,12 @@ button {
   }
 }
 
+.home-page {
+  & > div > div {
+    padding-bottom: 15px;
+  }
+}
+
 .card {
   position: relative;
   background: $grey;

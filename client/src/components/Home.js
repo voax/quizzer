@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Row, Col } from 'react-grid-system';
+import { Container, Row, Col, Hidden } from 'react-grid-system';
 import { Link } from 'react-router-dom';
 
 import Logo from './Logo';
@@ -21,15 +21,17 @@ const Home = () => {
     <Container className="home-page top-anxiety">
       <Logo center />
       <Row>
-        <Col>
-          <Card
-            title="Quizz Master"
-            subtitle="Become a Quizz Master, host a Quizz Night and let teams apply to your Quizz!"
-            link="/master"
-            button="Start!"
-          />
-        </Col>
-        <Col>
+        <Hidden xs>
+          <Col lg={4}>
+            <Card
+              title="Quizz Master"
+              subtitle="Become a Quizz Master, host a Quizz Night and let teams apply to your Quizz!"
+              link="/master"
+              button="Start!"
+            />
+          </Col>
+        </Hidden>
+        <Col lg={4}>
           <Card
             title="Team"
             subtitle="Apply as a Team with only a valid room code and team name to apply to a Quizz!"
@@ -37,15 +39,17 @@ const Home = () => {
             button="Join!"
           />
         </Col>
-        <Col>
-          <Card
-            title="Scoreboard"
-            subtitle="Set up a scoreboard of your Quizz and view the rankings!"
-            br
-            link="/scoreboard"
-            button="View!"
-          />
-        </Col>
+        <Hidden xs>
+          <Col lg={4}>
+            <Card
+              title="Scoreboard"
+              subtitle="Set up a scoreboard of your Quizz and view the rankings!"
+              br
+              link="/scoreboard"
+              button="View!"
+            />
+          </Col>
+        </Hidden>
       </Row>
     </Container>
   );
