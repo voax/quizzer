@@ -20,7 +20,7 @@ const TeamHome = () => {
   };
 
   if (connected) {
-    return <Redirect to="/room" />;
+    return <Redirect to="/team/room" />;
   }
 
   return isLoading ? (

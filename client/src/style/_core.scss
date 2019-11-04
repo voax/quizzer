@@ -289,3 +289,28 @@ button {
     font-weight: lighter;
   }
 }
+
+.home-page {
+  & > div > div {
+    padding-bottom: 15px;
+  }
+}
+
+.card {
+  position: relative;
+  background: $grey;
+  border: 0.125rem solid $light;
+  padding: 15px;
+  text-align: center;
+  height: 100%;
+
+  h2 {
+    font-family: 'BadaBoom BB';
+    font-weight: normal;
+    font-size: 3em;
+  }
+
+  button {
+    margin-top: 25px;
+  }
+}

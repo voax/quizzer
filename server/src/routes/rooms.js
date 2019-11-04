@@ -146,14 +146,14 @@ router.post(
   '/:roomCode/applications',
   hasNotJoinedOrHosted,
   catchErrors(async (req, res) => {
-    const { name } = req.body;
+    const name = req.body.name.trim();
     const { roomClosed, teams, applications } = req.room;
 
     if (roomClosed) {
       return res.status(404).json({ message: 'This room is closed.' });
     }
 
-    if (!name) {
+    if (!name || name.length > 12) {
       return res.status(404).json({ message: 'Invalid team name.' });
     }
 
@@ -252,7 +252,7 @@ router.patch(
           return res.status(404).json({ message: 'This is not your team!' });
         }
 
-        team.guess = req.body.guess;
+        team.guess = req.body.guess.trim();
         await req.room.save();
 
         await Team.findByIdAndUpdate(team._id, { guess: req.body.guess });

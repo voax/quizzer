@@ -10,8 +10,8 @@ import { Container, Row, Col } from 'react-grid-system';
 const Team = ({ location: { pathname } }) => {
   const connected = useSelector(state => state.websocket.connected);
 
-  if (pathname !== '/' && !connected) {
-    return <Redirect to="/" />;
+  if (pathname !== '/team' && !connected) {
+    return <Redirect to="/team" />;
   }
 
   return (
@@ -20,7 +20,7 @@ const Team = ({ location: { pathname } }) => {
         <Col>
           <Logo center />
           <Switch>
-            <Route exact path="/room">
+            <Route exact path="/team/room">
               <TeamRoom />
             </Route>
             <Route>
