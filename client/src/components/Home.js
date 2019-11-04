@@ -5,11 +5,10 @@ import { Link } from 'react-router-dom';
 import Logo from './Logo';
 import Button from './Button';
 
-const Card = ({ title, subtitle, br, link, button }) => (
+const Card = ({ title, subtitle, link, button }) => (
   <div className="card">
     <h2>{title}</h2>
     <h3>{subtitle}</h3>
-    {br && <br />}
     <Link to={link}>
       <Button>{button}</Button>
     </Link>
@@ -25,7 +24,7 @@ const Home = () => {
           <Col lg={4}>
             <Card
               title="Quizz Master"
-              subtitle="Become a Quizz Master, host a Quizz Night and let teams apply to your Quizz!"
+              subtitle="Become a Quizz Master and host a Quizz Night!"
               link="/master"
               button="Start!"
             />
@@ -34,7 +33,7 @@ const Home = () => {
         <Col lg={4}>
           <Card
             title="Team"
-            subtitle="Apply as a Team with only a valid room code and team name to apply to a Quizz!"
+            subtitle="Apply as a Team to join a Quizz Night!"
             link="/team"
             button="Join!"
           />
@@ -44,7 +43,6 @@ const Home = () => {
             <Card
               title="Scoreboard"
               subtitle="Set up a scoreboard of your Quizz and view the rankings!"
-              br
               link="/scoreboard"
               button="View!"
             />
