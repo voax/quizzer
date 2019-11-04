@@ -5,15 +5,9 @@ const router = express.Router();
 const Question = mongoose.model('Question');
 
 const catchErrors = require('../middleware/catch-errors');
-const { QM } = require('./roles');
+const { isQM } = require('../middleware/role');
 
-router.use('/', (req, res, next) => {
-  if (req.session.role !== QM) {
-    return res.status(401).json({ message: "You're not welcome here..." });
-  }
-
-  next();
-});
+router.use('/', isQM);
 
 router.get(
   '/',
