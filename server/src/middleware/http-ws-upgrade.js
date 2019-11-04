@@ -1,6 +1,6 @@
 module.exports = sessionParser => wss => (request, socket, head) => {
   sessionParser(request, {}, () => {
-    if (!request.session.role) {
+    if (!request.session.roomID) {
       socket.destroy();
       return;
     }

@@ -108,14 +108,18 @@ const teamAppReducer = produce(
         draft.teamID = action.teamID;
         return;
       case 'CLEAR_ROOM':
+        draft.teamID = null;
+        draft.roomCode.value = '';
+        draft.roomCode.valid = false;
+        draft.team.value = '';
+        draft.team.valid = false;
         draft.roundNo = 0;
-        draft.question.number = 0;
         draft.question.open = false;
-        draft.question.category = '';
+        draft.question.number = 0;
         draft.question.question = '';
+        draft.question.category = '';
         draft.guess.value = '';
         draft.guess.valid = false;
-        draft.teamID = null;
         return;
       default:
         return;

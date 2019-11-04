@@ -1,4 +1,4 @@
-import { wsConnected, wsDisconnected, wsPing } from '../reducers/websocket';
+import { wsConnected, wsDisconnected, wsPing, wsCrash, wsConnecting } from '../reducers/websocket';
 import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
@@ -16,8 +16,12 @@ const socketMiddleware = () => {
     }
   };
 
-  const onClose = store => () => {
+  const onClose = store => ({ code }) => {
     store.dispatch(wsDisconnected());
+    if (code === 1006) {
+      store.dispatch(wsCrash());
+    }
+    store.dispatch(stopLoaderAction());
   };
 
   const onMessage = store => ({ data }) => {
@@ -74,6 +78,8 @@ const socketMiddleware = () => {
   return store => next => action => {
     switch (action.type) {
       case 'WS_CONNECT':
+        store.dispatch(wsConnecting());
+        store.dispatch(setLoaderAction());
         if (socket !== null) {
           socket.close();
         }

@@ -160,6 +160,14 @@ button {
       border-color: $orange;
     }
   }
+
+  &.recover {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 3.1em;
+    min-width: auto;
+  }
 }
 
 .item-list {
