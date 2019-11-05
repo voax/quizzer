@@ -3,7 +3,7 @@ import { showPopUpAction } from '../reducers/pop-up';
 import { setLoaderAction, stopLoaderAction } from '../reducers/loader';
 import { fetchTeamApplications } from '../reducers/qm/team';
 import { fetchRoomState } from '../reducers/qm/room';
-import { fetchRoom, clearRoom, closeQuestion } from '../reducers/team-app';
+import { fetchRoom, clearTeamHome, clearTeamRoom, closeQuestion } from '../reducers/team-app';
 import { fetchGameState, quizzEnded } from '../reducers/scoreboard';
 
 const socketMiddleware = () => {
@@ -53,7 +53,8 @@ const socketMiddleware = () => {
         store.dispatch(fetchRoomState(state.quizzMasterApp.roomCode));
         break;
       case 'ROOM_CLOSED':
-        store.dispatch(clearRoom());
+        store.dispatch(clearTeamHome());
+        store.dispatch(clearTeamRoom());
         store.dispatch(stopLoaderAction());
         store.dispatch(showPopUpAction('💔', 'Room has been closed.'));
         socket.close();
