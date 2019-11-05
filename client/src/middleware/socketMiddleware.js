@@ -20,6 +20,7 @@ const socketMiddleware = () => {
     store.dispatch(wsDisconnected());
     if (code === 1006) {
       store.dispatch(wsCrash());
+      store.dispatch(showPopUpAction('💥', 'Server offline.'));
     }
   };
 
