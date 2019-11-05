@@ -6,10 +6,6 @@ module.exports = wss => {
   wss.on('connection', (socket, request) => {
     const { id, roomID } = request.session;
 
-    if (!roomID) {
-      return socket.close();
-    }
-
     console.log('[WSS] New connection!', id);
     sockets.set(id, socket);
 

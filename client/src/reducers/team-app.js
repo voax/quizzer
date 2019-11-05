@@ -19,6 +19,7 @@ export const textInputHandlerAction = (name, value, minLength, maxLength, upperc
 export const applyTeam = (roomCode, name) => async dispatch => {
   try {
     dispatch(setLoaderAction('Applying team'));
+    dispatch(clearTeamRoom());
 
     const response = await fetchApiSendJson(`rooms/${roomCode}/applications`, 'POST', { name });
     await checkFetchError(response);
@@ -31,7 +32,9 @@ export const applyTeam = (roomCode, name) => async dispatch => {
   }
 };
 
-export const clearRoom = () => ({ type: 'CLEAR_ROOM' });
+export const clearTeamHome = () => ({ type: 'CLEAR_TEAM_HOME' });
+
+export const clearTeamRoom = () => ({ type: 'CLEAR_TEAM_ROOM' });
 
 export const fetchRoom = roomCode => async dispatch => {
   try {
@@ -107,15 +110,21 @@ const teamAppReducer = produce(
         draft.guess.valid = false;
         draft.teamID = action.teamID;
         return;
-      case 'CLEAR_ROOM':
+      case 'CLEAR_TEAM_HOME':
+        draft.roomCode.value = '';
+        draft.roomCode.valid = false;
+        draft.team.value = '';
+        draft.team.valid = false;
+        return;
+      case 'CLEAR_TEAM_ROOM':
+        draft.teamID = null;
         draft.roundNo = 0;
-        draft.question.number = 0;
         draft.question.open = false;
-        draft.question.category = '';
+        draft.question.number = 0;
         draft.question.question = '';
+        draft.question.category = '';
         draft.guess.value = '';
         draft.guess.valid = false;
-        draft.teamID = null;
         return;
       default:
         return;

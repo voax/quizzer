@@ -20,14 +20,13 @@ const QMQuestions = () => {
   const questions = useSelector(state => state.quizzMasterApp.questions);
   const questionsAsked = useSelector(state => state.quizzMasterApp.questionsAsked);
   const selectedQuestion = useSelector(state => state.quizzMasterApp.selectedQuestion);
-  const questionClosed = useSelector(state => state.quizzMasterApp.questionClosed);
   const currentQuestion = useSelector(state => state.quizzMasterApp.currentQuestion);
 
   useEffect(() => {
     dispatch(fetchQuestions(selectedCategories));
   }, [dispatch, selectedCategories]);
 
-  if (!questionClosed && currentQuestion) {
+  if (currentQuestion) {
     return <Redirect to="/master/guesses" />;
   } else if (isLoading) {
     return <CenterLoader />;

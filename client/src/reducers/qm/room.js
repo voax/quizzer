@@ -12,6 +12,7 @@ export const clearRoomCode = () => ({ type: 'CLEAR_ROOM_CODE' });
 export const createRoom = lang => async dispatch => {
   try {
     dispatch(setLoaderAction('Creating a room...'));
+    dispatch(clearQuizzMaster());
 
     const response = await fetchApiSendJson(`rooms`, 'POST', { language: lang });
     const { roomCode, language } = await checkFetchError(response);
@@ -27,16 +28,12 @@ export const createRoom = lang => async dispatch => {
 
 export const fetchRoomState = roomCode => async dispatch => {
   try {
-    // dispatch(setLoaderAction('Fetching room information...'));
-
     const response = await fetchApi(`rooms/${roomCode}`);
     const room = await checkFetchError(response);
 
     dispatch({ type: 'FETCHED_ROOM_INFO', room });
   } catch (error) {
     dispatch(showPopUpAction('ERROR', error.message));
-  } finally {
-    // dispatch(stopLoaderAction());
   }
 };
 
