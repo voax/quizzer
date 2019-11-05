@@ -167,6 +167,15 @@ button {
     right: 15px;
     width: 3.1em;
     min-width: auto;
+
+    svg {
+      margin-top: 8px;
+    }
+
+    &:disabled {
+      filter: none;
+      cursor: wait;
+    }
   }
 }
 

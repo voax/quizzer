@@ -21,7 +21,6 @@ const socketMiddleware = () => {
     if (code === 1006) {
       store.dispatch(wsCrash());
     }
-    store.dispatch(stopLoaderAction());
   };
 
   const onMessage = store => ({ data }) => {
@@ -79,7 +78,6 @@ const socketMiddleware = () => {
     switch (action.type) {
       case 'WS_CONNECT':
         store.dispatch(wsConnecting());
-        store.dispatch(setLoaderAction());
         if (socket !== null) {
           socket.close();
         }
