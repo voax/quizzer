@@ -272,6 +272,7 @@ router.patch(
 
 router.post(
   '/:roomCode/scoreboards',
+  hasNotJoinedOrHosted,
   catchErrors(async (req, res) => {
     req.session.role = SCOREBOARD;
     req.session.roomID = req.room._id;

@@ -65,7 +65,7 @@ const TeamStatus = ({ team, pos }) => {
   const styleRight = { paddingLeft: '50px', paddingRight: '75px' };
 
   if (!team) {
-    return <Col />;
+    return <Col style={pos % 2 ? styleLeft : styleRight} />;
   }
 
   return (
@@ -118,7 +118,9 @@ const TeamStatuses = () => {
     return <></>;
   }
 
-  const teams = scoreboardTeams.slice().sort((a, b) => a.roundPoints < b.roundPoints);
+  const teams = scoreboardTeams
+    .slice()
+    .sort((a, b) => b.roundPoints - a.roundPoints || b.roundScore - a.roundScore);
 
   return (
     <>
