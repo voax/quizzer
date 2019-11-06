@@ -1,6 +1,6 @@
 {
   "name": "quizzer-client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The front-end for the Quizzer app",
   "repository": {
     "type": "git",
