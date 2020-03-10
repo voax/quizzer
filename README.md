@@ -1,12 +1,14 @@
-# The Quizzer - by Ivo Breukers & Oktay Dinler
+# Quizzer
 
-The final assignment for the course DWA in the first semester of 2019.
+Made by [Ivo Breukers](https://github.com/ivobreukers) and [Oktay Dinler](https://github.com/aod) as our final assignment for the DWA course in the first semester of 2019 at the HAN University of Applied Sciences (Arnhem).
+
+![](https://imgur.com/oXs18rL.png)
 
 ---
 
 ## Contents
 
-- [The Quizzer - by Ivo Breukers & Oktay Dinler](#the-quizzer---by-ivo-breukers--oktay-dinler)
+- [Quizzer](#quizzer)
   - [Contents](#contents)
   - [1 Introduction](#1-introduction)
   - [2 Wireframes / resources / system reactions](#2-wireframes--resources--system-reactions)
