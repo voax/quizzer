@@ -1,7 +1,6 @@
-FROM node:12.18.3-alpine3.9 as build
+FROM node:lts-alpine as build
 WORKDIR /usr/src/app
-COPY package.json .
-COPY package-lock.json .
+COPY ./package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
