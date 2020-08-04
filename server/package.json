@@ -32,9 +32,12 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "mongoose": "^5.7.5",
-    "ws": "^7.2.0"
+    "ws": "^7.2.0",
+    "dot-prop": ">=5.1.1",
+    "minimist": ">=1.2.3",
+    "kind-of": ">=6.0.3"
   },
   "devDependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^2.0.4"
   }
 }
