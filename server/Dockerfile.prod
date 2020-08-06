@@ -1,0 +1,11 @@
+FROM node:lts-alpine
+
+WORKDIR /usr/src/app
+
+COPY ./package*.json ./
+RUN npm ci
+COPY . .
+RUN npm install pm2@^4.4.0 -g
+
+EXPOSE 4001
+CMD [ "pm2-runtime", "./src/index.js" ]

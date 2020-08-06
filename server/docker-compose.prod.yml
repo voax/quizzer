@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  backend-prod:
+    depends_on: 
+      - database
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - 4001:4001
+    environment:
+      EXPRESS_PORT: 4001
+      EXPRESS_SECRET: super-secret-value
+      DB_NAME: quizzer
+      MAX_QUESTIONS_PER_ROUND: 12
+      MONGODB_HOST: database
+      MONGODB_PORT: 27017
+
+  database:
+    image: mongo:4
+    environment:
+      MONGO_INITDB_DATABASE: quizzer
+    volumes:
+      - ./mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

@@ -62,6 +62,7 @@ const main = async () => {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
+    serverSelectionTimeoutMS: 10000,
   });
   await initRoomCodes();
   await new Promise(resolve => {
