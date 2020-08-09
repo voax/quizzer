@@ -23,13 +23,7 @@ services:
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
-    environment:
-      EXPRESS_PORT: 4000
-      EXPRESS_SECRET: dont-read-this
-      DB_NAME: quizzer
-      MAX_QUESTIONS_PER_ROUND: 12
-      MONGODB_HOST: database
-      MONGODB_PORT: 27017
+    env_file: ./server/.env
 
   database:
     image: mongo:4
