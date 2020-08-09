@@ -24,6 +24,9 @@ services:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
     env_file: ./server/.env
+    environment:
+      MONGODB_HOST: database
+      WAIT_HOSTS: database:27017
 
   database:
     image: mongo:4
