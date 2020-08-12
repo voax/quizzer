@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./client:/usr/src/app
+      - /usr/src/app/node_modules
+
+  backend:
+    restart: always
+    depends_on:
+      - database
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '4000:4000'
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
+    env_file: ./server/.env
+    environment:
+      EXPRESS_PORT: 4000
+      DB_NAME: quizzer
+      MONGODB_HOST: database
+      MONGODB_PORT: 27017
+      WAIT_HOSTS: database:27017
+
+  database:
+    image: mongo:4
+    environment:
+      MONGO_INITDB_DATABASE: quizzer
+    volumes:
+      - ./server/mongo/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    ports:
+      - '27017:27017'

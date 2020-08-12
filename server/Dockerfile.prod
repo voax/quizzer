@@ -1,0 +1,14 @@
+FROM node:lts-alpine
+
+WORKDIR /usr/src/app
+
+COPY ./package*.json ./
+RUN npm ci
+COPY . .
+RUN npm install pm2@^4.4.0 -g
+
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+
+EXPOSE 4001
+CMD /wait && pm2-runtime ./src/index.js
